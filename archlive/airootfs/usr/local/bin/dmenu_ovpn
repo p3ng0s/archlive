@@ -1,0 +1,26 @@
+#!/bin/bash
+# dmenu_ovpn
+# Created on: Sun 28 Jun 2020 01:24:37 AM CEST
+#
+#  ____   __  ____  __
+# (  _ \ /. |(  _ \/  )
+#  )___/(_  _))___/ )(
+# (__)    (_)(__)  (__)
+#
+# Description:
+#  Script to run openvpn
+
+notify-send "Searching for vpn files"
+VPN_FILES=("tor" $(find $HOME -name "*.ovpn"))
+FILE_PATH=$(echo ${VPN_FILES[*]} | tr ' ' '\n' | dmenu "$@")
+pid=$(ps aux | grep "dwmstat" | head -n1 | awk -F' ' '{print $2}')
+
+if [ $FILE_PATH = "tor" ]; then
+	pass=$(echo -n "" | dmenu -p "password:" -c -nb "#000" -nf "#000" -sb "#D16F74" -sf "#000")
+
+	echo $pass | sudo -S -u tor tor &
+else
+	raro.x "openvpn $FILE_PATH" &
+fi
+sleep 10
+kill -s SIGUSR1 $pid

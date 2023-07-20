@@ -1,0 +1,20 @@
+#!/bin/bash
+# mansplain
+# Created on: jeu. 04 juin 2020 06:34:08  CEST
+#
+#  ____   __  ____  __
+# (  _ \ /. |(  _ \/  )
+#  )___/(_  _))___/ )(
+# (__)    (_)(__)  (__)
+#
+# Description:
+#  Script based on luke smith's video on creating a man page dmenu list
+# Dependencies:
+#  sudo apt install zathura-ps zathura dmenu
+
+out=$(man -k . | sort | dmenu "$@" | cut -d' ' -f1)
+if [ ! -z $out ]; then
+	man -Tps $out | zathura -
+fi
+
+exit

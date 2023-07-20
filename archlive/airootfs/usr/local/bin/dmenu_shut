@@ -1,0 +1,23 @@
+#!/bin/bash
+# shutdown.sh
+# Created on: Sun 05 Jul 2020 05:55:43 AM CEST
+#
+#  ____   __  ____  __
+# (  _ \ /. |(  _ \/  )
+#  )___/(_  _))___/ )(
+# (__)    (_)(__)  (__)
+#
+# Description:
+#  simple script to turn of the machine with dmenu
+
+ret=$(echo -e "X cancel\n⏻ shutdown\nﰇ reboot" | dmenu "$@")
+
+if echo $ret | grep "reboot" &> /dev/null; then
+	echo "reboot!"
+	reboot
+elif echo $ret | grep "shutdown" &> /dev/null; then
+	echo "shutdown!"
+	shutdown now
+else
+	echo "no!"
+fi

@@ -1,0 +1,66 @@
+#!/bin/sh
+
+cat <<EOF | xmenu "$@"  | sh &
+Web Browsers
+	IMG:$HOME/.dwm/icons/vivaldi.png	Vivaldi	vivaldi
+	IMG:$HOME/.dwm/icons/tor.png	Tor Browser	tor-browser
+	IMG:$HOME/.dwm/icons/firefox.png	Firefox	firefox
+	IMG:$HOME/.dwm/icons/chromium.png	Chromium	chromium
+Applications
+	IMG:$HOME/.dwm/icons/discord.png	Discord	discord
+	IMG:$HOME/.dwm/icons/telegram.png	Telegram	telegram-desktop
+	IMG:$HOME/.dwm/icons/gimp.png	Image editor	gimp
+	IMG:$HOME/.dwm/icons/inkscape.png	Inkscape	inkscape
+	IMG:$HOME/.dwm/icons/system-file-manager.png	File Manager	nautilus
+	IMG:$HOME/.dwm/icons/kdenlive.png	Video editor	kdenlive
+	IMG:$HOME/.dwm/icons/audacity.png	Sound editor	audacity
+	IMG:$HOME/.dwm/icons/calibre.png	Books	calibre
+	IMG:$HOME/.dwm/icons/vlc.png	Vlc	vlc
+	IMG:$HOME/.dwm/icons/teams.png	Teams	teams
+	IMG:$HOME/.dwm/icons/gitkraken.png	Gitkraken	gitkraken
+	IMG:$HOME/.dwm/icons/xmind.png	XMind	XMind
+	IMG:$HOME/.dwm/icons/cherrytree.png	CherryTree	cherrytree
+	IMG:$HOME/.dwm/icons/filezilla.png	FileZilla	filezilla
+	IMG:$HOME/.dwm/icons/transmission.png	Transmission	transmission-gtk
+Music
+	IMG:$HOME/.dwm/icons/ytmusic.png	YT Music	youtube-music-bin
+	IMG:$HOME/.dwm/icons/nuclear.png	Nuclear	nuclear
+Pentesting
+	IMG:$HOME/.dwm/icons/BurpSuite.png	BurpSuite	BurpSuiteCommunity
+	IMG:$HOME/.dwm/icons/zap.png	OWAP Zap	zap.sh
+	IMG:$HOME/.dwm/icons/Ghidra.png	Ghidra	ghidra
+	IMG:$HOME/.dwm/icons/wireshark.png	Wireshark	raro.x wireshark
+	IMG:$HOME/.dwm/icons/immunity-debugger.png	Immunity Debugger (edb)	edb
+Games
+	IMG:$HOME/.dwm/icons/assaultcube.png	Assault Cube	assaultcube
+	IMG:$HOME/.dwm/icons/mindustry.png	Mindustry	mindustry
+	IMG:$HOME/.dwm/icons/steam.png	Steam	steam
+	IMG:$HOME/.dwm/icons/dolphin.png	Dolphin	dolphin-emu
+	IMG:$HOME/.dwm/icons/desmume.png	Desmume	desmume
+	IMG:$HOME/.dwm/icons/citra.png	Citra	citra-qt
+Tools
+	IMG:$HOME/.dwm/icons/screenkey.png	ScreenKey	screenkey --scr 1 --opacity 0.2 -f "Hack Nerd Font:size=13"
+	IMG:$HOME/.dwm/icons/remmina.png	Remmina	remmina
+	IMG:$HOME/.dwm/icons/fritzing.png	Fritzing	fritzing
+	IMG:$HOME/.dwm/icons/gparted.png	Gparted	raro.x gparted
+	IMG:$HOME/.dwm/icons/virtualbox.png	Virtual Box	virtualbox
+	IMG:$HOME/.dwm/icons/postman.png	Postman	postman
+	IMG:$HOME/.dwm/icons/gpick.png	Gpick	gpick
+	IMG:$HOME/.dwm/icons/sqlite.png	DB Browser	sqlitebrowser
+Editors
+	IMG:$HOME/.dwm/icons/emacs.png	Emacs	emacs
+	IMG:$HOME/.dwm/icons/vim.png	Vim	st vim
+	IMG:$HOME/.dwm/icons/android-studio.png	Android Studio	android-studio
+	IMG:$HOME/.dwm/icons/gedit.png	Gedit	gedit
+	IMG:$HOME/.dwm/icons/atom.png	Atom	atom
+IMG:$HOME/.dwm/icons/terminal.png	Terminal (st)		st
+
+IMG:$HOME/.dwm/icons/help.png	Help	dmenu_splain "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" '-h' '25' '-bw' 'p' '-l' '15' '-p' '$' '-b'
+IMG:$HOME/.dwm/icons/edit.png	Edit config	dmenu_cfg "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" '-h' '25' '-bw' 'p' '-l' '15' '-p' '$' '-b'
+IMG:$HOME/.dwm/icons/themes.png	Theme	lxappearance
+IMG:$HOME/.dwm/icons/sound.png	Sound	pavucontrol
+
+IMG:$HOME/.dwm/icons/edit-delete.png	Force Quit		xkill
+IMG:$HOME/.dwm/icons/system-shutdown.png	Shutdown		poweroff
+IMG:$HOME/.dwm/icons/view-refresh.png	Reboot			reboot
+EOF

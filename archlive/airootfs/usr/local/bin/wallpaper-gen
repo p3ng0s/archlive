@@ -1,0 +1,108 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
+# Made by p4p1
+# wallpaper-gen
+# can be found on a website: https://p4p1.github.io/wallpaper-gen.html
+#
+# Description:
+# Script to generate a wallpaper from a folder of different images
+# And displays them in a grid layout as followed:
+# +--------------------------------------------+
+# |    |    |    |    |    |    |    |    |    |
+# |    |    |    |    |    |    |    |    |    |
+# |--------------------------------------------|
+# |    |    |    |    |    |    |    |    |    |
+# |    |    |    |    |    |    |    |    |    |
+# |--------------------------------------------|
+# |    |    |    |    |    |    |    |    |    |
+# |    |    |    |    |    |    |    |    |    |
+# +--------------------------------------------+
+
+from PIL import Image
+import glob, os, os.path, sys, getopt, random, math
+
+WIDTH=1920
+HEIGHT=1080
+
+def usage():
+    print "Usage: %s [OPTION]" % sys.argv[0]
+    print "Wallpaper Generator made by p4p1"
+    print "\t-w\t--width=\tChange width of monitor (default: %d)" % WIDTH
+    print "\t-e\t--height=\tChange height of monitor (default: %d)" % HEIGHT
+    print "\t-d\t--dir=\t\tGive the dirrectory where all the images are"
+    print "\t-o\t--output=\tThe name of the output file of the program"
+    print "\t-s\t--shuffle\tShuffle the order of the images in the grid"
+    print "\t-h\t--help\t\tThis message"
+
+def generator(DIR='./images/', fname='./wallpaper.jpg', shuffle=False, v=False):
+    if v:
+        print "Generating wallpaper by p4p1"
+    number_files=len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
+    onlyfiles=[f for f in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, f))]
+    screen_size=(WIDTH, HEIGHT)
+    one_side=math.trunc(math.sqrt((screen_size[0]*screen_size[1]) / number_files))
+    size= one_side, one_side
+    if v:
+        print "Size of cell: %d" % one_side
+    allimg=[]
+    dst=Image.new('RGB', screen_size)
+    posx=0
+    posy=0
+    inc=0
+
+    for infile in onlyfiles:
+        file, ext = os.path.splitext(infile)
+        im = Image.open(DIR+infile)
+        im.thumbnail(size)
+        if v:
+            print "Found image: %s" % infile
+        allimg.append(im)
+    if shuffle == True:
+        if v:
+            print "Randomizing files"
+        random.shuffle(allimg)
+    while posy < screen_size[1] and inc < number_files:
+        posx = 0
+        while posx < screen_size[0] - 50 and inc < number_files:
+            if v:
+                print "Placing image:"
+                print allimg[inc]
+            dst.paste(allimg[inc], (posx, posy))
+            posx+=one_side
+            inc+=1
+        posy+=one_side
+
+    dst.save(fname)
+
+if __name__ == "__main__":
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hw:e:d:o:sv", ["help", "width=", "height=", "dir=", "output=", "shuffle"])
+    except getopt.GetoptError as err:
+        print str(err)
+        usage()
+        sys.exit(-1)
+    dirs='./album_covers/'
+    output='./wallpaper.jpg'
+    verbose=False
+    shufle=False
+    for o, a in opts:
+        if o == "-v":
+            verbose=True
+        elif o in ("-h", "--help"):
+            usage()
+            sys.exit(0)
+        elif o in ("-w", "--width"):
+            WIDTH = int(a)
+        elif o in ("-e", "--height"):
+            HEIGHT = int(a)
+        elif o in ("-d", "--dir"):
+            dirs = a
+        elif o in ("-o", "--output"):
+            output = a
+        elif o in ("-s", "--suffle"):
+            shufle=True
+        else:
+            assert False, "unhandled option"
+    generator(DIR=dirs, fname=output, shuffle=shufle, v=verbose)
+    sys.exit(0)

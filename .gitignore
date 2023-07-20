@@ -1,0 +1,9 @@
+out/
+backup.tar.xz
+backup/
+archlive/airootfs/opt/dwmstat
+archlive/airootfs/opt/larp
+archlive/airootfs/opt/Responder
+archlive/airootfs/opt/evil-winrm
+archlive/airootfs/root/.vim/
+archlive/airootfs/root/.tmux/

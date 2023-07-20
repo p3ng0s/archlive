@@ -1,0 +1,13 @@
+#!/bin/bash
+# dmenu_emoji.sh
+# Created on: Sun 05 Jul 2020 05:55:43 AM CEST
+#
+#  ____   __  ____  __
+# (  _ \ /. |(  _ \/  )
+#  )___/(_  _))___/ )(
+# (__)    (_)(__)  (__)
+#
+# Description:
+#  Simple script to get emoji support on distro
+
+emojify -l | tail -n +5 | dmenu "$@" | xclip -selection clipboard

@@ -1,0 +1,10 @@
+#!/bin/sh
+# dmenu_path | dmenu "$@" | ${SHELL:-"/bin/sh"} &
+CMD=$(dmenu_path | dmenu "$@")
+
+if hash $CMD &> /dev/null; then
+	echo $CMD | ${SHELL:-"/bin/sh"} &
+else
+	[ ! -z $BROWSER ] && $BROWSER "https://duckduckgo.com/?q=$CMD" || firefox "https://duckduckgo.com/?q=$CMD"
+fi
+

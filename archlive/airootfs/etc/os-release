@@ -1,0 +1,10 @@
+NAME="p4p1-arch"
+PRETTY_NAME="p4p1-arch"
+ID=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;2;23;147;209"
+HOME_URL="https://leosmith.xyz/"
+DOCUMENTATION_URL="https://leosmith.xyz/rice/"
+SUPPORT_URL="https://bbs.archlinux.org/"
+BUG_REPORT_URL="https://bugs.archlinux.org/"
+LOGO=archlinux-logo
