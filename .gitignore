@@ -1,4 +1,6 @@
 out/
+build/
+packager/
 backup.tar.xz
 backup/
 archlive/airootfs/opt/dwmstat
@@ -7,3 +9,14 @@ archlive/airootfs/opt/Responder
 archlive/airootfs/opt/evil-winrm
 archlive/airootfs/root/.vim/
 archlive/airootfs/root/.tmux/
+archlive/airootfs/root/.dwm/
+archlive/airootfs/root/.fzf/
+archlive/airootfs/root/.bashrc
+archlive/airootfs/root/.conkyrc
+archlive/airootfs/root/.bash_profile
+archlive/airootfs/root/.vimrc
+archlive/airootfs/root/.xinitrc
+archlive/airootfs/root/.inputrc
+archlive/airootfs/root/.tint2rc
+archlive/airootfs/root/.tigrc
+archlive/airootfs/root/.

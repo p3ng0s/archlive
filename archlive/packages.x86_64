@@ -1,3 +1,15 @@
+# [ p3ng0s ]
+dwm-p3ng0s
+st-p3ng0s
+dmenu-p3ng0s
+xmenu-p3ng0s
+wmname-p3ng0s
+scripts-p3ng0s
+i3lock-fancy-p3ng0s
+skippy-xd-p3ng0s
+burpsuite-p3ng0s
+postman-p3ng0s
+
 # [ Base ]
 alsa-utils
 amd-ucode
@@ -159,6 +171,7 @@ scrot
 tint2
 zathura
 zathura-ps
+conky
 
 # [ Software Dev ]
 gcc
@@ -168,12 +181,15 @@ go
 make
 nano
 nasm
+mingw-w64-gcc
 nodejs
 npm
+neo4j
 perl
 php
 python
 python-pip
+python-setuptools
 radare2
 ruby2.7
 udftools
