@@ -10,6 +10,7 @@ archlive/airootfs/opt/Responder
 archlive/airootfs/opt/evil-winrm
 archlive/airootfs/root/.vim/
 archlive/airootfs/root/.tmux/
+archlive/airootfs/root/.tmux.conf
 archlive/airootfs/root/.dwm/
 archlive/airootfs/root/.fzf/
 archlive/airootfs/root/.bashrc

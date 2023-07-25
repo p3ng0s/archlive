@@ -1,8 +1,8 @@
-p4p1-ARCH
+p3ng0s
 =========
-*A self made linux distro - MUST READ NOT USABLE YET*
+*A self made linux distro - NOT MADE FOR CONVENIENT PUBLIC USE MADE FOR SELFISH NEEDS*
 
-![iso_logo](https://github.com/p4p1/p4p1-arch/raw/main/assets/favicon.png)
+![iso_logo](https://github.com/p3ng0s/archlive/raw/main/assets/favicon.png)
 
 A linux description with my configuration and software pre-installed. This is basicaly
 a dump of my config but can also be seen as a representation of everything I do in one.
@@ -16,5 +16,5 @@ my workflow and overall approach to linux and all.
 Currently it is non functional the live is there but I want to update a lot more
 to this for actual usage. When it is in a functional state I will publish an iso
 and detail how to use in more detail.
-Please click [this](https://leosmith.xyz/rice/) link for a full detail on my linux config
+Please click [this](https://leosmith.wtf/rice/) link for a full detail on my linux config
 and an early build of the iso in question.
