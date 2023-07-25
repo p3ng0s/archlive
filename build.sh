@@ -66,8 +66,8 @@ done
 shift $((OPTIND-1))
 
 # Do the basic checks to see if root and on supported systems and if the user exitsts
-if [ "$EUID" -ne 0 ]; then
-	echo -e "\e[1;31mPlease run as root\e[m"
+if [ "$EUID" -eq 0 ]; then
+	echo -e "\e[1;31mPlease do not run as root\e[m"
 	exit -1
 fi
 
@@ -99,14 +99,16 @@ echo -e "Moved terminal config to archlive -> \e[36m:)\e[0m"
 echo -e "Installed tools from public repositories -> \e[36m:)\e[0m"
 
 git clone $PACKAGER_REPO
+TMP_DIR=$(pwd)
 cd $PACKAGER_FOLDER
 ./setup.sh
+cd $TMP_DIR
 echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
 
 # Last step build iso
 whoami
-echo -e "Big .iso build see you tomorrow -> \e[36m:)\e[0m"
-mkarchiso -v -w $ISO_BUILD_DIR $PWD/archlive/
+echo -e "SUDO Big .iso build see you tomorrow -> \e[36m:)\e[0m"
+sudo mkarchiso -v -w $ISO_BUILD_DIR $PWD/archlive/
 
 echo -e "All done -> \e[36m:)\e[0m"
 
