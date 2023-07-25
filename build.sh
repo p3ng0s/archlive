@@ -81,20 +81,15 @@ tar -xf $BACKUP_FILE
 cp -r $BACKUP_FOLDER/.bashrc $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.vimrc $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.vim/ $HOME_ARCHLIVE
+cp -r $BACKUP_FOLDER/.tmux/ $HOME_ARCHLIVE
+cp -r $BACKUP_FOLDER/.tmux.conf $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.wallpaper.png $HOME_ARCHLIVE
-cp -r $BACKUP_FOLDER/.inputrc $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.conkyrc $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.fzf/ $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.tint2rc $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.tigrc $HOME_ARCHLIVE
-#
-##cp -r $BACKUP_FOLDER/.dwm/ $HOME_ARCHLIVE
 
 echo -e "Moved terminal config to archlive -> \e[36m:)\e[0m"
-
-# move fonts
-#cp -r $BACKUP_FOLDER/.dwm/fonts/* $ROOT_ARCHLIVE/usr/share/fonts
-echo -e "Setup the fonts -> \e[36m:)\e[0m"
 
 # setup for startx with the live version of the windows manager
 [ ! -f $HOME_ARCHLIVE/.xinitrc ] && echo "exec dwm-live" > $HOME_ARCHLIVE/.xinitrc

@@ -8,7 +8,8 @@ scripts-p3ng0s
 i3lock-fancy-p3ng0s
 skippy-xd-p3ng0s
 burpsuite-p3ng0s
-postman-p3ng0s
+bloodhound-p3ng0s
+#postman-p3ng0s
 
 # [ Base ]
 alsa-utils
@@ -113,9 +114,11 @@ openssh
 openvpn
 proxychains-ng
 sshuttle
+remmina
 tcpdump
 tcpreplay
 tor
+filezilla
 wireless-regdb
 wireless_tools
 wireshark-qt
@@ -137,6 +140,7 @@ aircrack-ng
 bettercap
 hashcat
 impacket
+python-bloodhound
 
 # [ Base Terminal Software ]
 exa
@@ -144,6 +148,7 @@ diffutils
 doge
 fzf
 less
+ripgrep
 lftp
 lynx
 man-db
@@ -157,9 +162,12 @@ unzip
 vim
 
 # [ Window Manager Dependencies ]
+calamares
 chromium
 feh
 flameshot
+electron
+python-sphinx_rtd_theme
 i3lock
 jgmenu
 keepass
@@ -172,6 +180,10 @@ tint2
 zathura
 zathura-ps
 conky
+newsboat
+kde-cli-tools
+ueberzug
+picom
 
 # [ Software Dev ]
 gcc
@@ -184,16 +196,26 @@ nasm
 mingw-w64-gcc
 nodejs
 npm
-neo4j
 perl
 php
 python
 python-pip
 python-setuptools
+python-dnspython
+python-future
+python-ldap3
+python-pyasn1
+python-build
+python-installer
+python-wheel
 radare2
 ruby2.7
 udftools
 valgrind
+sqlitebrowser
+
+# [ Servers ]
+neo4j-community
 
 # [ Forensics ]
 ddrescue
@@ -203,6 +225,7 @@ testdisk
 # [ Entertainement ]
 moc
 vlc
+gpick
 
 # [ XORG things ]
 xautolock
