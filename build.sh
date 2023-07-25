@@ -94,6 +94,7 @@ echo -e "Moved terminal config to archlive -> \e[36m:)\e[0m"
 # setup for startx with the live version of the windows manager
 [ ! -f $HOME_ARCHLIVE/.xinitrc ] && echo "exec dwm-live" > $HOME_ARCHLIVE/.xinitrc
 
+# TODO: Might remove this bit :/
 #install_repo ${CUSTOM_REPO[*]}
 echo -e "Installed tools from public repositories -> \e[36m:)\e[0m"
 
