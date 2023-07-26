@@ -15,7 +15,7 @@
 ISO_BUILD_DIR=$PWD/build_dir/
 BACKUP_FILE=./backup.tar.xz
 LINK_TO_BACKUP=https://leosmith.wtf/rice/$BACKUP_FILE
-HOME_ARCHLIVE=./archlive/airootfs/root
+HOME_ARCHLIVE=./archlive/airootfs/etc/skel
 ROOT_ARCHLIVE=./archlive/airootfs
 OPT_ARCHLIVE=./archlive/airootfs/opt
 BIN_ARCHLIVE=./archlive/airootfs/usr/local/bin
@@ -27,8 +27,9 @@ CUSTOM_REPO=("https://github.com/p4p1/larp.git" "https://github.com/p4p1/dwmstat
 # Display usage information
 function usage () {
 	echo -e "\e[1;31mUsage:\e[m" 1>&2
-	echo "$0 -c -> force compile no dependency work." 1>&2
-	echo "$0 -r -> Delete all temp folder and build folder." 1>&2
+	echo "$0 -b -> Build only." 1>&2
+	echo "$0 -p -> Pakcages only." 1>&2
+	echo "$0 -d -> Delete all temp folder and build folder." 1>&2
 	exit -1
 }
 
@@ -44,14 +45,25 @@ function install_repo() {
 	done
 }
 
-while getopts "cr" o; do
+while getopts "bdp" o; do
 	case "${o}" in
-		c)
-			mkarchiso -v -w /tmp/build_dir/ $PWD/archlive/
+		b)
+			whoami
+			echo -e "SUDO Big .iso build see you tomorrow -> \e[36m:)\e[0m"
+			sudo mkarchiso -v -w $ISO_BUILD_DIR $PWD/archlive/
 			echo -e "All done -> \e[36m:)\e[0m"
 			exit 0
 			;;
-		r)
+		p)
+			git clone $PACKAGER_REPO
+			BUILD_TMP_DIR=$(pwd)
+			cd $PACKAGER_FOLDER
+			./setup.sh
+			cd $BUILD_TMP_DIR
+			echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
+			exit 0
+			;;
+		d)
 			echo -e "Delete $ISO_BUILD_DIR -> \e[36m:)\e[0m"
 			rm -rf $ISO_BUILD_DIR
 			echo -e "Delete $PWD/out/ -> \e[36m:)\e[0m"
@@ -96,13 +108,13 @@ echo -e "Moved terminal config to archlive -> \e[36m:)\e[0m"
 
 # TODO: Might remove this bit :/
 #install_repo ${CUSTOM_REPO[*]}
-echo -e "Installed tools from public repositories -> \e[36m:)\e[0m"
+#echo -e "Installed tools from public repositories -> \e[36m:)\e[0m"
 
 git clone $PACKAGER_REPO
-TMP_DIR=$(pwd)
+BUILD_TMP_DIR=$(pwd)
 cd $PACKAGER_FOLDER
 ./setup.sh
-cd $TMP_DIR
+cd $BUILD_TMP_DIR
 echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
 
 # Last step build iso

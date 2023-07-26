@@ -9,13 +9,16 @@ i3lock-fancy-p3ng0s
 skippy-xd-p3ng0s
 burpsuite-p3ng0s
 bloodhound-p3ng0s
-#postman-p3ng0s
+havoc-client-p3ng0s
+qflipper-p3ng0s
+postman-p3ng0s
 
 # [ Base ]
 alsa-utils
 amd-ucode
 arch-install-scripts
 archinstall
+cups
 b43-fwcutter
 base
 base-devel
