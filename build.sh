@@ -17,12 +17,13 @@ BACKUP_FILE=./backup.tar.xz
 LINK_TO_BACKUP=https://leosmith.wtf/rice/$BACKUP_FILE
 HOME_ARCHLIVE=./archlive/airootfs/etc/skel
 ROOT_ARCHLIVE=./archlive/airootfs
+CONF_ARCHLIVE=./archlive/airootfs/etc/p3ng0s
 OPT_ARCHLIVE=./archlive/airootfs/opt
 BIN_ARCHLIVE=./archlive/airootfs/usr/local/bin
 BACKUP_FOLDER=./backup/
 PACKAGER_FOLDER=./packager
 PACKAGER_REPO=https://github.com/p3ng0s/packager
-CUSTOM_REPO=("https://github.com/p4p1/larp.git" "https://github.com/p4p1/dwmstat.git" "https://github.com/lgandx/Responder.git" "https://github.com/Hackplayers/evil-winrm" "https://github.com/HavocFramework/Havoc")
+#CUSTOM_REPO=("https://github.com/p4p1/larp.git" "https://github.com/p4p1/dwmstat.git" "https://github.com/lgandx/Responder.git" "https://github.com/Hackplayers/evil-winrm" "https://github.com/HavocFramework/Havoc")
 
 # Display usage information
 function usage () {
@@ -98,7 +99,6 @@ cp -r $BACKUP_FOLDER/.tmux.conf $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.wallpaper.png $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.conkyrc $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.fzf/ $HOME_ARCHLIVE
-cp -r $BACKUP_FOLDER/.tint2rc $HOME_ARCHLIVE
 cp -r $BACKUP_FOLDER/.tigrc $HOME_ARCHLIVE
 
 echo -e "Moved terminal config to archlive -> \e[36m:)\e[0m"
@@ -115,6 +115,7 @@ BUILD_TMP_DIR=$(pwd)
 cd $PACKAGER_FOLDER
 ./setup.sh
 cd $BUILD_TMP_DIR
+cp -r $PACKAGER_FOLDER/repo $CONF_ARCHLIVE
 echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
 
 # Last step build iso

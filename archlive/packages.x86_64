@@ -61,6 +61,8 @@ mc
 mdadm
 memtest86+
 mkinitcpio
+ckbcomp
+mkinitcpio-openswap
 mkinitcpio-archiso
 mkinitcpio-nfs-utils
 modemmanager
@@ -144,6 +146,12 @@ bettercap
 hashcat
 impacket
 python-bloodhound
+responder
+#python-pypykatz
+#crackmapexec
+
+# [ Exploit dependencies ]
+python-minidump
 
 # [ Base Terminal Software ]
 exa
@@ -172,7 +180,7 @@ flameshot
 electron
 python-sphinx_rtd_theme
 i3lock
-jgmenu
+rofi
 keepass
 nautilus
 pavucontrol
@@ -187,6 +195,8 @@ newsboat
 kde-cli-tools
 ueberzug
 picom
+ttf-linux-libertine
+ttf-inconsolata
 
 # [ Software Dev ]
 gcc
@@ -228,6 +238,7 @@ testdisk
 # [ Entertainement ]
 moc
 vlc
+transmission-gtk
 gpick
 
 # [ XORG things ]
