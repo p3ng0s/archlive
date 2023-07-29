@@ -159,6 +159,7 @@ diffutils
 doge
 fzf
 less
+dialog
 ripgrep
 lftp
 lynx
@@ -197,6 +198,9 @@ ueberzug
 picom
 ttf-linux-libertine
 ttf-inconsolata
+ttf-symbola
+noto-fonts
+noto-fonts-emoji
 
 # [ Software Dev ]
 gcc

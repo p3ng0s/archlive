@@ -1,8 +1,9 @@
 root:x:0:root
-adm:x:4:p4p1
-wheel:x:10:p4p1
-uucp:x:14:p4p1
-lp:x:991:cups,p4p1
-p4p1:x:1000:p4p1
-wireshark:x:150:p4p1
+adm:x:4:p4p1-live
+wheel:x:10:p4p1-live
+uucp:x:14:p4p1-live
+lp:x:991:cups,p4p1-live
+p4p1-live:x:1000:p4p1-live
+wireshark:x:150:p4p1-live
+installer:x:2000:p4p1-live
 
