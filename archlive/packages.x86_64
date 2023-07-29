@@ -10,8 +10,8 @@ skippy-xd-p3ng0s
 burpsuite-p3ng0s
 bloodhound-p3ng0s
 havoc-client-p3ng0s
-qflipper-p3ng0s
 postman-p3ng0s
+autologon-p3ng0s
 
 # [ Base ]
 alsa-utils
@@ -147,11 +147,26 @@ hashcat
 impacket
 python-bloodhound
 responder
-#python-pypykatz
-#crackmapexec
+python-pypykatz
+cme-p3ng0s
+#ruby-evil-winrm
 
 # [ Exploit dependencies ]
+#ruby-winrm
+#ruby-winrm-fs
 python-minidump
+python-asyauth
+python-oscrypto
+python-asysocks
+python-prompt_toolkit
+python-winacl
+python-winsspi
+python-msldap
+python-minikerberos
+python-aiowinreg
+python-aiosmb
+python-unicrypto
+python-aesedb
 
 # [ Base Terminal Software ]
 exa

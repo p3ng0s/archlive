@@ -20,6 +20,7 @@ file_permissions=(
   ["/etc/gshadow"]="0:0:0400"
   ["/root"]="0:0:750"
   ["/etc/skel/.automated_script.sh"]="0:0:755"
+  ["/usr/bin/qFlipper"]="0:0:755"
   ["/etc/p3ng0s/bar.sh"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf-tmux"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf"]="0:0:755"
