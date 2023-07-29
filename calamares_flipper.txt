@@ -1,0 +1,99 @@
+REM A bad USB flipper zero payload to automatically fill in the calamares installer
+REM for my own enjoyement and so that I can do more productive stuff during the
+REM install process :) https://leosmith.wtf/blog/flipper-zero-ducky-parser.html
+REM Yes that is a shameless plug right there
+
+REM section welcome
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+SPACE
+
+REM section location
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+SPACE
+
+REM section keyboard
+DELAY 700
+SPACE
+
+REM section partitions
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+DOWN
+DELAY 700
+DOWN
+DELAY 700
+SPACE
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+SPACE
+
+REM section users
+DELAY 700
+STRING flipper
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+STRING qwertyuiop
+DELAY 700
+TAB
+STRING qwertyuiop
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+SPACE
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+TAB
+DELAY 700
+SPACE
+
+REM section summary
+DELAY 700
+SPACE
