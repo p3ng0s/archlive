@@ -12,4 +12,4 @@
 
 PID=$(pgrep i3lock)
 
-[ -z "$PID" ] && i3lock-fancy -p -t "Oh hell no!"
+[ -z "$PID" ] && i3lock-fancy -p -t "Oh hell no!" -f 'Hack Regular Nerd Font Complete'
