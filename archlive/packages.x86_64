@@ -5,7 +5,6 @@ dmenu-p3ng0s
 xmenu-p3ng0s
 wmname-p3ng0s
 scripts-p3ng0s
-i3lock-fancy-p3ng0s
 skippy-xd-p3ng0s
 burpsuite-p3ng0s
 bloodhound-p3ng0s
@@ -216,6 +215,10 @@ ttf-inconsolata
 ttf-symbola
 noto-fonts
 noto-fonts-emoji
+i3lock-fancy
+emojify
+imagemagick
+util-linux
 
 # [ Software Dev ]
 gcc
