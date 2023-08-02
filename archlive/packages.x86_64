@@ -219,6 +219,7 @@ i3lock-fancy
 emojify
 imagemagick
 util-linux
+virt-manager
 
 # [ Software Dev ]
 gcc
