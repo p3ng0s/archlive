@@ -65,11 +65,11 @@ git clone "https://github.com/p3ng0s/dwm-6.2" $DEV_OPT/dwm-6.2
 git clone "https://github.com/p3ng0s/st-0.8.2" $DEV_OPT/st-0.8.2
 git clone "https://github.com/p3ng0s/scripts" $DEV_OPT/script
 git clone "https://github.com/p4p1/xss_bomb" $DEV_OPT/xss_bomb
-curl "https://gist.githubusercontent.com/p4p1/1ab9b63925cfe860e8634f75243d32ef/raw/1da6e96aaf99f65516db567c80b28e87bcb8e918/bof_template.py" --ouptutp $DEV_OPT/bof_template.py
-curl "https://gist.githubusercontent.com/p4p1/5020987a78c227de512bf32e938e0c61/raw/9e5a4098946d6d4dd94f4e3bb204ca8aa5c19d1b/blind_sql.sh" --ouptutp $DEV_OPT/blind_sql.sh
-curl "https://gist.githubusercontent.com/p4p1/b2e829a9e75c344e055584ae8ffc29bd/raw/09387f0fe12392a360b7f9aa419a04c39167afeb/stager.c" --ouptutp $DEV_OPT/stager.c
+curl "https://gist.githubusercontent.com/p4p1/1ab9b63925cfe860e8634f75243d32ef/raw/1da6e96aaf99f65516db567c80b28e87bcb8e918/bof_template.py" --output $DEV_OPT/bof_template.py
+curl "https://gist.githubusercontent.com/p4p1/5020987a78c227de512bf32e938e0c61/raw/9e5a4098946d6d4dd94f4e3bb204ca8aa5c19d1b/blind_sql.sh" --output $DEV_OPT/blind_sql.sh
+curl "https://gist.githubusercontent.com/p4p1/b2e829a9e75c344e055584ae8ffc29bd/raw/09387f0fe12392a360b7f9aa419a04c39167afeb/stager.c" --output $DEV_OPT/stager.c
 
 echo -e "\e[94m[*]\e[0m Installing Entertainement Things..."
 
-curl "https://github.com/assaultcube/AC/releases/download/v1.3.0.2/AssaultCube_v1.3.0.2_LockdownEdition_RC1.tar.bz2" --ouptput $GAMES_OPT/AssaultCute.tar.bz2
+curl "https://github.com/assaultcube/AC/releases/download/v1.3.0.2/AssaultCube_v1.3.0.2_LockdownEdition_RC1.tar.bz2" --output $GAMES_OPT/AssaultCute.tar.bz2
 curl -Ls "https://api.github.com/repos/Anuken/Mindustry/releases/latest" | jq -r '.assets[0].browser_download_url' | xargs -I {} curl '{}' --output $GAMES_OPT/mindustry.jar
