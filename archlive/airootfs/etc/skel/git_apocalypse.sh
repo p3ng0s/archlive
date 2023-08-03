@@ -13,6 +13,7 @@
 
 PENTEST_OPT=/opt/pentest
 DEV_OPT=/opt/dev
+GAMES_OPT=/opt/games
 
 echo -e "\e[91m                       \e[37m                                  c=====e\e[0m"
 echo -e "\e[91m                       \e[37m                                     H\e[0m"
@@ -27,6 +28,12 @@ echo -e "\e[95m██║  ███╗██║   ██║        ████�
 echo -e "\e[95m██║   ██║██║   ██║        ██╔══██║██╔═══╝ ██║   ██║██║     ██╔══██║██║    ╚██╔╝  ██╔═══╝ ╚════██║██╔══╝     ╚════██║██╔══██║\e[0m"
 echo -e "\e[95m╚██████╔╝██║   ██║███████╗██║  ██║██║     ╚██████╔╝╚██████╗██║  ██║███████╗██║   ██║     ███████║███████╗██╗███████║██║  ██║\e[0m"
 echo -e "\e[95m ╚═════╝ ╚═╝   ╚═╝╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝   ╚═╝     ╚══════╝╚══════╝╚═╝╚══════╝╚═╝  ╚═╝\e[0m"
+
+[ ! -d "$PENTEST_OPT" ] && mkdir -p $PENTEST_OPT
+[ ! -d "$DEV_OPT" ] && mkdir -p $DEV_OPT
+[ ! -d "$GAMES_OPT" ] && mkdir -p $GAMES_OPT
+
+echo -e "\e[94m[*]\e[0m Installing Pentesting Things..."
 
 git clone "https://github.com/danielmiessler/SecLists" $PENTEST_OPT/SecLists
 git clone "https://github.com/Nicocha30/ligolo-ng" $PENTEST_OPT/ligolo-ng
@@ -47,6 +54,10 @@ git clone "https://github.com/DominicBreuker/pspy" $PENTEST_OPT/pspy
 git clone "https://github.com/BloodHoundAD/SharpHound" $PENTEST_OPT/SharpHound
 git clone "https://github.com/GhostPack/Rubeus" $PENTEST_OPT/Rubeus
 git clone "https://github.com/icyguider/Shhhloader" $PENTEST_OPT/Shhhloader
+git clone "https://github.com/hashcat/kwprocessor" $PENTEST_OPT/kwprocessor
+git clone "https://github.com/tokyoneon/Chimera" $PENTEST_OPT/Chimera
+
+echo -e "\e[94m[*]\e[0m Installing Development Things..."
 
 git clone "https://github.com/neurobin/shc" $DEV_OPT/shc
 git clone "https://github.com/p3ng0s/xmenu" $DEV_OPT/xmenu
@@ -57,3 +68,8 @@ git clone "https://github.com/p4p1/xss_bomb" $DEV_OPT/xss_bomb
 curl "https://gist.githubusercontent.com/p4p1/1ab9b63925cfe860e8634f75243d32ef/raw/1da6e96aaf99f65516db567c80b28e87bcb8e918/bof_template.py" --ouptutp $DEV_OPT/bof_template.py
 curl "https://gist.githubusercontent.com/p4p1/5020987a78c227de512bf32e938e0c61/raw/9e5a4098946d6d4dd94f4e3bb204ca8aa5c19d1b/blind_sql.sh" --ouptutp $DEV_OPT/blind_sql.sh
 curl "https://gist.githubusercontent.com/p4p1/b2e829a9e75c344e055584ae8ffc29bd/raw/09387f0fe12392a360b7f9aa419a04c39167afeb/stager.c" --ouptutp $DEV_OPT/stager.c
+
+echo -e "\e[94m[*]\e[0m Installing Entertainement Things..."
+
+curl "https://github.com/assaultcube/AC/releases/download/v1.3.0.2/AssaultCube_v1.3.0.2_LockdownEdition_RC1.tar.bz2" --ouptput $GAMES_OPT/AssaultCute.tar.bz2
+curl -Ls "https://api.github.com/repos/Anuken/Mindustry/releases/latest" | jq -r '.assets[0].browser_download_url' | xargs -I {} curl '{}' --output $GAMES_OPT/mindustry.jar
