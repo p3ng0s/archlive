@@ -22,6 +22,7 @@ file_permissions=(
   ["/etc/skel/git_apocalypse.sh"]="0:0:755"
   ["/usr/bin/qFlipper"]="0:0:755"
   ["/etc/p3ng0s/bar.sh"]="0:0:755"
+  ["/etc/p3ng0s/ripdrag"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf-tmux"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf"]="0:0:755"
   ["/usr/local/bin/livecd-sound"]="0:0:755"
