@@ -9,11 +9,12 @@ archlive/airootfs/etc/skel/.tmux/
 archlive/airootfs/etc/skel/.tmux.conf
 archlive/airootfs/etc/skel/.dwm/
 archlive/airootfs/etc/skel/.fzf/
-archlive/airootfs/etc/skel/.bashrc
-archlive/airootfs/etc/skel/.conkyrc
+archlive/airootfs/etc/skel/.peda/
+archlive/airootfs/etc/skel/.xvwm/
 archlive/airootfs/etc/skel/.vimrc
-archlive/airootfs/etc/skel/.tint2rc
 archlive/airootfs/etc/skel/.tigrc
+archlive/airootfs/etc/skel/.gdbinit
+archlive/airootfs/etc/skel/.Xresources
 archlive/airootfs/etc/skel/.
 archlive/airootfs/etc/p3ng0s/repo/
 

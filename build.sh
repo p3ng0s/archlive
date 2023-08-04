@@ -76,13 +76,16 @@ tar -xf $BACKUP_FILE
 
 
 ## move config
-cp -r $BACKUP_FOLDER/.bashrc $HOME_ARCHLIVE
-cp -r $BACKUP_FOLDER/.vimrc $HOME_ARCHLIVE
-cp -r $BACKUP_FOLDER/.vim/ $HOME_ARCHLIVE
-cp -r $BACKUP_FOLDER/.tmux/ $HOME_ARCHLIVE
-cp -r $BACKUP_FOLDER/.tmux.conf $HOME_ARCHLIVE
-cp -r $BACKUP_FOLDER/.fzf/ $HOME_ARCHLIVE
-cp -r $BACKUP_FOLDER/.tigrc $HOME_ARCHLIVE
+[ -d "$BACKUP_FOLDER/.vim/" ] && cp -r $BACKUP_FOLDER/.vim/ $HOME_ARCHLIVE
+[ -d "$BACKUP_FOLDER/.tmux/" ] && cp -r $BACKUP_FOLDER/.tmux/ $HOME_ARCHLIVE
+[ -d "$BACKUP_FOLDER/.fzf/" ] && cp -r $BACKUP_FOLDER/.fzf/ $HOME_ARCHLIVE
+[ -f "$BACKUP_FOLDER/.gdbinit" ] && cp -r $BACKUP_FOLDER/.gdbinit $HOME_ARCHLIVE
+[ -f "$BACKUP_FOLDER/.Xresources" ] && cp -r $BACKUP_FOLDER/.Xresources $HOME_ARCHLIVE
+[ -f "$BACKUP_FOLDER/.tmux.conf" ] && cp -r $BACKUP_FOLDER/.tmux.conf $HOME_ARCHLIVE
+[ -f "$BACKUP_FOLDER/.vimrc" ] && cp -r $BACKUP_FOLDER/.vimrc $HOME_ARCHLIVE
+[ -f "$BACKUP_FOLDER/.bashrc" ] && cp -r $BACKUP_FOLDER/.bashrc $HOME_ARCHLIVE
+[ -f "$BACKUP_FOLDER/.tigrc" ] && cp -r $BACKUP_FOLDER/.tigrc $HOME_ARCHLIVE
+[ -f "$BACKUP_FOLDER/.wallpaper.png" ] && cp -r $BACKUP_FOLDER/.wallpaper.png $HOME_ARCHLIVE
 
 echo -e "Moved terminal config to archlive -> \e[36m:)\e[0m"
 
