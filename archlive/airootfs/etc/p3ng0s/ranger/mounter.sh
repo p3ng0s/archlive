@@ -32,12 +32,20 @@ function list_hard_drives() {
         echo -e "\e[1;31m[!]\e[m No partition selected. Exiting.. ^^"
         exit 0
     fi
-    sudo mount $selected_partition /mnt
+    #sudo mount $selected_partition /mnt
+    [ $1 = 1 ] && udisksctl mount -b $selected_partition
+    [ $1 = 2 ] && udisksctl unmount -b $selected_partition
+    sleep 4
 }
 
 export DIALOGRC="/etc/p3ng0s/dialogrc"
 
-list_hard_drives
+choice=$(dialog --title "Mount or unmount?" \
+         --menu "Choose a partition to proceed (ordered by size):" 20 70 15 \
+         "1" "Mount" \
+         "2" "unmount" \
+         2>&1 >/dev/tty)
 
-sleep 5
+[ -z $choice ] && exit
+list_hard_drives $choice
 exit
