@@ -189,7 +189,7 @@ vim
 
 # [ Window Manager Dependencies ]
 calamares
-chromium
+firefox
 feh
 flameshot
 electron
