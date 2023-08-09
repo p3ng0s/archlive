@@ -56,6 +56,7 @@ git clone "https://github.com/GhostPack/Rubeus" $PENTEST_OPT/Rubeus
 git clone "https://github.com/icyguider/Shhhloader" $PENTEST_OPT/Shhhloader
 git clone "https://github.com/hashcat/kwprocessor" $PENTEST_OPT/kwprocessor
 git clone "https://github.com/tokyoneon/Chimera" $PENTEST_OPT/Chimera
+git clone "https://github.com/mertdas/PrivKit/" $PENTEST_OPT/PrivKit
 
 echo -e "\e[94m[*]\e[0m Installing Development Things..."
 
