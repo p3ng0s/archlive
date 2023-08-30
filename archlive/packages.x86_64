@@ -167,6 +167,9 @@ python-aiowinreg
 python-aiosmb
 python-unicrypto
 python-aesedb
+maven
+sbt
+java-environment-common
 
 # [ Base Terminal Software ]
 exa
