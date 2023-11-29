@@ -7,7 +7,7 @@ wmname-p3ng0s
 scripts-p3ng0s
 skippy-xd-p3ng0s
 burpsuite-p3ng0s
-bloodhound-p3ng0s
+#bloodhound-p3ng0s # remove this because of bloodhound community
 havoc-client-p3ng0s
 postman-p3ng0s
 autologon-p3ng0s
@@ -255,7 +255,7 @@ valgrind
 sqlitebrowser
 
 # [ Servers ]
-neo4j-community
+#neo4j-community # removing this because of bloodhound community
 
 # [ Forensics ]
 ddrescue
