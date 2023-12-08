@@ -19,6 +19,7 @@ amd-ucode
 arch-install-scripts
 archinstall
 cups
+jq
 b43-fwcutter
 base
 base-devel
@@ -35,6 +36,7 @@ dosfstools
 e2fsprogs
 edk2-shell
 efibootmgr
+fping
 espeakup
 exfatprogs
 f2fs-tools
@@ -263,7 +265,7 @@ gparted
 testdisk
 
 # [ Entertainement ]
-moc
+#moc
 vlc
 transmission-gtk
 gpick

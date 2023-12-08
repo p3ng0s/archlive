@@ -71,10 +71,9 @@ $hr
 ${color grey}Update
 ${color lightgrey} need of updates: ${execp [ $(pacman -Sup | wc -l) -lt 50 ]  && echo "\${color green}$(pacman -Sup | wc -l)" || echo "\${color red}$(pacman -Sup | wc -l)"}
 ${color grey}$hr
-${color grey}Website
-${color lightgrey} leosmith.wtf: ${execp curl "https://leosmith.wtf" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
-${color lightgrey} xss_bomb: ${execp curl "https://xss.leosmith.wtf" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
-${color lightgrey} admin panel: ${execp curl "http://localhost:8080" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
+${color grey}Infrastructure
+${color lightgrey} ${execp cat .p3ng0s.json | jq -r .host}: ${execp curl "https://$(cat .p3ng0s.json | jq -r .host)" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
+${color lightgrey} ${execp echo "bloodhound($(cat .p3ng0s.json | jq -r .bloodhound_port))"}: ${execp curl "http://localhost:$(cat .p3ng0s.json | jq -r .bloodhound_port)" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
 ${color grey}$hr
 ${color grey}Todo$color
 ${execp cat .todo | awk -f /etc/p3ng0s/todomd.awk}

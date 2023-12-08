@@ -149,6 +149,22 @@ function md()
 	/bin/mkdir $@
 	cd $@
 }
+function keesave()
+{
+	HOST=$(cat $HOME/.p3ng0s.json | jq -r .host)
+	UNAME=$(cat $HOME/.p3ng0s.json | jq -r .user)
+	DB=$HOME/Database.kdbx
+
+	scp $DB $UNAME@$HOST:/home/$UNAME/Database.kdbx
+}
+function keedl()
+{
+	HOST=$(cat $HOME/.p3ng0s.json | jq -r .host)
+	UNAME=$(cat $HOME/.p3ng0s.json | jq -r .user)
+	DB=$HOME/Database.kdbx
+
+	scp $UNAME@$HOST:/home/$UNAME/Database.kdbx $DB
+}
 ex ()
 {
 	if [ -f $1 ] ; then
@@ -213,7 +229,7 @@ export PS4=$PS4
 export TERM="st-256color"
 export SHELL=/bin/bash
 export EDITOR=/usr/bin/vim
-export BROWSER=/usr/bin/vivaldi-stable
+export BROWSER=/usr/bin/firefox
 export TERMINAL=/usr/local/bin/st
 export LANG=en_US.UTF-8
 export SSLKEYLOGFILE=~/.ssl-key.log
