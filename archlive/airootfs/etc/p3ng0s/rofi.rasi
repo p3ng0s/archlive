@@ -24,7 +24,7 @@ configuration {
    blackselect:      #303030;
    darkgray:         #848484;
    scrollbarcolor:   #505050;
-   font: "Hack Nerd Font 14";
+   font: "Hack Nerd Font 22";
    background-color: @blackdarkest;
    text-color:@fgwhite;
 }
@@ -34,7 +34,7 @@ window {
    anchor: west;
    location: west;
    height:100%;
-   width:22%;
+   width:85%;
    orientation: horizontal;
 }
 
