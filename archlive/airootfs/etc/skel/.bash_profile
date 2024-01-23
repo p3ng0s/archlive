@@ -1,4 +1,5 @@
 export DIALOGRC="/etc/p3ng0s/dialogrc"
+export GTK_THEME=Dracula
 unset SKIP
 
 function first_install() {
