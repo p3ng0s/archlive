@@ -192,6 +192,7 @@ tig
 tmux
 unzip
 vim
+zenity
 
 # [ Window Manager Dependencies ]
 calamares
