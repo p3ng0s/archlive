@@ -232,6 +232,7 @@ export EDITOR=/usr/bin/vim
 export BROWSER=/usr/bin/firefox
 export TERMINAL=/usr/local/bin/st
 export LANG=en_US.UTF-8
+export GTK_THEME=Dracula
 export SSLKEYLOGFILE=~/.ssl-key.log
 export TSHARK_FILTER="(not udp and not tls and not dns) and not (tcp.srcport eq 443 or tcp.dstport eq 443) and not (ip.src eq 95.179.212.68 or ip.dst eq 95.179.212.68) and not (tcp.srcport eq 80 or tcp.dstport eq 80)"
 
@@ -249,4 +250,3 @@ PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
 PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
 PERL_MB_OPT="--install_base \"$HOME/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"; export PERL_MM_OPT;
-GTK_THEME=Dracula
