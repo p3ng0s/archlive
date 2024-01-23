@@ -85,7 +85,16 @@ tar -xf $BACKUP_FILE
 [ -f "$BACKUP_FOLDER/.vimrc" ] && cp -r $BACKUP_FOLDER/.vimrc $HOME_ARCHLIVE
 [ -f "$BACKUP_FOLDER/.bashrc" ] && cp -r $BACKUP_FOLDER/.bashrc $HOME_ARCHLIVE
 [ -f "$BACKUP_FOLDER/.tigrc" ] && cp -r $BACKUP_FOLDER/.tigrc $HOME_ARCHLIVE
-[ -f "$BACKUP_FOLDER/.wallpaper.png" ] && cp -r $BACKUP_FOLDER/.wallpaper.png $HOME_ARCHLIVE
+
+options=( "None" "" )
+for item in "$PWD/archlive/airootfs/etc/p3ng0s/wallpaper/"*; do
+	[ -e "$item" ] || continue  # Skip non-existent files
+	options+=("$item" "")
+done
+choice=$(dialog --menu "Select a file" 0 0 0 "${options[@]}" 2>&1 >/dev/tty)
+if [ ! $choice = "None" ]; then
+	cp -r $choice $HOME_ARCHLIVE/.wallpaper.png
+fi
 
 echo -e "Moved terminal config to archlive -> \e[36m:)\e[0m"
 
