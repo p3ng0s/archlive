@@ -59,6 +59,7 @@ if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
 		3 "tty only like a G" \
 		4 "cmatrix" \
 		5 "nuke installed OS" \
+		6 "shutdown now :/" \
 		2>&1 1>&3)
 	exit_state=$?
 	exec 3>&-
@@ -67,6 +68,7 @@ if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
 	[ $WM = 3 ] && SKIP=1
 	[ $WM = 4 ] && cmatrix
 	[ $WM = 5 ] && bash /etc/p3ng0s/os_killer.sh
+	[ $WM = 6 ] && shutdown now
 
 	[ -z "$SKIP" ] && exec startx
 fi

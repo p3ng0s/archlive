@@ -22,18 +22,19 @@ gradient_id_pressed = 0
 
 #-------------------------------------
 # Panel
-panel_items = PPPTS
-panel_size = 100% 52
+#panel_items = PPPTS
+panel_items = SP
+panel_size = 8% 52
 panel_margin = 0 0
 panel_padding = 16 8 8
 panel_background_id = 0
 wm_menu = 0
 panel_dock = 0
-panel_position = bottom left horizontal
+panel_position = bottom right
 panel_layer = top
 panel_monitor = all
 panel_shrink = 0
-autohide = 1
+autohide = 0
 autohide_show_timeout = 0
 autohide_hide_timeout = 0.2
 autohide_height = 2
@@ -201,6 +202,7 @@ button_padding = 10 9
 button_background_id = 1
 button_centered = 0
 button_max_icon_size = 0
+button_align = right
 
 #-------------------------------------
 # Tooltip
@@ -210,4 +212,4 @@ tooltip_padding = 8 4
 tooltip_background_id = 0
 tooltip_font_color = #393939 100
 tooltip_font = Hack Nerd 9
-
+rooltip_align = right
