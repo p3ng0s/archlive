@@ -201,6 +201,7 @@ feh
 flameshot
 electron
 python-sphinx_rtd_theme
+dracula-gtk-theme
 i3lock
 rofi
 keepass

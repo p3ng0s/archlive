@@ -35,9 +35,18 @@ You will be able to connect using your phone or an other laptop save the id_rsa.
 		dialog --title "Welcome to p3ng0s!" --msgbox "Amazing! We now need you to fill in a few things so make sure you are correct on these things!" 25 90
 		domain_name=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your server domain name:" 8 40 --stdout)
 		user_name=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your server user name:" 8 40 --stdout)
-		blood_hound=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your bloodhound server instance (if same as domain just reenter it):" 8 50 --stdout)
-		blood_hound_port=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your bloodhound web ui port (default: 8080)" 8 50 --stdout)
-		echo "{\"host\":\"$domain_name\",\"user\":\"$user_name\",\"bloodhound\":\"$blood_hound\",\"bloodhound_port\":$blood_hound_port}" > ~/.p3ng0s.json
+
+		blood_hound=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your bloodhound server instance (if same as before just reenter it):" 8 50 --stdout)
+		blood_hound_username=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your bloodhound server instance username (if same as before just reenter it):" 8 50 --stdout)
+		blood_hound_lport=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your bloodhound local web ui port (default: 8080)" 8 50 --stdout)
+		blood_hound_rport=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your bloodhound remote web ui port (default: 8080)" 8 50 --stdout)
+
+		soc=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your SOC server instance (if same as before just reenter it):" 8 50 --stdout)
+		soc_username=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your SOC server instance username (if same as before just reenter it):" 8 50 --stdout)
+		soc_lport=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your SOC local web ui port (default: 8081)" 8 50 --stdout)
+		soc_rport=$(dialog --title "Welcome to p3ng0s!" --inputbox "Enter your SOC remote web ui port (default: 443)" 8 50 --stdout)
+
+		echo "{\"host\":\"$domain_name\",\"user\":\"$user_name\",\"soc\":{\"server\":\"$soc\",\"user\":\"$soc_username\",\"lport\":\"$soc_lport\",\"rport\":\"$soc_rport\"},\"bloodhound\":{\"server\":\"$blood_hound\",\"user\":\"$blood_hound_username\",\"lport\":\"$blood_hound_lport\",\"rport\":\"$blood_hound_rport\"}}" > ~/.p3ng0s.json
 		dialog --title "Welcome to p3ng0s!" --ok-label "Exit" --msgbox "Congratulations! You now have completed the setup for p3ng0s below is the json config that you can find in ~/.p3ng0s.json feel free to edit in the future with what you would need!
 
 $(cat ~/.p3ng0s.json | jq .)
@@ -51,8 +60,8 @@ $(cat ~/.p3ng0s.json | jq .)
 MAIN_WM=dwm
 [[ "$(cat /etc/hostname)" = "p3ng0s-live" ]] && MAIN_WM=dwm-live
 
+[ ! -f ~/.p3ng0s.json ] && first_install
 if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
-	[ ! -f ~/.p3ng0s.json ] && first_install
 	exec 3>&1
 	WM=$(dialog --title "Welcome to p3ng0s!" --menu "Select:" 25 90 5 \
 		1 "dwm (Dynamic Window Manager)" \

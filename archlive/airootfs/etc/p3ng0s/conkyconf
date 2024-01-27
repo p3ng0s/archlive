@@ -73,7 +73,8 @@ ${color lightgrey} need of updates: ${execp [ $(pacman -Sup | wc -l) -lt 50 ]  &
 ${color grey}$hr
 ${color grey}Infrastructure
 ${color lightgrey} ${execp cat .p3ng0s.json | jq -r .host}: ${execp curl "https://$(cat .p3ng0s.json | jq -r .host)" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
-${color lightgrey} ${execp echo "bloodhound($(cat .p3ng0s.json | jq -r .bloodhound_port))"}: ${execp curl "http://localhost:$(cat .p3ng0s.json | jq -r .bloodhound_port)" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
+${color lightgrey} ${execp echo "bloodhound($(cat .p3ng0s.json | jq -r .bloodhound.lport))"}: ${execp curl "http://localhost:$(cat .p3ng0s.json | jq -r .bloodhound.lport)" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
+${color lightgrey} ${execp echo "soc($(cat .p3ng0s.json | jq -r .soc.lport))"}: ${execp curl -k "https://localhost:$(cat .p3ng0s.json | jq -r .soc.lport)" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
 ${color grey}$hr
 ${color grey}Todo$color
 ${execp cat .todo | awk -f /etc/p3ng0s/todomd.awk}
