@@ -77,9 +77,10 @@ def handle_service(service):
     port_server=None
     port_client=None
     if service == "bloodhound":
-        server = CONFIG_DATA["bloodhound"]
-        user = CONFIG_DATA["user"]
-        port_client = port_server = CONFIG_DATA["bloodhound_port"]
+        server = CONFIG_DATA["bloodhound"]["server"]
+        user = CONFIG_DATA["bloodhound"]["user"]
+        port_client = CONFIG_DATA["bloodhound"]["lport"]
+        port_server= CONFIG_DATA["bloodhound"]["rport"]
     elif service == "wazuh":
         server = CONFIG_DATA["soc"]["server"]
         user = CONFIG_DATA["soc"]["user"]
