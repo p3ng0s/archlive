@@ -13,7 +13,7 @@
 
 PENTEST_OPT=/opt/pentest
 DEV_OPT=/opt/dev
-GAMES_OPT=/opt/games
+RELAX_OPT=/opt/relax
 WINDOWS_OPT=/opt/windows/
 
 echo -e "\e[91m                       \e[37m                                  c=====e\e[0m"
@@ -32,7 +32,7 @@ echo -e "\e[95m ╚═════╝ ╚═╝   ╚═╝╚══════
 
 [ ! -d "$PENTEST_OPT" ] && mkdir -p $PENTEST_OPT
 [ ! -d "$DEV_OPT" ] && mkdir -p $DEV_OPT
-[ ! -d "$GAMES_OPT" ] && mkdir -p $GAMES_OPT
+[ ! -d "$RELAX_OPT" ] && mkdir -p $RELAX_OPT
 [ ! -d "$WINDOWS_OPT" ] && mkdir -p $WINDOWS_OPT
 
 echo -e "\e[94m[*]\e[0m Installing Pentesting Things..."
@@ -46,6 +46,7 @@ git clone "https://github.com/carlospolop/PEASS-ng" $PENTEST_OPT/PEASS-ng
 git clone "https://github.com/blacklanternsecurity/TREVORspray" $PENTEST_OPT/TREVORspray
 git clone "https://github.com/PowerShellMafia/PowerSploit" $PENTEST_OPT/PowerSploit
 git clone "https://github.com/beefproject/beef" $PENTEST_OPT/beef
+git clone "https://github.com/projectdiscovery/nuclei" $PENTEST_OPT/nuclei
 git clone "https://github.com/projectdiscovery/nuclei-templates" $PENTEST_OPT/nuclei-templates
 git clone "https://github.com/NationalSecurityAgency/ghidra" $PENTEST_OPT/ghidra
 git clone "https://github.com/dafthack/MFASweep" $PENTEST_OPT/MFASweep
@@ -56,6 +57,11 @@ git clone "https://github.com/icyguider/Shhhloader" $PENTEST_OPT/Shhhloader
 git clone "https://github.com/hashcat/kwprocessor" $PENTEST_OPT/kwprocessor
 git clone "https://github.com/tokyoneon/Chimera" $PENTEST_OPT/Chimera
 git clone "https://github.com/mertdas/PrivKit/" $PENTEST_OPT/PrivKit
+git clone "https://github.com/Kevin-Robertson/Inveigh" $PENTEST_OPT/Inveigh
+git clone "https://github.com/fortra/impacket" $PENTEST_OPT/impacket
+git clone "https://github.com/lgandx/Responder" $PENTEST_OPT/Responder
+git clone "https://github.com/dirkjanm/krbrelayx" $PENTEST_OPT/krbrelayx
+git clone "https://github.com/Kevin-Robertson/Sharpmad" $PENTEST_OPT/Sharpmad
 
 echo -e "\e[94m[*]\e[0m Installing Development Things..."
 
@@ -84,5 +90,5 @@ git clone "https://github.com/GhostPack/SharpDPAPI" $WINDOWS_OPT/SharpDPAPI
 
 echo -e "\e[94m[*]\e[0m Installing Entertainement Things..."
 
-curl "https://github.com/assaultcube/AC/releases/download/v1.3.0.2/AssaultCube_v1.3.0.2_LockdownEdition_RC1.tar.bz2" --output $GAMES_OPT/AssaultCute.tar.bz2
-curl -Ls "https://api.github.com/repos/Anuken/Mindustry/releases/latest" | jq -r '.assets[0].browser_download_url' | xargs -I {} curl '{}' --output $GAMES_OPT/mindustry.jar
+curl "https://github.com/assaultcube/AC/releases/download/v1.3.0.2/AssaultCube_v1.3.0.2_LockdownEdition_RC1.tar.bz2" --output $RELAX_OPT/AssaultCute.tar.bz2
+curl -Ls "https://api.github.com/repos/Anuken/Mindustry/releases/latest" | jq -r '.assets[0].browser_download_url' | xargs -I {} curl '{}' --output $RELAX_OPT/mindustry.jar
