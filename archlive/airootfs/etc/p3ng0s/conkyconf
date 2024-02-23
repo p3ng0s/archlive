@@ -68,9 +68,6 @@ ${color lightgrey} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
 ${color lightgrey} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
 ${color lightgrey} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}
 $hr
-${color grey}Update
-${color lightgrey} need of updates: ${execp [ $(pacman -Sup | wc -l) -lt 50 ]  && echo "\${color green}$(pacman -Sup | wc -l)" || echo "\${color red}$(pacman -Sup | wc -l)"}
-${color grey}$hr
 ${color grey}Infrastructure
 ${color lightgrey} ${execp cat .p3ng0s.json | jq -r .host}: ${execp curl "https://$(cat .p3ng0s.json | jq -r .host)" &> /dev/null && echo '${color green}up' || echo '${color red}down'}
 ${color lightgrey} ${execp echo "bloodhound($(cat .p3ng0s.json | jq -r .bloodhound.lport))"}: ${execp curl "http://localhost:$(cat .p3ng0s.json | jq -r .bloodhound.lport)" &> /dev/null && echo '${color green}up' || echo '${color red}down'}

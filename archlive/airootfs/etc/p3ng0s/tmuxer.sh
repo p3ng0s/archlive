@@ -16,7 +16,6 @@ if [ -z "$(tmux ls | grep desktop)" ]; then
 	tmux splitw -h -p 30 -t desktop:0.0
 	tmux splitw -v -p 30 -t desktop:0.0
 	tmux splitw -v -p 70 -t desktop:0.2
-	tmux send-keys -t desktop:0.3 'sleep 2; calcurse' Enter
 	tmux send-keys -t desktop:0.2 'tmux clock -t desktop:0.2' Enter
 	tmux send-keys -t desktop:0.1 'newsboat' Enter
 	tmux send-keys -t desktop:0.0 'ranger' Enter
