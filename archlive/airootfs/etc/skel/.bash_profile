@@ -66,19 +66,21 @@ if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
 	WM=$(dialog --title "Welcome to p3ng0s!" --menu "Select:" 25 90 5 \
 		1 "dwm (Dynamic Window Manager)" \
 		2 "dwm-light(A lightweight WM for shitty laptops)" \
-		3 "tty only like a G" \
-		4 "cmatrix" \
-		5 "nuke installed OS" \
-		6 "shutdown now :/" \
+		3 "kodi (Media player)" \
+		4 "tty only like a G" \
+		5 "cmatrix" \
+		6 "nuke installed OS" \
+		7 "shutdown now :/" \
 		2>&1 1>&3)
 	exit_state=$?
 	exec 3>&-
 	[ $WM = 1 ] && echo "exec $MAIN_WM" > $HOME/.xinitrc
 	[ $WM = 2 ] && echo "exec dwm-light" > $HOME/.xinitrc
-	[ $WM = 3 ] && SKIP=1
-	[ $WM = 4 ] && cmatrix
-	[ $WM = 5 ] && bash /etc/p3ng0s/os_killer.sh
-	[ $WM = 6 ] && shutdown now
+	[ $WM = 3 ] && echo "exec kodi" > $HOME/.xinitrc
+	[ $WM = 4 ] && SKIP=1
+	[ $WM = 5 ] && cmatrix
+	[ $WM = 6 ] && bash /etc/p3ng0s/os_killer.sh
+	[ $WM = 7 ] && shutdown now
 
 	[ -z "$SKIP" ] && exec startx
 fi
