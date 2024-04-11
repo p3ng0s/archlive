@@ -38,6 +38,7 @@ echo -e "\e[95m ╚═════╝ ╚═╝   ╚═╝╚══════
 echo -e "\e[94m[*]\e[0m Installing Pentesting Things..."
 
 git clone "https://github.com/danielmiessler/SecLists" $PENTEST_OPT/SecLists
+git clone "https://github.com/flozz/p0wny-shell" $PENTEST_OPT/p0wny-shell
 git clone "https://github.com/jakobfriedl/precompiled-binaries" $PENTEST_OPT/precompiled-binaries
 git clone "https://github.com/Nicocha30/ligolo-ng" $PENTEST_OPT/ligolo-ng
 git clone "https://github.com/Hackplayers/evil-winrm" $PENTEST_OPT/evil-winrm
@@ -61,7 +62,8 @@ git clone "https://github.com/Kevin-Robertson/Inveigh" $PENTEST_OPT/Inveigh
 git clone "https://github.com/fortra/impacket" $PENTEST_OPT/impacket
 git clone "https://github.com/lgandx/Responder" $PENTEST_OPT/Responder
 git clone "https://github.com/dirkjanm/krbrelayx" $PENTEST_OPT/krbrelayx
-git clone "https://github.com/Kevin-Robertson/Sharpmad" $PENTEST_OPT/Sharpmad
+curl "https://gist.githubusercontent.com/p4p1/1ab9b63925cfe860e8634f75243d32ef/raw/1da6e96aaf99f65516db567c80b28e87bcb8e918/bof_template.py" --output $PENTEST_OPT/bof_template.py
+curl "https://gist.githubusercontent.com/p4p1/5020987a78c227de512bf32e938e0c61/raw/9e5a4098946d6d4dd94f4e3bb204ca8aa5c19d1b/blind_sql.sh" --output $PENTEST_OPT/blind_sql.sh
 
 echo -e "\e[94m[*]\e[0m Installing Development Things..."
 
@@ -72,8 +74,6 @@ git clone "https://github.com/p3ng0s/st-0.8.2" $DEV_OPT/st-0.8.2
 git clone "https://github.com/p3ng0s/scripts" $DEV_OPT/script
 git clone "https://github.com/p4p1/xss_bomb" $DEV_OPT/xss_bomb
 git clone "https://github.com/p4p1/dwmstat" $DEV_OPT/dwmstat
-curl "https://gist.githubusercontent.com/p4p1/1ab9b63925cfe860e8634f75243d32ef/raw/1da6e96aaf99f65516db567c80b28e87bcb8e918/bof_template.py" --output $DEV_OPT/bof_template.py
-curl "https://gist.githubusercontent.com/p4p1/5020987a78c227de512bf32e938e0c61/raw/9e5a4098946d6d4dd94f4e3bb204ca8aa5c19d1b/blind_sql.sh" --output $DEV_OPT/blind_sql.sh
 curl "https://gist.githubusercontent.com/p4p1/b2e829a9e75c344e055584ae8ffc29bd/raw/09387f0fe12392a360b7f9aa419a04c39167afeb/stager.c" --output $DEV_OPT/stager.c
 
 echo -e "\e[94m[*]\e[0m Installing Windows Things..."
@@ -87,6 +87,7 @@ git clone "https://github.com/gentilkiwi/kekeo" $WINDOWS_OPT/kekeo
 git clone "https://github.com/rvazarkar/GMSAPasswordReader" $WINDOWS_OPT/GMSAPasswordReader
 git clone "https://github.com/GhostPack/KeeThief" $WINDOWS_OPT/KeeThief
 git clone "https://github.com/GhostPack/SharpDPAPI" $WINDOWS_OPT/SharpDPAPI
+git clone "https://github.com/Kevin-Robertson/Sharpmad" $WINDOWS_OPT/Sharpmad
 
 echo -e "\e[94m[*]\e[0m Installing Entertainement Things..."
 
