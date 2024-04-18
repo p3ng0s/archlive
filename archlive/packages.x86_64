@@ -130,6 +130,7 @@ wireless-regdb
 wireless_tools
 wireshark-qt
 wpa_supplicant
+freerdp2
 
 # [ Libraries ]
 libfido2
