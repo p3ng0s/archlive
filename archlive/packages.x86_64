@@ -103,6 +103,7 @@ usbmuxd
 usbutils
 virtualbox-guest-utils-nox
 wvdial
+polkit-gnome
 
 # [ Drivers ]
 ethtool
