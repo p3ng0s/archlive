@@ -13,7 +13,7 @@
 
 PENTEST_OPT=/opt/pentest
 DEV_OPT=/opt/dev
-RELAX_OPT=/opt/relax
+RELAX_OPT=/opt/games
 WINDOWS_OPT=/opt/windows/
 
 echo -e "\e[91m                       \e[37m                                  c=====e\e[0m"
@@ -88,8 +88,14 @@ git clone "https://github.com/rvazarkar/GMSAPasswordReader" $WINDOWS_OPT/GMSAPas
 git clone "https://github.com/GhostPack/KeeThief" $WINDOWS_OPT/KeeThief
 git clone "https://github.com/GhostPack/SharpDPAPI" $WINDOWS_OPT/SharpDPAPI
 git clone "https://github.com/Kevin-Robertson/Sharpmad" $WINDOWS_OPT/Sharpmad
+git clone "https://github.com/alacerda/SuperSharpShooter" $WINDOWS_OPT/SuperSharpShooter
+git clone "https://github.com/samratashok/ADModule" $WINDOWS_OPT/ADModule
+mkdir -p $WINDOWS_OPT/SysInt
+curl https://download.sysinternals.com/files/SysinternalsSuite.zip -o $WINDOWS_OPT/SysInt/suite.zip
 
 echo -e "\e[94m[*]\e[0m Installing Entertainement Things..."
 
+mkdir -p $RELAX_OPT/doom/
+mkdir -p $RELAX_OPT/morrowind/
 curl "https://github.com/assaultcube/AC/releases/download/v1.3.0.2/AssaultCube_v1.3.0.2_LockdownEdition_RC1.tar.bz2" --output $RELAX_OPT/AssaultCute.tar.bz2
 curl -Ls "https://api.github.com/repos/Anuken/Mindustry/releases/latest" | jq -r '.assets[0].browser_download_url' | xargs -I {} curl '{}' --output $RELAX_OPT/mindustry.jar
