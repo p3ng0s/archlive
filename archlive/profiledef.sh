@@ -2,9 +2,9 @@
 # shellcheck disable=SC2034
 
 iso_name="p3ng0s"
-iso_label="ARCH_$(date +%Y%m)"
+iso_label="PINGU_$(date +%Y%m)"
 iso_publisher="p4p1 <https://leosmith.wtf>"
-iso_application="p3ng0s Live/Rescue CD"
+iso_application="p3ng0s USB / CD"
 iso_version="$(date +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
@@ -21,6 +21,7 @@ file_permissions=(
   ["/root"]="0:0:750"
   ["/etc/skel/git_apocalypse.sh"]="0:0:755"
   ["/usr/bin/qFlipper"]="0:0:755"
+  ["/usr/bin/backup.sh"]="0:0:755"
   ["/etc/p3ng0s/bar.sh"]="0:0:755"
   ["/etc/p3ng0s/ripdrag"]="0:0:755"
   ["/etc/p3ng0s/tmuxer.sh"]="0:0:755"

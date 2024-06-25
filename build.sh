@@ -27,12 +27,23 @@ function usage () {
 	echo -e "\e[1;31mUsage:\e[m" 1>&2
 	echo "$0 -b -> Build only." 1>&2
 	echo "$0 -p -> Pakcages only." 1>&2
-	echo "$0 -d -> Delete all temp folder and build folder." 1>&2
+	echo "$0 -c -> Delete all temp folder and build folder." 1>&2
 	exit -1
 }
 
-while getopts "bdp" o; do
+while getopts "bpc" o; do
 	case "${o}" in
+		c)
+			echo -e "Removing the $PACKAGER_FOLDER folder -> \e[36m:)\e[0m"
+			rm $PACKAGER_FOLDER
+			echo -e "Removing the $BACKUP_FOLDER folder -> \e[36m:)\e[0m"
+			rm $BACKUP_FOLDER
+			echo -e "Delete $ISO_BUILD_DIR -> \e[36m:)\e[0m"
+			rm -rf $ISO_BUILD_DIR
+			echo -e "Delete $PWD/out/ -> \e[36m:)\e[0m"
+			rm -rf $PWD/out/
+			exit
+			;;
 		b)
 			whoami
 			echo -e "SUDO Big .iso build see you tomorrow -> \e[36m:)\e[0m"
@@ -47,13 +58,6 @@ while getopts "bdp" o; do
 			./setup.sh
 			cd $BUILD_TMP_DIR
 			echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
-			exit 0
-			;;
-		d)
-			echo -e "Delete $ISO_BUILD_DIR -> \e[36m:)\e[0m"
-			rm -rf $ISO_BUILD_DIR
-			echo -e "Delete $PWD/out/ -> \e[36m:)\e[0m"
-			rm -rf $PWD/out/
 			exit 0
 			;;
 		*)
