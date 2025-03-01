@@ -9,9 +9,8 @@ scripts-p3ng0s
 skippy-xd-p3ng0s
 burpsuite-p3ng0s
 havoc-client-p3ng0s
-postman-p3ng0s
 autologon-p3ng0s
-firefox-config-p3ng0s
+#firefox-config-p3ng0s
 
 # [ Base ]
 alsa-utils
@@ -104,6 +103,7 @@ usbutils
 virtualbox-guest-utils-nox
 wvdial
 polkit-gnome
+obsidian
 
 # [ Drivers ]
 ethtool
@@ -198,7 +198,8 @@ zenity
 
 # [ Window Manager Dependencies ]
 calamares
-firefox
+yaml-cpp
+qutebrowser
 feh
 flameshot
 electron
@@ -230,6 +231,13 @@ emojify
 imagemagick
 util-linux
 virt-manager
+
+# [ Package Dependencies ]
+hwinfo
+kpmcore
+libpwquality
+fontforge
+python-pytest
 
 # [ Software Dev ]
 gcc
