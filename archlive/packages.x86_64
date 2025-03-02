@@ -19,6 +19,7 @@ arch-install-scripts
 archinstall
 cups
 jq
+mpv
 b43-fwcutter
 base
 base-devel
