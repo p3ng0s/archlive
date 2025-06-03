@@ -105,6 +105,7 @@ virtualbox-guest-utils-nox
 wvdial
 polkit-gnome
 obsidian
+kdeconnect
 
 # [ Drivers ]
 ethtool
