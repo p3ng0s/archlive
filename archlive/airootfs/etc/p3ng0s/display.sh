@@ -30,5 +30,8 @@ if (( ${#FOUND_X_DISPLAYS[*]} == 2 )); then
 	if [[ "$res" == "2560x1440" ]]; then
 		# setting the correct positions
 		xrandr --output $OTHER --left-of $PRIMARY
+		feh --bg-fill $HOME/.wallpaper.png
 	fi
 fi
+# the previous command might break the wallpaper don't forget to re-run
+# feh --bg-fill $HOME/.wallpaper.png
