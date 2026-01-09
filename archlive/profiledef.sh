@@ -23,6 +23,7 @@ file_permissions=(
   ["/usr/bin/qFlipper"]="0:0:755"
   ["/usr/bin/backup.sh"]="0:0:755"
   ["/etc/p3ng0s/bar.sh"]="0:0:755"
+  ["/etc/p3ng0s/display.sh"]="0:0:755"
   ["/etc/p3ng0s/ripdrag"]="0:0:755"
   ["/etc/p3ng0s/tmuxer.sh"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf-tmux"]="0:0:755"
