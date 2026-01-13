@@ -62,6 +62,7 @@ git clone "https://github.com/Kevin-Robertson/Inveigh" $PENTEST_OPT/Inveigh
 git clone "https://github.com/fortra/impacket" $PENTEST_OPT/impacket
 git clone "https://github.com/lgandx/Responder" $PENTEST_OPT/Responder
 git clone "https://github.com/dirkjanm/krbrelayx" $PENTEST_OPT/krbrelayx
+git clone "https://github.com/royhills/ike-scan" $PENTEST_OPT/krbrelayx
 curl "https://gist.githubusercontent.com/p4p1/1ab9b63925cfe860e8634f75243d32ef/raw/1da6e96aaf99f65516db567c80b28e87bcb8e918/bof_template.py" --output $PENTEST_OPT/bof_template.py
 curl "https://gist.githubusercontent.com/p4p1/5020987a78c227de512bf32e938e0c61/raw/9e5a4098946d6d4dd94f4e3bb204ca8aa5c19d1b/blind_sql.sh" --output $PENTEST_OPT/blind_sql.sh
 
