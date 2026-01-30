@@ -40,7 +40,7 @@ if (( ${#FOUND_X_DISPLAYS[*]} == 2 )); then
 	res=$(get_resolution $OTHER)
 
 	# if the screen resolution matches my home monitor
-	if [[ "$res" == "2560x1440" ]]; then
+	if [[ "$res" == "3840x2160" ]]; then
 		# setting the correct positions
 		xrandr --output $OTHER --auto --left-of $PRIMARY
 		feh --bg-fill $HOME/.wallpaper.png
