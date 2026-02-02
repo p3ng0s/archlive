@@ -74,8 +74,8 @@ if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
 		2>&1 1>&3)
 	exit_state=$?
 	exec 3>&-
-	[ $WM = 1 ] && echo "exec $MAIN_WM" > $HOME/.xinitrc
-	[ $WM = 2 ] && echo "exec dwm-light" > $HOME/.xinitrc
+	[ $WM = 1 ] && echo -e "xrdb -merge ~/.Xresources\nexec $MAIN_WM" > $HOME/.xinitrc
+	[ $WM = 2 ] && echo -e "xrdb -merge ~/.Xresources\nexec dwm-light" > $HOME/.xinitrc
 	[ $WM = 3 ] && echo "exec kodi" > $HOME/.xinitrc
 	[ $WM = 4 ] && SKIP=1
 	[ $WM = 5 ] && cmatrix
