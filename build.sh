@@ -12,15 +12,22 @@
 #  /bin/ls archlive/airootfs/usr/lib/ | xargs -l -I {} echo /tmp/build_dir/x86_64/airootfs/usr/lib/{} > ignore.txt
 #  cat ignore.txt | tr '\n' ' ' > ignore2.t
 
-ISO_BUILD_DIR=$PWD/build_dir/
+UPSTREAM_FOLDER=/usr/share/archiso/configs/releng/
+ISO_BUILD_DIR=$PWD/build/
+
 BACKUP_FILE=./backup.tar.xz
 LINK_TO_BACKUP=https://leosmith.wtf/rice/$BACKUP_FILE
-HOME_ARCHLIVE=./archlive/airootfs/etc/skel
-ROOT_ARCHLIVE=./archlive/airootfs
-BIN_ARCHLIVE=./archlive/airootfs/usr/local/bin
 BACKUP_FOLDER=./backup/
-PACKAGER_FOLDER=./packager
+
+ROOT_ARCHLIVE=$PWD/work/airootfs
+HOME_ARCHLIVE=$ROOT_ARCHLIVE/etc/skel
+BIN_ARCHLIVE=$ROOT_ARCHLIVE/usr/local/bin
+
+OVERLAY=$PWD/overlay
+OVERLAY_ROOTFS=$PWD/overlay/airootfs
+
 PACKAGER_REPO=https://github.com/p3ng0s/packager
+PACKAGER_FOLDER=./packager
 
 # Display usage information
 function usage () {
@@ -29,6 +36,22 @@ function usage () {
 	echo "$0 -p -> Pakcages only." 1>&2
 	echo "$0 -c -> Delete all temp folder and build folder." 1>&2
 	exit -1
+}
+
+function package_builder () {
+	git clone $PACKAGER_REPO
+	BUILD_TMP_DIR=$(pwd)
+	cd $PACKAGER_FOLDER
+	./setup.sh
+	cd $BUILD_TMP_DIR
+	echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
+}
+
+function build() {
+	whoami
+	echo -e "SUDO Big .iso build see you tomorrow -> \e[36m:)\e[0m"
+	sudo mkarchiso -v -w $ISO_BUILD_DIR $PWD/archlive/
+	echo -e "All done -> \e[36m:)\e[0m"
 }
 
 while getopts "bpc" o; do
@@ -45,19 +68,11 @@ while getopts "bpc" o; do
 			exit
 			;;
 		b)
-			whoami
-			echo -e "SUDO Big .iso build see you tomorrow -> \e[36m:)\e[0m"
-			sudo mkarchiso -v -w $ISO_BUILD_DIR $PWD/archlive/
-			echo -e "All done -> \e[36m:)\e[0m"
+			build
 			exit 0
 			;;
 		p)
-			git clone $PACKAGER_REPO
-			BUILD_TMP_DIR=$(pwd)
-			cd $PACKAGER_FOLDER
-			./setup.sh
-			cd $BUILD_TMP_DIR
-			echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
+			package_builder
 			exit 0
 			;;
 		*)
@@ -74,28 +89,29 @@ if [ "$EUID" -eq 0 ]; then
 fi
 
 # Download backup
-echo -e "Fetching backup -> \e[36m:)\e[0m"
-curl $LINK_TO_BACKUP --output $PWD/$BACKUP_FILE
-tar -xf $BACKUP_FILE
+#echo -e "Fetching backup -> \e[36m:)\e[0m"
+#curl $LINK_TO_BACKUP --output $PWD/$BACKUP_FILE
+#tar -xf $BACKUP_FILE
+#
+#
+### move config
+#[ -d "$BACKUP_FOLDER/.vim/" ] && cp -r $BACKUP_FOLDER/.vim/ $HOME_ARCHLIVE
+#[ -d "$BACKUP_FOLDER/.tmux/" ] && cp -r $BACKUP_FOLDER/.tmux/ $HOME_ARCHLIVE
+#[ -d "$BACKUP_FOLDER/.fzf/" ] && cp -r $BACKUP_FOLDER/.fzf/ $HOME_ARCHLIVE
+#[ -f "$BACKUP_FOLDER/.gdbinit" ] && cp -r $BACKUP_FOLDER/.gdbinit $HOME_ARCHLIVE
+#[ -f "$BACKUP_FOLDER/.Xresources" ] && cp -r $BACKUP_FOLDER/.Xresources $HOME_ARCHLIVE
+#[ -f "$BACKUP_FOLDER/.tmux.conf" ] && cp -r $BACKUP_FOLDER/.tmux.conf $HOME_ARCHLIVE
+#[ -f "$BACKUP_FOLDER/.vimrc" ] && cp -r $BACKUP_FOLDER/.vimrc $HOME_ARCHLIVE
+#[ -f "$BACKUP_FOLDER/.bashrc" ] && cp -r $BACKUP_FOLDER/.bashrc $HOME_ARCHLIVE
+#[ -f "$BACKUP_FOLDER/.tigrc" ] && cp -r $BACKUP_FOLDER/.tigrc $HOME_ARCHLIVE
 
-
-## move config
-[ -d "$BACKUP_FOLDER/.vim/" ] && cp -r $BACKUP_FOLDER/.vim/ $HOME_ARCHLIVE
-[ -d "$BACKUP_FOLDER/.tmux/" ] && cp -r $BACKUP_FOLDER/.tmux/ $HOME_ARCHLIVE
-[ -d "$BACKUP_FOLDER/.fzf/" ] && cp -r $BACKUP_FOLDER/.fzf/ $HOME_ARCHLIVE
-[ -f "$BACKUP_FOLDER/.gdbinit" ] && cp -r $BACKUP_FOLDER/.gdbinit $HOME_ARCHLIVE
-[ -f "$BACKUP_FOLDER/.Xresources" ] && cp -r $BACKUP_FOLDER/.Xresources $HOME_ARCHLIVE
-[ -f "$BACKUP_FOLDER/.tmux.conf" ] && cp -r $BACKUP_FOLDER/.tmux.conf $HOME_ARCHLIVE
-[ -f "$BACKUP_FOLDER/.vimrc" ] && cp -r $BACKUP_FOLDER/.vimrc $HOME_ARCHLIVE
-[ -f "$BACKUP_FOLDER/.bashrc" ] && cp -r $BACKUP_FOLDER/.bashrc $HOME_ARCHLIVE
-[ -f "$BACKUP_FOLDER/.tigrc" ] && cp -r $BACKUP_FOLDER/.tigrc $HOME_ARCHLIVE
-
+# Pick a wallpaper
 options=( "None" "" )
-for item in "$PWD/archlive/airootfs/etc/p3ng0s/wallpaper/"*; do
+for item in "$OVERLAY_ROOTFS/etc/p3ng0s/wallpaper/"*; do
 	[ -e "$item" ] || continue  # Skip non-existent files
 	options+=("$item" "")
 done
-choice=$(dialog --menu "Select a file" 0 0 0 "${options[@]}" 2>&1 >/dev/tty)
+choice=$(dialog --menu "Select a wallpaper" 0 0 0 "${options[@]}" 2>&1 >/dev/tty)
 if [ ! $choice = "None" ]; then
 	cp -r $choice $HOME_ARCHLIVE/.wallpaper.png
 fi
@@ -103,21 +119,12 @@ fi
 echo -e "Moved terminal config to archlive -> \e[36m:)\e[0m"
 
 # setup for startx with the live version of the windows manager
-[ ! -f $HOME_ARCHLIVE/.xinitrc ] && echo "exec dwm-live" > $HOME_ARCHLIVE/.xinitrc
+[ ! -f $HOME_ARCHLIVE/.xinitrc ] && echo -e "xrdb -merge ~/.Xresources\nexec dwm-live" > $HOME_ARCHLIVE/.xinitrc
 
-
-git clone $PACKAGER_REPO
-BUILD_TMP_DIR=$(pwd)
-cd $PACKAGER_FOLDER
-./setup.sh
-cd $BUILD_TMP_DIR
-echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
+# Build all packages
+#package_builder
 
 # Last step build iso
-whoami
-echo -e "SUDO Big .iso build see you tomorrow -> \e[36m:)\e[0m"
-sudo mkarchiso -v -w $ISO_BUILD_DIR $PWD/archlive/
-
-echo -e "All done -> \e[36m:)\e[0m"
+#build
 
 exit 0
