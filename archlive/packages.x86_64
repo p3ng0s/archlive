@@ -110,7 +110,7 @@ kdeconnect
 # [ Drivers ]
 ethtool
 ntfs-3g
-nvidia
+#nvidia # I switched off using nvidia anymore fuck em
 
 # [ Networking ]
 bind
@@ -118,7 +118,7 @@ broadcom-wl
 dhclient
 dhcpcd
 dnsmasq
-gnu-netcat
+openbsd-netcat
 networkmanager
 openssh
 openvpn
@@ -133,7 +133,7 @@ wireless-regdb
 wireless_tools
 wireshark-qt
 wpa_supplicant
-freerdp2
+freerdp
 
 # [ Libraries ]
 libfido2
@@ -152,9 +152,9 @@ bettercap
 hashcat
 impacket
 python-bloodhound
-responder
+#responder
 python-pypykatz
-cme-p3ng0s
+#cme-p3ng0s
 #ruby-evil-winrm
 
 # [ Exploit dependencies ]
