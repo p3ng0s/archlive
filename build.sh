@@ -12,6 +12,8 @@
 #  /bin/ls archlive/airootfs/usr/lib/ | xargs -l -I {} echo /tmp/build_dir/x86_64/airootfs/usr/lib/{} > ignore.txt
 #  cat ignore.txt | tr '\n' ' ' > ignore2.t
 
+PART=
+
 UPSTREAM_SYS_FOLDER=/usr/share/archiso/configs/releng/
 UPSTREAM_FOLDER=$PWD/upstream/
 ISO_BUILD_DIR=$PWD/build/
@@ -30,6 +32,8 @@ OVERLAY_ROOTFS=$OVERLAY_FOLDER/airootfs
 PACKAGER_REPO=https://github.com/p3ng0s/packager
 PACKAGER_FOLDER=$PWD/packager
 
+DOCKER=false
+
 # Display usage information
 function usage () {
 	echo -e "\e[1;31mUsage:\e[m" 1>&2
@@ -37,13 +41,77 @@ function usage () {
 	echo "$0 -p -> Pakcages only." 1>&2
 	echo "$0 -c -> Delete all temp folder and build folder." 1>&2
 	echo "$0 -u -> Update etc/skel to the latest content of backup.tar.xz requires a link to the file provided" 1>&2
+	echo "$0 -d -> Only used for docker! do not use this!!" 1>&2
+	echo "$0 -f -> Flash a USB stick with the selected iso." 1>&2
 	echo -e "\e[1;31mExamples:\e[m" 1>&2
 	echo "$0" 1>&2
 	echo "$0 -p" 1>&2
 	echo "$0 -b" 1>&2
 	echo "$0 -c" 1>&2
 	echo "$0 -u http://leosmith.wtf/" 1>&2
+	echo "$0 -f" 1>&2
 	exit -1
+}
+
+function is_this_okay() {
+	while true; do
+		read -p "Continue? (Y/n): " answer
+		case "$answer" in
+			n|N) exit -1 ;;
+			*) return 0
+		esac
+	done
+}
+function is_this_not_okay() {
+	while true; do
+		read -p "Continue? (y/N): " answer
+		case "$answer" in
+			y|Y) return 0 ;;
+			*) exit -1
+		esac
+	done
+}
+
+function flash_iso() {
+	if [ "$EUID" -ne 0 ]; then
+		echo -e "\e[1;31mYou are flashing an iso you obviously need root here...\e[m"
+		exit -1
+	fi
+	partitions=$(lsblk -dnpo NAME,SIZE --sort SIZE | grep -v "nvme*")
+	partition_options=()
+	while read -r name size; do
+		partition_options+=( "$name" "$name ($size)" )
+	done <<< "$partitions"
+	selected_partition=$(dialog --title "Select a Disk" \
+								--menu "Select a disk to flash the iso (ordered by size)" 20 70 15 \
+								 "${partition_options[@]}" \
+								 2>&1 >/dev/tty)
+	if [[ -z "$selected_partition" ]]; then
+		echo -e "\e[1;31m[!]\e[m No partition selected. Exiting.. ^^"
+		exit 0
+	fi
+	$selected_partition
+	options=( "None" "" )
+	for item in "$PWD/out/"*; do
+		[ -e "$item" ] || continue  # Skip non-existent files
+		options+=("$item" "")
+	done
+	isofile=$(dialog --menu "Select the iso to flash" 0 70 0 "${options[@]}" 2>&1 >/dev/tty)
+	echo -e "Got drive $selected_partition -> \e[36m:)\e[0m"
+	echo -e "Got iso file $isofile -> \e[36m:)\e[0m"
+	echo -e "\e[1;31mYou are going to take serious actions against that drive is this okay?\e[m"
+	is_this_not_okay
+	pv "$isofile" | sudo dd of="$selected_partition" bs=4M conv=fsync
+	partprobe "$selected_partition"
+	sleep 1
+	parted --script "$selected_partition" mkpart primary ext4 4GB 100%
+	fdisk -l
+	echo
+	echo $(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
+	echo -e "\e[1;31mWas that the correct loot partition?\e[m"
+	echo "If not please do it manually: mkfs.ext4 -L LOOT /dev/sdaX"
+	is_this_not_okay
+	mkfs.ext4 -L LOOT $(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
 }
 
 function package_builder () {
@@ -52,7 +120,12 @@ function package_builder () {
 	BUILD_TMP_DIR=$(pwd)
 	cd $PACKAGER_FOLDER
 	git checkout $branch
-	./setup.sh
+	if [ "$DOCKER" = true ]; then
+		chown builder:builder . -R
+		sudo -u builder ./setup.sh
+	else
+		./setup.sh
+	fi
 	cd $BUILD_TMP_DIR
 	echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
 }
@@ -72,17 +145,7 @@ function build() {
 	echo -e "All done -> \e[36m:)\e[0m"
 }
 
-function is_this_okay() {
-	while true; do
-		read -p "Continue? (Y/n): " answer
-		case "$answer" in
-			n|N) exit -1 ;;
-			*) return 0
-		esac
-	done
-}
-
-while getopts "bpcu:" o; do
+while getopts "bdfpcu:" o; do
 	case "${o}" in
 		c)
 			echo -e "Removing the $PACKAGER_FOLDER folder -> \e[36m:)\e[0m"
@@ -107,8 +170,15 @@ while getopts "bpcu:" o; do
 			package_builder
 			exit 0
 			;;
+		f)
+			flash_iso
+			exit 0
+			;;
 		u)
 			LINK_TO_BACKUP=$OPTARG
+			;;
+		d)
+			DOCKER=true
 			;;
 		*)
 			usage
@@ -137,6 +207,8 @@ diff -u $UPSTREAM_FOLDER/pacman.conf $OVERLAY_FOLDER/pacman.conf > $WORK_FOLDER/
 cat $WORK_FOLDER/pacman.conf.patch
 is_this_okay
 patch $WORK_FOLDER/pacman.conf < $WORK_FOLDER/pacman.conf.patch
+# setting the PWD for pacman p3ng0s dependencies
+sed -i 's|<CHANGE_PWD>|'"$PWD"'|g' $WORK_FOLDER/pacman.conf
 
 # Combining packages
 cat $UPSTREAM_FOLDER/packages.x86_64 $OVERLAY_FOLDER/packages.x86_64 > $WORK_FOLDER/packages.x86_64

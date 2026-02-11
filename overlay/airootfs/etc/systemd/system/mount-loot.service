@@ -1,0 +1,16 @@
+[Unit]
+Description=Mount LOOT USB to Users Loot Directory
+# We wait for the local filesystem and network to be ready
+After=local-fs.target systemd-user-sessions.service
+
+[Service]
+Type=oneshot
+# Run the script once
+ExecStart=/etc/p3ng0s/looter.sh
+# Ensures the script has enough permissions to mount
+User=root
+RemainAfterExit=yes
+
+[Install]
+# This ensures it runs during the normal multi-user boot process
+WantedBy=multi-user.target

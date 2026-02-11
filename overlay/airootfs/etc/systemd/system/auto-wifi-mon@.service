@@ -1,0 +1,12 @@
+[Unit]
+Description=Trigger airmon-ng on USB Wi-Fi Insertion
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/etc/p3ng0s/autowifimon.sh %I
+# This ensures the script has access to the device environment
+Environment=SYSTEMD_LOG_LEVEL=debug
+
+[Install]
+# Leave this empty or omit; Udev handles the triggering

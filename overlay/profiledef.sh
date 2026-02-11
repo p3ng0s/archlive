@@ -28,6 +28,8 @@ file_permissions=(
   ["/etc/p3ng0s/display.sh"]="0:0:755"
   ["/etc/p3ng0s/ripdrag"]="0:0:755"
   ["/etc/p3ng0s/tmuxer.sh"]="0:0:755"
+  ["/etc/p3ng0s/looter.sh"]="0:0:755"
+  ["/etc/p3ng0s/autowifimon.sh"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf-tmux"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf"]="0:0:755"
 )

@@ -1,0 +1,2 @@
+# Mark Hak5 wificard
+ACTION=="add|bind", SUBSYSTEM=="net", KERNEL=="w*", ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="7612", TAG+="systemd", ENV{SYSTEMD_WANTS}+="auto-wifi-mon@%k.service"
