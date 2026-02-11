@@ -1,0 +1,168 @@
+# [ p3ng0s ]
+autologon-p3ng0s
+burpsuite-p3ng0s
+dmenu-p3ng0s
+dwm-p3ng0s
+scripts-p3ng0s
+skippy-xd-p3ng0s
+st-p3ng0s
+svkdb-p3ng0s
+wmname-p3ng0s
+xmenu-p3ng0s
+
+# [ Base ]
+#reiserfsprogs
+bash
+cups
+dialog
+jq
+tar
+#mkinitcpio-openswap
+mpv
+obsidian
+polkit-gnome
+pulseaudio
+qutebrowser
+rp-pppoe
+unzip
+intel-compute-runtime
+opencl-icd-loader
+clinfo
+
+# [ Drivers ]
+
+# [ Networking ]
+dhclient
+filezilla
+fping
+freerdp
+networkmanager
+openbsd-netcat
+proxychains-ng
+remmina
+sshuttle
+tcpreplay
+tor
+wireshark-qt
+
+# [ Libraries ]
+libnotify
+libpwquality
+libx11
+python-paramiko
+python-build
+python-dnspython
+python-installer
+python-ldap3
+python-minidump
+python-oscrypto
+python-pip
+python-prompt_toolkit
+python-pyasn1
+python-pytest
+python-setuptools
+python-sphinx_rtd_theme
+python-wheel
+
+# [ Recon ]
+nikto
+whois
+
+# [ Exploit ]
+impacket
+aircrack-ng
+bettercap
+hashcat
+
+# [ Exploit Dependencies ]
+java-environment-common
+sbt
+
+# [ Base Terminal Software ]
+doge
+exa
+fzf
+ranger
+ripgrep
+thefuck
+tig
+zenity
+
+# [ Window manager Dependencies ]
+calamares
+yaml-cpp
+conky
+dracula-gtk-theme
+electron
+emojify
+feh
+flameshot
+i3lock
+i3lock-fancy
+imagemagick
+kde-cli-tools
+kdeconnect
+keepass
+nautilus
+newsboat
+noto-fonts
+noto-fonts-emoji
+pavucontrol
+picom
+redshift
+rofi
+scrot
+tint2
+ttf-inconsolata
+ttf-linux-libertine
+#ttf-symbola
+util-linux
+zathura
+zathura-pdf-mupdf
+zathura-ps
+
+# [ Package Dependencies ]
+#ckbcomp
+fontforge
+hwinfo
+kpmcore
+ueberzugpp
+
+# [ Software Dev ]
+base-devel
+gcc
+gdb
+git
+go
+make
+maven
+mingw-w64-gcc
+nasm
+nodejs
+npm
+perl
+php
+python
+ruby
+sqlitebrowser
+valgrind
+
+# [ Servers ]
+
+# [ Forensics ]
+gparted
+radare2
+
+# [ Entertainement ]
+gpick
+transmission-gtk
+vlc
+kodi
+
+# [ XORG Things ]
+#xautolock
+xautomation
+xclip
+xorg-apps
+xorg-server
+xorg-xinit

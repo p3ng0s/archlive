@@ -1,0 +1,10 @@
+NAME="p3ng0s"
+PRETTY_NAME="p3ng0s"
+ID=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;2;23;147;209"
+HOME_URL="https://leosmith.wtf/"
+DOCUMENTATION_URL="https://leosmith.wtf/rice/"
+SUPPORT_URL="https://bbs.archlinux.org/"
+BUG_REPORT_URL="https://bugs.archlinux.org/"
+LOGO=archlinux-logo

@@ -1,0 +1,157 @@
+/**
+ * ROFI Color theme
+ * User: mbfraga
+ * Copyright: Martin B. Fraga
+ */
+
+/* global settings and color variables */
+configuration {
+	display-drun:    "Apps";
+	display-run:     "Run";
+	display-window:  "Open";
+	show-icons:      true;
+	sidebar-mode:    true;
+}
+* {
+   maincolor:        #FF875F;
+   highlight:        bold #FF875F;
+   urgentcolor:      #e53714;
+
+   fgwhite:          #ffffff;
+   blackdarkest:     #393939;
+   blackwidget:      #393939;
+   blackentry:       #393939;
+   blackselect:      #303030;
+   darkgray:         #848484;
+   scrollbarcolor:   #505050;
+   font: "Hack Nerd Font 22";
+   background-color: @blackdarkest;
+   text-color:@fgwhite;
+}
+
+window {
+   background-color: @blackdarkest;
+   anchor: west;
+   location: west;
+   height:100%;
+   width:85%;
+   orientation: horizontal;
+}
+
+mainbox {
+   background-color: @blackdarkest;
+   spacing:0px;
+   children: [inputbar, message, mode-switcher, listview];
+}
+
+message {
+   padding: 6px 10px;
+   background-color:@blackwidget;
+}
+
+textbox {
+   text-color:@fgwhite;
+   background-color:@blackwidget;
+}
+
+listview {
+   fixed-height: false;
+   dynamic: true;
+   scrollbar: true;
+   spacing: 0px;
+   padding: 1px 0px 0px 0px;
+   margin: 0px 0px 1px 0px;
+   background: @blackdarkest;
+}
+
+element {
+   padding: 2px 15px;
+}
+
+element normal.normal {
+   padding: 0px 15px;
+   background-color: @blackentry;
+   text-color: @fgwhite;
+}
+
+element normal.urgent {
+   background-color: @blackentry;
+   text-color: @urgentcolor;
+}
+
+element normal.active {
+   background-color: @blackentry;
+   text-color: @fgwhite;
+}
+
+element selected.normal {
+    background-color: @blackselect;
+    text-color:       @fgwhite;
+}
+
+element selected.urgent {
+    background-color: @urgentcolor;
+    text-color:       @fgwhite;
+}
+
+element selected.active {
+    background-color: @maincolor;
+    text-color:       @fgwhite;
+}
+
+element alternate.normal {
+    background-color: @blackentry;
+    text-color:       @fgwhite;
+}
+
+element alternate.urgent {
+    background-color: @blackentry;
+    text-color:       @urgentcolor;
+}
+
+element alternate.active {
+    background-color: @blackentry;
+    text-color:       @fgwhite;
+}
+
+scrollbar {
+   background-color: @blackwidget;
+   handle-color: @darkgray;
+   handle-width: 15px;
+}
+
+mode-switcher {
+   background-color: @blackwidget;
+}
+
+button {
+   background-color: @blackwidget;
+   text-color:       @darkgray;
+}
+
+button selected {
+    text-color:       @maincolor;
+}
+
+inputbar {
+   background-color: @blackdarkest;
+   spacing: 0px;
+}
+
+prompt {
+   padding:6px 9px;
+   background-color: @maincolor;
+   text-color:@blackwidget;
+}
+
+entry {
+   padding:6px 10px;
+   background-color:@blackwidget;
+   text-color:@fgwhite;
+}
+
+case-indicator {
+   padding:6px 10px;
+   text-color:@maincolor;
+   background-color:@blackwidget;
+}

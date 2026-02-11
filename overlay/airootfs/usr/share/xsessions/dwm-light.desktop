@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Dwm Light
+Comment=Dynamic Window Manager Light
+Exec=/usr/local/bin/dwm-light
+TryExec=/usr/local/bin/dwm-light
+Type=Application
