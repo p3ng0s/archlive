@@ -1,0 +1,15 @@
+:insert
+/*
+** EPITECH PROJECT, 2017
+** current-file-name
+** File description:
+** <..>
+*/
+
+#include <criterion/criterion.h>
+
+Test(<..>, <..>)
+{
+
+}
+.

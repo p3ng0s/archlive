@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =2
+let g:netrw_dirhist_2='/home/p4p1/Documents/notes'
+let g:netrw_dirhist_1='/home/p4p1/Documents/notes/.makemd'
+let g:netrw_dirhist_0='/home/p4p1/Documents/notes'
+let g:netrw_dirhist_9='/home/p4p1/Documents/notes/.git'
+let g:netrw_dirhist_8='/home/p4p1/Documents/ctf/htb/machines/browsed/crux/server/dl'
+let g:netrw_dirhist_7='/home/p4p1/Documents/ctf/htb/machines/browsed/crux/server'
+let g:netrw_dirhist_6='/home/p4p1/Documents/github/mkwii-mod-manager'
+let g:netrw_dirhist_5='/home/p4p1/Documents/backup/audible-cli/bin'
+let g:netrw_dirhist_4='/run/media/p4p1/BACKEDUP/github/forks'
+let g:netrw_dirhist_3='/run/media/p4p1/BACKEDUP/github'

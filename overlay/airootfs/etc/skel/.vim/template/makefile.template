@@ -1,0 +1,38 @@
+:insert
+.SUFFIXES: .c .o
+
+CC=				gcc
+
+FLAGS=			-Wall -Wextra -Werror -I./include
+
+LFLAGS=			-L./lib
+
+NAME=			<..>
+
+INCLUDE_DIR=	$(realpath ./include/)
+INCLUDE=		$(INCLUDE_DIR)/
+
+SRC_DIR=		$(realpath ./srcs/)
+SRC=			$(SRC_DIR)/<..>
+
+OBJ=			$(SRC:.c=.o)
+
+all:			$(NAME)
+
+$(NAME):		$(OBJ) $(INCLUDE)
+	$(CC) $(FLAGS) -o $(NAME) $(OBJ) $(LFLAGS)
+
+.c.o:
+	$(CC) $(FLAGS) -o $@ -c $<
+
+clean:
+	@rm -rf $(OBJ)
+
+fclean:			clean
+	@rm -rf $(NAME)
+	@rm -rf lib/*.a
+
+re: fclean all
+
+.PHONY: clean fclean re
+.

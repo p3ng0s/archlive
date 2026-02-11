@@ -6,8 +6,10 @@ build/
 packager/
 backup.tar.xz
 backup/
-overlay/airootfs/etc/skel/.tmux/
-overlay/airootfs/etc/skel/.vim/
+#overlay/airootfs/etc/skel/.tmux/
+overlay/airootfs/etc/skel/.tmux/plugins/
+#overlay/airootfs/etc/skel/.vim/
+overlay/airootfs/etc/skel/.vim/plugged/
 old_archlive/airootfs/etc/skel/.vim/
 old_archlive/airootfs/etc/skel/.tmux/
 old_archlive/airootfs/etc/skel/.tmux.conf
