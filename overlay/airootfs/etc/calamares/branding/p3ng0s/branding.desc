@@ -121,7 +121,7 @@ navigation: widget
 # are visible as buttons there if the corresponding *show* keys
 # are set to "true" (they can also be overridden).
 strings:
-    productName:         "@{NAME}"
+    productName:         "p3ng0s"
     shortProductName:    p3ng0s
     version:             2023-07
     versionedName:       p3ng0s
