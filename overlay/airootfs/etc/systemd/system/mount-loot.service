@@ -6,7 +6,8 @@ After=local-fs.target systemd-user-sessions.service
 [Service]
 Type=oneshot
 # Run the script once
-ExecStart=/etc/p3ng0s/looter.sh
+ExecStart=/etc/p3ng0s/looter.sh -m
+ExecStop=/etc/p3ng0s/looter.sh -u
 # Ensures the script has enough permissions to mount
 User=root
 RemainAfterExit=yes

@@ -84,8 +84,8 @@ function flash_iso() {
 	done <<< "$partitions"
 	selected_partition=$(dialog --title "Select a Disk" \
 								--menu "Select a disk to flash the iso (ordered by size)" 20 70 15 \
-								 "${partition_options[@]}" \
-								 2>&1 >/dev/tty)
+								"${partition_options[@]}" \
+								2>&1 >/dev/tty)
 	if [[ -z "$selected_partition" ]]; then
 		echo -e "\e[1;31m[!]\e[m No partition selected. Exiting.. ^^"
 		exit 0
@@ -101,17 +101,33 @@ function flash_iso() {
 	echo -e "Got iso file $isofile -> \e[36m:)\e[0m"
 	echo -e "\e[1;31mYou are going to take serious actions against that drive is this okay?\e[m"
 	is_this_not_okay
+	echo -e "\e[1;31mWiping drive!\e[m"
+	wipefs -a "$selected_partition"
+	sleep 1
+	echo -e "\e[1;31mInstalling OS!\e[m"
 	pv "$isofile" | sudo dd of="$selected_partition" bs=4M conv=fsync
 	partprobe "$selected_partition"
 	sleep 1
+	echo -e "\e[1;31mCreating partition!\e[m"
 	parted --script "$selected_partition" mkpart primary ext4 4GB 100%
 	fdisk -l
 	echo
-	echo $(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
-	echo -e "\e[1;31mWas that the correct loot partition?\e[m"
-	echo "If not please do it manually: mkfs.ext4 -L LOOT /dev/sdaX"
+	echo -e "\e[1;31mIs this the correct loot partition?\e[m"
+	partition_to_crypt=$(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
+	echo $partition_to_crypt
+	echo "If not please do the following manually:"
+	echo "mkfs.exfat -L LOOT /dev/sdaX"
+	echo "cryptsetup luksFormat <replace with correct partition>"
+	echo "cryptsetup open <replace with correct partition> p3ng0s_unlocked"
+	echo "mkfs.exfat -L LOOT /dev/mapper/p3ng0s_unlocked"
+	echo "cryptsetup close p3ng0s_unlocked"
 	is_this_not_okay
-	mkfs.ext4 -L LOOT $(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
+	cryptsetup luksFormat --label VAULT $partition_to_crypt
+	cryptsetup open $partition_to_crypt p3ng0s_unlocked
+	mkfs.exfat -L LOOT /dev/mapper/p3ng0s_unlocked
+	sleep 1
+	cryptsetup close p3ng0s_unlocked
+	echo -e "All done -> \e[36m:)\e[0m"
 }
 
 function package_builder () {
@@ -131,7 +147,7 @@ function package_builder () {
 }
 
 function build() {
-	if [ ! -d "$ROOT_ARCHLIVE" ]; then 
+	if [ ! -d "$ROOT_ARCHLIVE" ]; then
 		echo -e "Work directory missing -> \e[1;31m:(\e[0m"
 		exit -1
 	fi
