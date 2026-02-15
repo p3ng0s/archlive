@@ -38,14 +38,30 @@ function list_hard_drives() {
     sleep 4
 }
 
+function p3ng0s_loot() {
+	choice=$(dialog --title "Mount or unmount?" \
+		 --menu "Do you want to mount or unmount p3ng0s loot" 20 70 15 \
+		 "1" "Mount" \
+		 "2" "Unmount" \
+		 2>&1 >/dev/tty)
+	[ -z $choice ] && exit
+	[ $choice = 1 ] && sudo /etc/p3ng0s/looter.sh -m
+	[ $choice = 2 ] && sudo /etc/p3ng0s/looter.sh -u
+}
+
 export DIALOGRC="/etc/p3ng0s/dialogrc"
 
 choice=$(dialog --title "Mount or unmount?" \
          --menu "Choose a partition to proceed (ordered by size):" 20 70 15 \
          "1" "Mount" \
-         "2" "unmount" \
+         "2" "Unmount" \
+         "3" "p3ng0s loot" \
          2>&1 >/dev/tty)
 
 [ -z $choice ] && exit
-list_hard_drives $choice
+if [ $choice = 3 ]; then
+	p3ng0s_loot
+else
+	list_hard_drives $choice
+fi
 exit

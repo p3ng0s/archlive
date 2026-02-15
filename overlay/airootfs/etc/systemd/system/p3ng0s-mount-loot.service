@@ -1,17 +1,25 @@
 [Unit]
 Description=Mount LOOT USB to Users Loot Directory
+DefaultDependencies=no
 # We wait for the local filesystem and network to be ready
-After=local-fs.target systemd-user-sessions.service
+After=systemd-udevd.service local-fs.target
+#Conflicts=getty@tty1.service
+Before=getty@tty1.service display-manager.service
+# If getty@tty1 starts, it MUST wait for us to finish first
+RequiredBy=getty@tty1.service
 
 [Service]
 Type=oneshot
 # Run the script once
 ExecStart=/etc/p3ng0s/looter.sh -m
 ExecStop=/etc/p3ng0s/looter.sh -u
+StandardInput=tty
+StandardOutput=tty
+TTYPath=/dev/tty1
 # Ensures the script has enough permissions to mount
 User=root
 RemainAfterExit=yes
 
 [Install]
 # This ensures it runs during the normal multi-user boot process
-WantedBy=multi-user.target
+WantedBy=basic.target

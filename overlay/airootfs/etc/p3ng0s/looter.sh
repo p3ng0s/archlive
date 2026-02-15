@@ -21,6 +21,12 @@ function blink_confirm() {
 	done
 }
 
+get_password() {
+    # If we are at boot (no TERM variable usually), we use 'read' directly on tty1
+
+    return $PASS
+}
+
 if [ "$1" == "-m" ]; then
 	LOOT_PARTITION=$(blkid -L "LOOT")
 	if [ -n "$LOOT_PARTITION" ]; then
@@ -40,19 +46,37 @@ if [ "$1" == "-m" ]; then
 	VAULT_PARTITION=$(blkid -L "VAULT")
 	if [ -n "$VAULT_PARTITION" ]; then
 		if cryptsetup isLuks "$VAULT_PARTITION"; then
-			systemd-ask-password "Unlock P3NG0S Vault:" | cryptsetup open "$VAULT_PARTITION" luks_loot -
-			for USER_HOME in /home/*; do
-				[ -d "$USER_HOME" ] || continue
-				LOOT_DIR=$USER_HOME/loot
-				mkdir -p $LOOT_DIR
-				USER_NAME=$(basename "$USER_HOME")
-				chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
-				USER_ID=$(id -u "$USER_NAME")
-				GROUP_ID=$(id -g "$USER_NAME")
-				mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" /dev/mapper/luks_loot "$LOOT_DIR"
-			done
-			blink_confirm &
+			# 1. Check if we are running at boot (no real user session yet)
+			if [[ -z "$TERM" || "$TERM" == "linux" ]]; then
+				# Direct hijack of the console to ensure it BLOCKS
+				exec < /dev/tty1 > /dev/tty1 2>&1
+				read -rs -p "Unlock p3ng0s loot drive: " PASS
+			else
+				# If we are in a terminal or GUI, use the systemd agent
+				PASS=$(systemd-ask-password "Unlock p3ng0s loot drive:")
+			fi
+			echo $PASS | cryptsetup open "$VAULT_PARTITION" luks_loot -
+			if [ -b "/dev/mapper/luks_loot" ]; then
+				echo -e "\e[36m[*]\e[0m Correct password mounting loot!" 
+				for USER_HOME in /home/*; do
+					[ -d "$USER_HOME" ] || continue
+					LOOT_DIR=$USER_HOME/loot
+					mkdir -p $LOOT_DIR
+					USER_NAME=$(basename "$USER_HOME")
+					chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
+					USER_ID=$(id -u "$USER_NAME")
+					GROUP_ID=$(id -g "$USER_NAME")
+					mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" /dev/mapper/luks_loot "$LOOT_DIR"
+				done
+				blink_confirm &
+			else
+				echo -e "\e[1;31m[!]\e[0m Incorrect password loot won't be mounted"
+			fi
 		fi
+	fi
+	if [ -f /home/p4p1-live/loot/hash.* ]; then
+		echo -e "\e[1;31m[!]\e[0m Found hashes inside of loot drive switching to p3ng0s-cracker.target"
+		systemctl isolate p3ng0s-cracker.target
 	fi
 else
 		for USER_HOME in /home/*; do

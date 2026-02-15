@@ -1,0 +1,18 @@
+[Unit]
+Description=P3NG0S Hashcat Executor
+# Only run if we are in our custom target
+PartOf=p3ng0s-crack.target
+After=p3ng0s-mount-loot.service
+
+[Service]
+Type=oneshot
+StandardInput=tty
+StandardOutput=tty
+TTYPath=/dev/tty1
+ExecStart=/etc/p3ng0s/cracker.sh
+# Don't restart, just finish and stop
+RemainAfterExit=no
+
+[Install]
+# This is the "glue" that links it to the target
+WantedBy=p3ng0s-crack.target

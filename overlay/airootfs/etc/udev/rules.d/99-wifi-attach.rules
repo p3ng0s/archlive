@@ -1,2 +1,4 @@
 # Mark Hak5 wificard
+ACTION=="add|bind", SUBSYSTEM=="net", KERNEL=="w*", ATTRS{idVendor}=="148f", ATTRS{idProduct}=="5370", TAG+="systemd", ENV{SYSTEMD_WANTS}+="auto-wifi-mon@%k.service"
+ACTION=="add|bind", SUBSYSTEM=="net", KERNEL=="w*", ATTRS{idVendor}=="0cf3", ATTRS{idProduct}=="9271", TAG+="systemd", ENV{SYSTEMD_WANTS}+="auto-wifi-mon@%k.service"
 ACTION=="add|bind", SUBSYSTEM=="net", KERNEL=="w*", ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="7612", TAG+="systemd", ENV{SYSTEMD_WANTS}+="auto-wifi-mon@%k.service"

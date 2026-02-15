@@ -9,6 +9,7 @@ st-p3ng0s
 svkdb-p3ng0s
 wmname-p3ng0s
 xmenu-p3ng0s
+git-appocalypse-p3ng0s
 
 # [ Base ]
 #reiserfsprogs
@@ -25,11 +26,15 @@ pulseaudio
 qutebrowser
 rp-pppoe
 unzip
-intel-compute-runtime
 opencl-icd-loader
 clinfo
+llhttp
 
-# [ Drivers ]
+# [ Drivers & GPU ]
+intel-compute-runtime
+rocm-opencl-runtime
+clinfo
+cpupower
 
 # [ Networking ]
 dhclient
@@ -44,6 +49,8 @@ sshuttle
 tcpreplay
 tor
 wireshark-qt
+#openvpn # this is commented since it's inside of upstream uncomment when not in upstream
+stunnel
 
 # [ Libraries ]
 libnotify

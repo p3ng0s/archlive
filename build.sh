@@ -71,6 +71,15 @@ function is_this_not_okay() {
 		esac
 	done
 }
+function is_this_not_okay_without_exit() {
+	while true; do
+		read -p "Continue? (y/N): " answer
+		case "$answer" in
+			y|Y) return 1 ;;
+			*) return 0
+		esac
+	done
+}
 
 function flash_iso() {
 	if [ "$EUID" -ne 0 ]; then
@@ -90,7 +99,6 @@ function flash_iso() {
 		echo -e "\e[1;31m[!]\e[m No partition selected. Exiting.. ^^"
 		exit 0
 	fi
-	$selected_partition
 	options=( "None" "" )
 	for item in "$PWD/out/"*; do
 		[ -e "$item" ] || continue  # Skip non-existent files
@@ -106,12 +114,14 @@ function flash_iso() {
 	sleep 1
 	echo -e "\e[1;31mInstalling OS!\e[m"
 	pv "$isofile" | sudo dd of="$selected_partition" bs=4M conv=fsync
+	sgdisk -e $selected_partition
 	partprobe "$selected_partition"
 	sleep 1
 	echo -e "\e[1;31mCreating partition!\e[m"
-	parted --script "$selected_partition" mkpart primary ext4 4GB 100%
+	parted --script "$selected_partition" mkpart primary ext4 15GB 100%
 	fdisk -l
-	echo
+	echo "waiting 5 seconds for drive to be okay to mess around with"
+	sleep 5
 	echo -e "\e[1;31mIs this the correct loot partition?\e[m"
 	partition_to_crypt=$(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
 	echo $partition_to_crypt
@@ -218,6 +228,7 @@ diff -u $UPSTREAM_FOLDER/profiledef.sh $OVERLAY_FOLDER/profiledef.sh > $WORK_FOL
 cat $WORK_FOLDER/profiledef.sh.patch
 is_this_okay
 patch $WORK_FOLDER/profiledef.sh < $WORK_FOLDER/profiledef.sh.patch
+echo -e "Create profiledef.sh -> \e[36m:)\e[0m"
 
 diff -u $UPSTREAM_FOLDER/pacman.conf $OVERLAY_FOLDER/pacman.conf > $WORK_FOLDER/pacman.conf.patch
 cat $WORK_FOLDER/pacman.conf.patch
@@ -225,14 +236,31 @@ is_this_okay
 patch $WORK_FOLDER/pacman.conf < $WORK_FOLDER/pacman.conf.patch
 # setting the PWD for pacman p3ng0s dependencies
 sed -i 's|<CHANGE_PWD>|'"$PWD"'|g' $WORK_FOLDER/pacman.conf
+echo -e "Created the pacman.conf -> \e[36m:)\e[0m"
 
 # Combining packages
 cat $UPSTREAM_FOLDER/packages.x86_64 $OVERLAY_FOLDER/packages.x86_64 > $WORK_FOLDER/packages.x86_64
+echo -e "Setup the packages -> \e[36m:)\e[0m"
 
 # Merge the file systems
 rsync -a $OVERLAY_ROOTFS/ $ROOT_ARCHLIVE/
+echo -e "Setup the filesystem -> \e[36m:)\e[0m"
+
 # remove autologin this will be setup by the autologin package of p3ng0s
-rm -rf $ROOT_ARCHLIVE/etc/systemd/system/getty\@tty1.service.d/autologin.conf
+[ -f $ROOT_ARCHLIVE/etc/systemd/system/getty\@tty1.service.d/autologin.conf ] && rm -rf $ROOT_ARCHLIVE/etc/systemd/system/getty\@tty1.service.d/autologin.conf || echo -e "Autologin not present-> \e[31m:(\e[0m"
+echo -e "Removed old autologin if present -> \e[36m:)\e[0m"
+# setup for startx with the live version of the windows manager
+[ ! -f $HOME_ARCHLIVE/.xinitrc ] && echo -e "xrdb -merge ~/.Xresources\nexec dwm-live" > $HOME_ARCHLIVE/.xinitrc || echo -e ".xinitrc present -> \e[31m:(\e[0m"
+echo -e "Set the .xinitrc if missing -> \e[36m:)\e[0m"
+echo -e "\e[1;31m[!]\e[m Do you want to configure this as a dropbox?"
+is_this_not_okay_without_exit
+value=$?
+if [ $value -eq 1 ]; then
+	echo "cool stuff :)"
+	# TODO: here will go the code to edit the VPS_IP_ADDRESS and take in the provided
+	# use client.ovpn file that will be placed inside of /etc/openvpn/
+	# this should also do the enable command for ln -sf so that it enables it
+fi
 
 if [ ! -z $LINK_TO_BACKUP ]; then
 	# Download backup
@@ -265,9 +293,6 @@ if [ ! $choice = "None" ]; then
 	cp -r $choice $HOME_ARCHLIVE/.wallpaper.png
 fi
 
-
-# setup for startx with the live version of the windows manager
-[ ! -f $HOME_ARCHLIVE/.xinitrc ] && echo -e "xrdb -merge ~/.Xresources\nexec dwm-live" > $HOME_ARCHLIVE/.xinitrc
 
 # Build all packages
 package_builder

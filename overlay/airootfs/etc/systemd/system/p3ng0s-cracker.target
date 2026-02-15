@@ -1,0 +1,9 @@
+[Unit]
+Description=P3NG0S High-Performance Cracking State
+# Stop the normal TTY login from getting in the way
+Conflicts=getty.target
+# Ensure we have everything we need
+Requires=multi-user.target
+After=multi-user.target p3ng0s-mount.service
+# Only stay in this target if the loot is mounted
+AssertPathIsMountPoint=/home/p4p1-live/loot
