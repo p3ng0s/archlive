@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\p3ng0s]
+"Type"=dword:00000010
+"Start"=dword:00000002
+"ErrorControl"=dword:00000001
+"ImagePath"="C:\\windows\\tasks\\p3ng0s\\agent.svc.exe"
+"DisplayName"="P3NG0S Agent"
+"ObjectName"="LocalSystem"

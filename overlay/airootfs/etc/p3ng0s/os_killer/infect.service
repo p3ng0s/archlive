@@ -1,0 +1,13 @@
+[Unit]
+Description=System Security Agent
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/agent
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

@@ -70,6 +70,7 @@ python-pytest
 python-setuptools
 python-sphinx_rtd_theme
 python-wheel
+ruby-bundler
 
 # [ Recon ]
 nikto
@@ -80,7 +81,7 @@ impacket
 aircrack-ng
 bettercap
 hashcat
-chtnpw
+chntpw
 hivex
 
 # [ Exploit Dependencies ]

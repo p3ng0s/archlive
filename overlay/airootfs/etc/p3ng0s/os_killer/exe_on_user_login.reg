@@ -1,0 +1,4 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run]
+"p3ng0s_agent"="\"C:\\windows\\tasks\\p3ng0s\\agent.exe\""
