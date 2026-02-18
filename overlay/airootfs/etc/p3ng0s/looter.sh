@@ -74,10 +74,6 @@ if [ "$1" == "-m" ]; then
 			fi
 		fi
 	fi
-	if [ -f /home/p4p1-live/loot/hash.* ]; then
-		echo -e "\e[1;31m[!]\e[0m Found hashes inside of loot drive switching to p3ng0s-cracker.target"
-		systemctl isolate p3ng0s-cracker.target
-	fi
 else
 		for USER_HOME in /home/*; do
 			[ -d "$USER_HOME/loot" ] || continue
@@ -87,3 +83,4 @@ else
 		done
 		cryptsetup close luks_loot
 fi
+sleep 2

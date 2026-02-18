@@ -1,0 +1,12 @@
+[Unit]
+Description=P3NG0S Isolation Trigger
+After=p3ng0s-mount-loot.service
+IgnoreOnIsolate=yes
+
+[Service]
+Type=oneshot
+# This is where the magic happens
+ExecStart=/usr/bin/systemctl isolate --job-mode=replace-irreversibly p3ng0s-cracker.target
+
+#[Install]
+#WantedBy=multi-user.target

@@ -12,7 +12,6 @@ RequiredBy=getty@tty1.service
 Type=oneshot
 # Run the script once
 ExecStart=/etc/p3ng0s/looter.sh -m
-ExecStop=/etc/p3ng0s/looter.sh -u
 StandardInput=tty
 StandardOutput=tty
 TTYPath=/dev/tty1

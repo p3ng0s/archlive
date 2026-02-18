@@ -71,11 +71,11 @@ function is_this_not_okay() {
 		esac
 	done
 }
-function is_this_not_okay_without_exit() {
+function is_this_okay_without_exit() {
 	while true; do
-		read -p "Continue? (y/N): " answer
+		read -p "Continue? (Y/n): " answer
 		case "$answer" in
-			y|Y) return 1 ;;
+			n|N) return 1 ;;
 			*) return 0
 		esac
 	done
@@ -113,7 +113,7 @@ function flash_iso() {
 	wipefs -a "$selected_partition"
 	sleep 1
 	echo -e "\e[1;31mInstalling OS!\e[m"
-	pv "$isofile" | sudo dd of="$selected_partition" bs=4M conv=fsync
+	pv "$isofile" | dd of="$selected_partition" bs=4M conv=fsync oflag=direct iflag=fullblock
 	sgdisk -e $selected_partition
 	partprobe "$selected_partition"
 	sleep 1
@@ -122,21 +122,28 @@ function flash_iso() {
 	fdisk -l
 	echo "waiting 5 seconds for drive to be okay to mess around with"
 	sleep 5
-	echo -e "\e[1;31mIs this the correct loot partition?\e[m"
-	partition_to_crypt=$(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
-	echo $partition_to_crypt
-	echo "If not please do the following manually:"
-	echo "mkfs.exfat -L LOOT /dev/sdaX"
-	echo "cryptsetup luksFormat <replace with correct partition>"
-	echo "cryptsetup open <replace with correct partition> p3ng0s_unlocked"
-	echo "mkfs.exfat -L LOOT /dev/mapper/p3ng0s_unlocked"
-	echo "cryptsetup close p3ng0s_unlocked"
-	is_this_not_okay
-	cryptsetup luksFormat --label VAULT $partition_to_crypt
-	cryptsetup open $partition_to_crypt p3ng0s_unlocked
-	mkfs.exfat -L LOOT /dev/mapper/p3ng0s_unlocked
-	sleep 1
-	cryptsetup close p3ng0s_unlocked
+	echo -e "\e[1;31mDo you want to encrypt the drive?\e[m"
+	is_this_okay_without_exit
+	val=$?
+	if [[ $val -eq 0 ]]; then
+		echo -e "\e[1;31mIs this the correct loot partition?\e[m"
+		partition_to_crypt=$(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
+		echo $partition_to_crypt
+		echo "If not please do the following manually:"
+		echo "mkfs.exfat -L LOOT /dev/sdaX"
+		echo "cryptsetup luksFormat <replace with correct partition>"
+		echo "cryptsetup open <replace with correct partition> p3ng0s_unlocked"
+		echo "mkfs.exfat -L LOOT /dev/mapper/p3ng0s_unlocked"
+		echo "cryptsetup close p3ng0s_unlocked"
+		cryptsetup luksFormat --label VAULT $partition_to_crypt
+		cryptsetup open $partition_to_crypt p3ng0s_unlocked
+		mkfs.exfat -L LOOT /dev/mapper/p3ng0s_unlocked
+		sleep 1
+		cryptsetup close p3ng0s_unlocked
+	else
+		loot_partition=$(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
+		mkfs.exfat -L LOOT $loot_partition
+	fi
 	echo -e "All done -> \e[36m:)\e[0m"
 }
 
@@ -197,6 +204,8 @@ while getopts "bdfpcu:" o; do
 			exit 0
 			;;
 		f)
+			# TODO: add a populate loot arguemnt to give it a loot template to test
+			# out the different features
 			flash_iso
 			exit 0
 			;;
@@ -252,15 +261,6 @@ echo -e "Removed old autologin if present -> \e[36m:)\e[0m"
 # setup for startx with the live version of the windows manager
 [ ! -f $HOME_ARCHLIVE/.xinitrc ] && echo -e "xrdb -merge ~/.Xresources\nexec dwm-live" > $HOME_ARCHLIVE/.xinitrc || echo -e ".xinitrc present -> \e[31m:(\e[0m"
 echo -e "Set the .xinitrc if missing -> \e[36m:)\e[0m"
-echo -e "\e[1;31m[!]\e[m Do you want to configure this as a dropbox?"
-is_this_not_okay_without_exit
-value=$?
-if [ $value -eq 1 ]; then
-	echo "cool stuff :)"
-	# TODO: here will go the code to edit the VPS_IP_ADDRESS and take in the provided
-	# use client.ovpn file that will be placed inside of /etc/openvpn/
-	# this should also do the enable command for ln -sf so that it enables it
-fi
 
 if [ ! -z $LINK_TO_BACKUP ]; then
 	# Download backup

@@ -1,0 +1,16 @@
+[Unit]
+Description=Watch for Hash Files in live Loot
+# Only start watching AFTER the mount service is finished
+After=p3ng0s-mount-loot.service
+Requires=p3ng0s-mount-loot.service
+
+[Path]
+# Use a wildcard or a specific directory
+PathExistsGlob=/home/p4p1-live/loot/hashcat/
+#PathExistsGlob=/home/p4p1/loot/hashcat/
+# This is the target or service we want to trigger
+Unit=p3ng0s-cracker-isolate-trigger.service
+
+[Install]
+# This starts the 'watcher' as soon as the ISO is up
+WantedBy=multi-user.target

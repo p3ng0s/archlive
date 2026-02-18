@@ -8,9 +8,14 @@
 # (__)    (_)(__)  (__)
 #
 # Description:
-#  A script to handle the routing of openvpn through stunnel
+#  A script to handle the routing of openvpn through stunnel. If on live usb the
+#  SERVER_IP will be captured by the config file present in the mounted loot folder.
 
-SERVER_IP="VPS_IP_ADDRESS"
+if [ -f /home/p4p1-live/loot/dropbox/config ]; then
+	source /home/p4p1-live/loot/dropbox/config
+else
+	SERVER_IP="VPS_IP_ADDRESS"
+fi
 GATEWAY=$(ip route get 8.8.8.8 | grep -oP 'via \K\S+')
 #GATEWAY=$(ip route get 8.8.8.8 | cut -d' ' -f3 | head -n1) # edit for lanturtle
 sudo ip route add $SERVER_IP/32 via $GATEWAY

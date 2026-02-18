@@ -80,6 +80,8 @@ impacket
 aircrack-ng
 bettercap
 hashcat
+chtnpw
+hivex
 
 # [ Exploit Dependencies ]
 java-environment-common
