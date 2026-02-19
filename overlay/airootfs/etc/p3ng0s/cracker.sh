@@ -15,32 +15,6 @@ HASHCAT_FOLDER=/home/p4p1-live/loot/hashcat
 #HASHCAT_FOLDER=/home/p4p1/loot/hashcat
 SECLIST_FOLDER=/opt/pentest/SecLists/Passwords/
 
-draw_status_bar() {
-    while true; do
-        # Get terminal dimensions
-        cols=$(tput cols)
-        rows=$(tput lines)
-        bar_row=$((rows - 1))
-
-        # Get Stats (AMD GPU specific)
-        temp=$(sensors | grep -Ei 'edge|gpu|composite' | grep '°C' | awk '{print $2}' | tr -d '+°C' | head -n 1 | cut -d. -f1)
-        clock=$(uptime | awk -F'load average:' '{ print $2 }' | cut -d, -f1 | xargs)
-        cpu_load=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4}')
-
-        # Format the string
-        status_str=" [ GPU Temp: ${temp}°C | Clock: $clock | CPU: ${cpu_load}% ] "
-
-        # Draw the bar (reverse video mode)
-        tput cup $bar_row 0
-        tput rev
-        printf "%-${cols}s" "$status_str"
-        tput sgr0
-
-        sleep 1
-    done
-}
-
-draw_status_bar &
 BAR_PID=$!
 if [[ -z "$TERM" || "$TERM" == "linux" ]]; then
     # Direct hijack of the console to ensure it BLOCKS
@@ -70,13 +44,16 @@ fi
 mapfile -d '\n' hash_files < <(find $HASHCAT_FOLDER -name hash.* -type f | grep -v 'completed')
 [ ! -d $HASHCAT_FOLDER/completed ] && mkdir -p $HASHCAT_FOLDER/completed/
 
+cpupower frequency-set -g performance
+
 for file in ${hash_files[*]}; do
     HASHCAT_MODE=${file##*.}
 
-    hashcat --status --status-timer=5 -o "$HASHCAT_FOLDER/completed/cracked.$HASHCAT_MODE" --outfile-format 2 -a 0 -m "$HASHCAT_MODE" "$file" $(find $HASHCAT_FOLDER/wordlist/ -name '*.txt' -type f -printf '%p ') #$(find $SECLIST_FOLDER -name '*.txt' -type f -printf '%p')
+    shopt -s globstar
+    hashcat --status --status-timer=5 -o "$HASHCAT_FOLDER/completed/cracked.$HASHCAT_MODE" --outfile-format 2 -a 0 -m "$HASHCAT_MODE" "$file" $HASHCAT_FOLDER/wordlist/**/*.txt $SECLIST_FOLDER/**/*.txt
     mv $file $HASHCAT_FOLDER/completed/
     clear
 done
-kill $BAR_PID
+cpupower frequency-set -g powersave
 shutdown now
 exit

@@ -21,12 +21,6 @@ function blink_confirm() {
 	done
 }
 
-get_password() {
-    # If we are at boot (no TERM variable usually), we use 'read' directly on tty1
-
-    return $PASS
-}
-
 if [ "$1" == "-m" ]; then
 	LOOT_PARTITION=$(blkid -L "LOOT")
 	if [ -n "$LOOT_PARTITION" ]; then
@@ -38,7 +32,8 @@ if [ "$1" == "-m" ]; then
 			chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
 			USER_ID=$(id -u "$USER_NAME")
 			GROUP_ID=$(id -g "$USER_NAME")
-			mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" "$LOOT_PARTITION" "$LOOT_DIR"
+			LOOP_DEV=$(losetup -fP --show $LOOT_PARTITION)
+			mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" "$LOOP_DEV" "$LOOT_DIR"
 		done
 		blink_confirm &
 	fi
@@ -50,14 +45,17 @@ if [ "$1" == "-m" ]; then
 			if [[ -z "$TERM" || "$TERM" == "linux" ]]; then
 				# Direct hijack of the console to ensure it BLOCKS
 				exec < /dev/tty1 > /dev/tty1 2>&1
+				echo -e "\e[36m[*]\e[0m Waiting 5 seconds for systemd to finish up."
+				sleep 5
 				read -rs -p "Unlock p3ng0s loot drive: " PASS
 			else
 				# If we are in a terminal or GUI, use the systemd agent
 				PASS=$(systemd-ask-password "Unlock p3ng0s loot drive:")
 			fi
-			echo $PASS | cryptsetup open "$VAULT_PARTITION" luks_loot -
+			LOOP_DEV=$(losetup -fP --show $VAULT_PARTITION)
+			echo $PASS | cryptsetup open "$LOOP_DEV" luks_loot -
 			if [ -b "/dev/mapper/luks_loot" ]; then
-				echo -e "\e[36m[*]\e[0m Correct password mounting loot!" 
+				echo -e "\e[36m[*]\e[0m Correct password mounting loot!"
 				for USER_HOME in /home/*; do
 					[ -d "$USER_HOME" ] || continue
 					LOOT_DIR=$USER_HOME/loot

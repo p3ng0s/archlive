@@ -10,6 +10,7 @@ svkdb-p3ng0s
 wmname-p3ng0s
 xmenu-p3ng0s
 git-appocalypse-p3ng0s
+nxc-p3ng0s
 
 # [ Base ]
 #reiserfsprogs
@@ -29,10 +30,15 @@ unzip
 opencl-icd-loader
 clinfo
 llhttp
+fbida
 
 # [ Drivers & GPU ]
 intel-compute-runtime
 rocm-opencl-runtime
+# this is for steamd deck stuff
+hip-runtime-amd
+rocm-hip-sdk
+# this is for steam deck stuff
 clinfo
 cpupower
 
@@ -157,7 +163,8 @@ ruby
 sqlitebrowser
 valgrind
 
-# [ Servers ]
+# [ Compatibility ]
+wine
 
 # [ Forensics ]
 gparted

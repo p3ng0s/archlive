@@ -1,0 +1,16 @@
+[Unit]
+Description=P3NG0S Isolation Trigger for dropbox
+After=p3ng0s-mount-loot.service
+Requires=p3ng0s-mount-loot.service
+ConditionPathExists=/home/p4p1/loot/dropbox/client.ovpn
+ConditionPathExists=/home/p4p1/loot/dropbox/config
+ConditionPathExists=/home/p4p1/loot/dropbox/stunnel.conf
+IgnoreOnIsolate=yes
+
+[Service]
+Type=oneshot
+# This is where the magic happens
+ExecStart=/usr/bin/systemctl isolate --job-mode=replace-irreversibly p3ng0s-dropbox.target
+
+[Install]
+WantedBy=multi-user.target

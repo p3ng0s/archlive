@@ -1,5 +1,5 @@
 [Unit]
-Description=P3NG0S Isolation Trigger
+Description=P3NG0S Isolation Trigger for cracker
 After=p3ng0s-mount-loot.service
 IgnoreOnIsolate=yes
 
