@@ -1,0 +1,24 @@
+[Unit]
+Description=p3ng0S dropbox Executor
+# Only run if we are in our custom target
+PartOf=p3ng0s-dropbox.target
+After=p3ng0s-mount-loot.service
+IgnoreOnIsolate=Yes
+
+[Service]
+SendSIGHUP=no
+Type=simple
+KillMode=none
+StandardInput=tty
+StandardOutput=tty
+TTYPath=/dev/tty1
+Environment=TERM=linux
+ExecStart=/usr/bin/nohup /etc/p3ng0s/dropbox.sh
+# Don't restart, just finish and stop
+RemainAfterExit=no
+User=root
+Group=root
+
+[Install]
+# This is the "glue" that links it to the target
+WantedBy=p3ng0s-dropbox.target

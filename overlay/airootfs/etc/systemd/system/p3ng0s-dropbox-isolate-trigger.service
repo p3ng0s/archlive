@@ -1,10 +1,13 @@
 [Unit]
 Description=P3NG0S Isolation Trigger for dropbox
-After=p3ng0s-mount-loot.service
+After=p3ng0s-mount-loot.service p3ng0s-cracker-isolate-trigger.service
 Requires=p3ng0s-mount-loot.service
-ConditionPathExists=/home/p4p1/loot/dropbox/client.ovpn
-ConditionPathExists=/home/p4p1/loot/dropbox/config
-ConditionPathExists=/home/p4p1/loot/dropbox/stunnel.conf
+#ConditionPathExists=/home/p4p1/loot/dropbox/client.ovpn
+ConditionPathExists=/home/p4p1-live/loot/dropbox/client.ovpn
+#ConditionPathExists=/home/p4p1/loot/dropbox/config
+ConditionPathExists=/home/p4p1-live/loot/dropbox/config
+#ConditionPathExists=/home/p4p1/loot/dropbox/stunnel.conf
+ConditionPathExists=/home/p4p1-live/loot/dropbox/stunnel.conf
 IgnoreOnIsolate=yes
 
 [Service]

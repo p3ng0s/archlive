@@ -7,6 +7,3 @@ IgnoreOnIsolate=yes
 Type=oneshot
 # This is where the magic happens
 ExecStart=/usr/bin/systemctl isolate --job-mode=replace-irreversibly p3ng0s-cracker.target
-
-#[Install]
-#WantedBy=multi-user.target

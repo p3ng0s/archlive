@@ -15,7 +15,6 @@ HASHCAT_FOLDER=/home/p4p1-live/loot/hashcat
 #HASHCAT_FOLDER=/home/p4p1/loot/hashcat
 SECLIST_FOLDER=/opt/pentest/SecLists/Passwords/
 
-BAR_PID=$!
 if [[ -z "$TERM" || "$TERM" == "linux" ]]; then
     # Direct hijack of the console to ensure it BLOCKS
     exec < /dev/tty1 > /dev/tty1 2>&1
@@ -24,10 +23,6 @@ fi
 echo "--- Cracker ---"
 
 if [ ! -d $HASHCAT_FOLDER ]; then
-    ls $HASHCAT_FOLDER
-    ls /home/
-    ls /home/p4p1-live
-    echo $HASHCAT_FOLDER
     echo -e "\e[1;31m[!]\e[0m Cannot find the hashcat folder exiting"
     sleep 5
     exit -1

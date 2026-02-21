@@ -30,6 +30,7 @@ file_permissions=(
   ["/etc/p3ng0s/tmuxer.sh"]="0:0:755"
   ["/etc/p3ng0s/looter.sh"]="0:0:755"
   ["/etc/p3ng0s/cracker.sh"]="0:0:755"
+  ["/etc/p3ng0s/dropbox.sh"]="0:0:755"
   ["/etc/p3ng0s/autowifimon.sh"]="0:0:755"
   ["/etc/openvpn/routing.sh"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf-tmux"]="0:0:755"

@@ -1,0 +1,13 @@
+[Unit]
+Description=p3ng0s Headless Dropbox Mode
+# Pull in the mapper AND the networking services
+Requires=multi-user.target p3ng0s-dropbox-worker.service NetworkManager.service sshd.service
+ConditionPathIsMountPoint=/home/p4p1-live/loot
+#ConditionPathIsMountPoint=/home/p4p1/loot
+AllowIsolate=yes
+
+# Kill the local console so nobody can see what we're doing
+Conflicts=getty@tty1.service
+
+[Install]
+WantedBy=multi-user.target
