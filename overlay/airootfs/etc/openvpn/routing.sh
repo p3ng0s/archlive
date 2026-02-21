@@ -18,6 +18,6 @@ else
 fi
 GATEWAY=$(ip route get 8.8.8.8 | grep -oP 'via \K\S+')
 #GATEWAY=$(ip route get 8.8.8.8 | cut -d' ' -f3 | head -n1) # edit for lanturtle
-sudo ip route add $SERVER_IP/32 via $GATEWAY
-sudo ip route add 0.0.0.0/1 via 10.8.0.1
-sudo ip route add 128.0.0.0/1 via 10.8.0.1
+sudo /usr/bin/ip route add $SERVER_IP/32 via $GATEWAY
+sudo /usr/bin/ip route add 0.0.0.0/1 via 10.8.0.1
+sudo /usr/bin/ip route add 128.0.0.0/1 via 10.8.0.1
