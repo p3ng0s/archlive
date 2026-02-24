@@ -164,14 +164,14 @@ function select_os() {
 function encryption_check() {
     DEV=$PART
     TYPE=$(blkid -s TYPE -o value $DEV)
-    if [[ "$TYPE" == "bitlocker" ]]; then
+    if [[ "$TYPE" == "BitLocker" ]]; then
         echo "[!] BitLocker detected on $DEV"
         # Try keys from file first
         if [[ -f "/home/p4p1-live/loot/bitlocker.txt" ]]; then
             while IFS= read -r key || [[ -n "$key" ]]; do
                 [[ -z "$key" || "$key" =~ ^# ]] && continue
                 echo "Trying recovery key: $key"
-                echo "$key" | cryptsetup open --type bitlocker "$DEV" unlock &>/dev/null
+                echo "$key" | cryptsetup open --type=bitlk "$DEV" unlock &>/dev/null
                 if [[ $? -eq 0 ]]; then
                     echo "[+] BitLocker unlocked with key from file!"
                     PART=/dev/mapper/unlock
@@ -184,7 +184,7 @@ function encryption_check() {
         echo "[-] Recovery keys from file failed or not found."
         read -s -p "Enter BitLocker Recovery Key or Password: " user_pass
         echo
-        echo "$user_pass" | cryptsetup open --type bitlocker "$DEV" unlock
+        echo "$user_pass" | cryptsetup open --type=bitlk "$DEV" unlock
         if [[ $? -eq 0 ]]; then
             PART=/dev/mapper/unlock
             echo "/dev/mapper/unlock"
