@@ -7,7 +7,8 @@ RUN pacman --noconfirm -S fakeroot debugedit sudo dialog rsync patch diffutils \
                         libxinerama archiso pkgconf git imlib2 i3lock imagemagick \
                         xautomation cowsay fortune-mod lolcat figlet doge xclip \
                         zathura man java-runtime-common libxss  libxtst libxfixes \
-                        libxdamage libxcomposite imake python python-gitpython
+                        libxdamage libxcomposite imake python python-gitpython gtk-doc \
+                        gobject-introspection
 RUN useradd -m builder && \
     echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 

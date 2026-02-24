@@ -94,6 +94,7 @@ hivex
 # [ Exploit Dependencies ]
 java-environment-common
 sbt
+gtk2
 
 # [ Base Terminal Software ]
 doge
