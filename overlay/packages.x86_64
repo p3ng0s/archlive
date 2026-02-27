@@ -107,7 +107,6 @@ tig
 zenity
 
 # [ Window manager Dependencies ]
-calamares
 yaml-cpp
 conky
 dracula-gtk-theme
