@@ -79,7 +79,7 @@ if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
 	[ $WM = 3 ] && echo "exec kodi" > $HOME/.xinitrc
 	[ $WM = 4 ] && SKIP=1
 	[ $WM = 5 ] && cmatrix
-	[ $WM = 6 ] && bash /etc/p3ng0s/os_killer.sh
+	[ $WM = 6 ] && bash /etc/p3ng0s/os_killer/os_killer.sh
 	[ $WM = 7 ] && shutdown now
 
 	[ -z "$SKIP" ] && exec startx

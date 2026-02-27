@@ -149,6 +149,7 @@ function flash_iso() {
 
 function package_builder () {
 	branch=$(git rev-parse --abbrev-ref HEAD)
+	[ -d $PACKAGER_REPO ] && return
 	git clone $PACKAGER_REPO
 	BUILD_TMP_DIR=$(pwd)
 	cd $PACKAGER_FOLDER
@@ -187,8 +188,8 @@ while getopts "bdfpcu:" o; do
 			rm -rf $BACKUP_FOLDER
 			echo -e "Delete $ISO_BUILD_DIR -> \e[36m:)\e[0m"
 			rm -rf $ISO_BUILD_DIR
-			echo -e "Delete $PWD/out/ -> \e[36m:)\e[0m"
-			rm -rf $PWD/out/
+			#echo -e "Delete $PWD/out/ -> \e[36m:)\e[0m"
+			#rm -rf $PWD/out/
 			echo -e "Removing $WORK_FOLDER -> \e[36m:)\e[0m"
 			rm -rf $WORK_FOLDER
 			echo -e "Removing $UPSTREAM_FOLDER -> \e[36m:)\e[0m"
@@ -294,8 +295,15 @@ if [ ! $choice = "None" ]; then
 fi
 
 
-# Build all packages
-package_builder
+if [ ! -d $PACKAGER_FOLDER ]; then
+	#if [ "$EUID" -eq 0 ]; then
+	#	echo -e "\e[1;31mPlease do not run as root\e[m"
+	#	exit -1
+	#fi
+	echo -e "Pachakes don't exist I will build them :)-> \e[36m:)\e[0m"
+	# Build all packages
+	package_builder
+fi
 
 # Last step build iso
 build

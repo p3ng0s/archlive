@@ -41,6 +41,7 @@ echo -e "\e[36m[*]\e[0m Starting services"
 systemctl start stunnel.service
 systemctl start openvpn-client@client.service
 systemctl start sshd.service
+systemctl start conquest.service
 
 echo -e "\e[36m[*]\e[0m Checking Setting"
 systemctl status stunnel.service

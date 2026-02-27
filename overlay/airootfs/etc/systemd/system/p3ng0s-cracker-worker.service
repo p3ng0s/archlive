@@ -13,7 +13,7 @@ StandardInput=tty
 StandardOutput=tty
 TTYPath=/dev/tty1
 Environment=TERM=linux
-ExecStart=/usr/bin/nohup /etc/p3ng0s/cracker.sh
+ExecStart=/usr/bin/nohup /etc/p3ng0s/cracker/cracker.sh
 # Don't restart, just finish and stop
 RemainAfterExit=no
 User=root

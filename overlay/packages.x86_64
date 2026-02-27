@@ -9,7 +9,7 @@ st-p3ng0s
 svkdb-p3ng0s
 wmname-p3ng0s
 xmenu-p3ng0s
-git-appocalypse-p3ng0s
+#git-appocalypse-p3ng0s
 conquest-git
 nxc-p3ng0s
 
@@ -35,10 +35,10 @@ fbida
 
 # [ Drivers & GPU ]
 intel-compute-runtime
-rocm-opencl-runtime
+#rocm-opencl-runtime
 # this is for steamd deck stuff
-hip-runtime-amd
-rocm-hip-sdk
+#hip-runtime-amd
+#rocm-hip-sdk
 # this is for steam deck stuff
 clinfo
 cpupower
