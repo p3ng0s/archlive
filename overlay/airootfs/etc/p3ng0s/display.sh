@@ -45,6 +45,10 @@ if (( ${#FOUND_X_DISPLAYS[*]} == 2 )); then
 		xrandr --output $OTHER --auto --left-of $PRIMARY
 		feh --bg-fill $HOME/.wallpaper.png
 	fi
+	if [[ "$res" == "2560x1600" ]]; then
+		xrandr --output $OTHER --auto --primary --output $PRIMARY --off
+		feh --bg-fill $HOME/.wallpaper.png
+	fi
 	# if the screen resolution matches my other monitor
 	if [[ "$res" == "1920x1080" ]]; then
 		# setting the correct positions
