@@ -69,8 +69,11 @@ cpupower frequency-set -g performance
 for file in ${hash_files[*]}; do
     HASHCAT_MODE=${file##*.}
 
-    hashcat --status --status-timer=5 -o "$HASHCAT_FOLDER/completed/cracked.$HASHCAT_MODE" --outfile-format 2 -a 0 -m "$HASHCAT_MODE" "$file" "${WORDLISTS[@]}"
-    /bin/bash
+    if [ -f $HASHCAT_FOLDER/rule.rule ]; then
+        hashcat -r $HASHCAT_FOLDER/rule.rule --status --status-timer=5 -o "$HASHCAT_FOLDER/completed/cracked.$HASHCAT_MODE" --outfile-format 2 -a 0 -m "$HASHCAT_MODE" "$file" "${WORDLISTS[@]}"
+    else
+        hashcat --status --status-timer=5 -o "$HASHCAT_FOLDER/completed/cracked.$HASHCAT_MODE" --outfile-format 2 -a 0 -m "$HASHCAT_MODE" "$file" "${WORDLISTS[@]}"
+    fi
     echo -e "\e[36m[*]\e[0m moving $file to completed/"
     mv $file $HASHCAT_FOLDER/completed/
     sleep 5

@@ -118,7 +118,7 @@ function flash_iso() {
 	partprobe "$selected_partition"
 	sleep 1
 	echo -e "\e[1;31mCreating partition!\e[m"
-	parted --script "$selected_partition" mkpart primary ext4 15GB 100%
+	parted --script "$selected_partition" mkpart primary ext4 20GB 100%
 	fdisk -l
 	echo "waiting 5 seconds for drive to be okay to mess around with"
 	sleep 5

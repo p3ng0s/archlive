@@ -1,0 +1,12 @@
+[Unit]
+Description=SSH Activation Socket (Restricted to Interface)
+
+[Socket]
+ListenStream=22
+# This will force sshd to listen only on the vpn usefull for the dropbox
+BindToDevice=tun0
+Accept=no
+FreeBind=yes
+
+[Install]
+WantedBy=sockets.target
