@@ -1,0 +1,1 @@
+ACTION=="change", SUBSYSTEM=="drm", ENV{TRIGGERED_BY_UDEV}="1", RUN+="/etc/p3ng0s/display.sh"

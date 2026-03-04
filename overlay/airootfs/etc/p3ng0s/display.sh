@@ -10,6 +10,9 @@
 # Description:
 #  A p3ng0s script to handle external displays plugged in to the laptop.
 #
+exec > /tmp/display_debug.log 2>&1
+
+echo here > /tmp/display2
 
 function get_resolution() {
     xrandr | awk -v d="$1" '
@@ -29,6 +32,15 @@ function get_resolution() {
     '
 }
 
+if [[ "$TRIGGERED_BY_UDEV" == "1" ]]; then
+	USER=$(who | grep 'tty1' | awk '{print $1}' | head -n1)
+	[ -z $USER ] && exit
+	export DISPLAY=:0
+	export HOME="/home/$USER"
+	export XAUTHORITY=$HOME/.Xauthority
+	sleep 1
+fi
+
 mapfile -t FOUND_X_DISPLAYS < <(xrandr | awk '/ connected / {print $1}')
 
 echo ${FOUND_X_DISPLAYS[*]}
@@ -45,6 +57,7 @@ if (( ${#FOUND_X_DISPLAYS[*]} == 2 )); then
 		xrandr --output $OTHER --auto --left-of $PRIMARY
 		feh --bg-fill $HOME/.wallpaper.png
 	fi
+	# if the screen resolution matches my portable monitor
 	if [[ "$res" == "2560x1600" ]]; then
 		xrandr --output $OTHER --auto --primary --output $PRIMARY --off
 		feh --bg-fill $HOME/.wallpaper.png
@@ -59,5 +72,3 @@ else # no displays
 	xrandr --auto
 	feh --bg-fill $HOME/.wallpaper.png
 fi
-# the previous command might break the wallpaper don't forget to re-run
-# feh --bg-fill $HOME/.wallpaper.png
