@@ -22,7 +22,7 @@ gradient_id_pressed = 0
 
 #-------------------------------------
 # Panel
-panel_items = SPPP
+panel_items = SPPPP
 panel_size = 100% 50
 panel_margin = 0 0
 panel_padding = 16 8 8
@@ -32,7 +32,7 @@ panel_dock = 0
 panel_pivot_struts = 0
 panel_position = bottom right horizontal
 panel_layer = top
-panel_monitor = all
+panel_monitor = 1
 panel_shrink = 1
 autohide = 0
 autohide_show_timeout = 0
@@ -176,6 +176,24 @@ button_max_icon_size = 0
 #-------------------------------------
 # Button 3
 button = new
+button_icon = /etc/p3ng0s/icons/openvas.png
+button_text = 
+button_tooltip = OpenVAS
+button_lclick_command = python /etc/p3ng0s/ssh_glue.py -s openvas
+button_rclick_command = 
+button_mclick_command = 
+button_uwheel_command = 
+button_dwheel_command = 
+button_font = Sans 9
+button_font_color = #393939 100
+button_padding = 10 9
+button_background_id = 1
+button_centered = 1
+button_max_icon_size = 0
+
+#-------------------------------------
+# Button 4
+button = new
 button_icon = /etc/p3ng0s/icons/wazuh.png
 button_text = 
 button_tooltip = Wazuh Connection
@@ -197,7 +215,7 @@ button = new
 button_icon = /etc/p3ng0s/tint2/tux.png
 button_text = 
 button_tooltip = Apps & Settings
-button_lclick_command = rofi -show drun -show-icons -theme /etc/p3ng0s/rofi.rasi
+button_lclick_command = svkbd-p3ng0s -fn 'Hack Nerd Font Mono:size=22' -r 20 -g \n
 button_rclick_command = 
 button_mclick_command = 
 button_uwheel_command = 
