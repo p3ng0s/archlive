@@ -135,6 +135,7 @@ function flash_iso() {
 		echo "cryptsetup open <replace with correct partition> p3ng0s_unlocked"
 		echo "mkfs.exfat -L LOOT /dev/mapper/p3ng0s_unlocked"
 		echo "cryptsetup close p3ng0s_unlocked"
+		wipefs -a $partition_to_crypt
 		cryptsetup luksFormat --label VAULT $partition_to_crypt
 		cryptsetup open $partition_to_crypt p3ng0s_unlocked
 		mkfs.exfat -L LOOT /dev/mapper/p3ng0s_unlocked
@@ -142,6 +143,7 @@ function flash_iso() {
 		cryptsetup close p3ng0s_unlocked
 	else
 		loot_partition=$(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
+		wipefs -a $loot_partition
 		mkfs.exfat -L LOOT $loot_partition
 	fi
 	echo -e "All done -> \e[36m:)\e[0m"

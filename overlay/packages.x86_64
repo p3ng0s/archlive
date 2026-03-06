@@ -178,7 +178,7 @@ vlc
 kodi
 
 # [ XORG Things ]
-#xautolock
+xss-lock
 xautomation
 xclip
 xorg-apps

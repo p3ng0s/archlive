@@ -41,8 +41,8 @@ function OS {
 	echo " $(cat /etc/hostname | tr '\n' ' ')"
 }
 
-if hash dwmstat; then
-	dwmstat &
+if [ -f /opt/dev/dwmstat/bin/dwmstat ]; then
+	/opt/dev/dwmstat/bin/dwmstat &
 	exit 0
 fi
  
