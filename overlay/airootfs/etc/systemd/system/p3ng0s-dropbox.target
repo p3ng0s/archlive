@@ -1,7 +1,7 @@
 [Unit]
 Description=p3ng0s Headless Dropbox Mode
 # Pull in the mapper AND the networking services
-Requires=multi-user.target p3ng0s-dropbox-worker.service NetworkManager.service sshd.service
+Requires=multi-user.target p3ng0s-dropbox-worker.service NetworkManager.service
 ConditionPathIsMountPoint=/home/p4p1-live/loot
 #ConditionPathIsMountPoint=/home/p4p1/loot
 AllowIsolate=yes

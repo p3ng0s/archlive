@@ -1,0 +1,124 @@
+# ─────────────────────────────────────────
+#  dunstrc — Dracula / Clean Minimal
+#  Place at: ~/.config/dunst/dunstrc
+# ─────────────────────────────────────────
+
+[global]
+    ### Display ###
+    monitor         = 0
+    follow          = none
+
+    ### Geometry — top-left, stacked downward ###
+    origin          = top-left
+    offset          = 16x48
+    width           = (240, 380)
+    height          = 120
+    gap_size        = 6
+    scale           = 0
+
+    ### Stacking ###
+    indicate_hidden = yes
+    stack_duplicates = true
+    hide_duplicate_count = false
+    notification_limit = 5
+
+    ### Appearance ###
+    transparency    = 8
+    padding         = 14
+    horizontal_padding = 16
+    text_icon_padding = 12
+    frame_width     = 1
+    frame_color     = "#6272a4"
+    separator_color = frame
+    separator_height = 1
+    corner_radius   = 4
+
+    ### Icons ###
+    icon_position   = left
+    min_icon_size   = 24
+    max_icon_size   = 32
+    icon_path       = /usr/share/icons/hicolor/scalable/apps/:/usr/share/pixmaps/:/usr/share/icons/
+
+    ### Text ###
+    font            = Hack Nerd Font Mono 10
+    line_height     = 2
+    markup          = full
+    format          = "<b>%s</b>\n%b"
+    alignment       = left
+    vertical_alignment = center
+    word_wrap       = yes
+    ellipsize       = middle
+    ignore_newline  = no
+    show_age_threshold = 30
+    idle_threshold  = 120
+
+    ### Mouse ###
+    mouse_left_click   = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click  = close_all
+
+    ### Misc ###
+    sort            = yes
+    always_run_script = true
+    title           = Dunst
+    class           = Dunst
+    force_xinerama  = false
+    force_xwayland  = false
+
+# ─────────────────────────────────────────
+#  Urgency levels
+# ─────────────────────────────────────────
+
+[urgency_low]
+    background  = "#282a36"
+    foreground  = "#6272a4"
+    frame_color = "#44475a"
+    timeout     = 3
+    #icon       = dialog-information
+
+[urgency_normal]
+    background  = "#282a36"
+    foreground  = "#f8f8f2"
+    frame_color = "#6272a4"
+    timeout     = 5
+    #icon       = dialog-information
+
+[urgency_critical]
+    background  = "#282a36"
+    foreground  = "#ff5555"
+    frame_color = "#ff5555"
+    timeout     = 0
+    #icon       = dialog-error
+
+# ─────────────────────────────────────────
+#  Per-app rules
+# ─────────────────────────────────────────
+
+# Mute spammy volume/brightness notifications visually
+[volume_brightness]
+    appname     = "dunst"
+    summary     = "*olume*"
+    set_transient = true
+    timeout     = 1
+
+# SSH / terminal alerts — make them pop
+[ssh_alerts]
+    appname     = "ssh"
+    urgency     = critical
+    frame_color = "#bd93f9"
+    foreground  = "#bd93f9"
+
+# Give purple accent to anything from your terminal
+[terminal]
+    appname     = "Alacritty|kitty|st|urxvt"
+    frame_color = "#bd93f9"
+
+# ─────────────────────────────────────────
+#  Shortcuts (legacy — prefer dunstctl bindings in sxhkd/dwm keys)
+#  e.g. bindsym $mod+grave exec dunstctl history-pop
+# ─────────────────────────────────────────
+[shortcuts]
+    close       = ctrl+space
+    close_all   = ctrl+shift+space
+    history     = ctrl+grave
+    context     = ctrl+shift+period

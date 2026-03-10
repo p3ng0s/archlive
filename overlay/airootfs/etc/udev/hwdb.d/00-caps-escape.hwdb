@@ -1,0 +1,2 @@
+evdev:input:*
+ KEYBOARD_KEY_3a=esc

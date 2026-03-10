@@ -7,6 +7,3 @@ ListenStream=22
 BindToDevice=tun0
 Accept=no
 FreeBind=yes
-
-[Install]
-WantedBy=sockets.target

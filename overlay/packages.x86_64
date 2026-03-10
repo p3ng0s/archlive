@@ -34,12 +34,16 @@ llhttp
 fbida
 
 # [ Drivers & GPU ]
-intel-compute-runtime
-rocm-opencl-runtime
+#intel-compute-runtime
+#rocm-opencl-runtime
 # this is for steamd deck stuff
-hip-runtime-amd
-rocm-hip-sdk
+#hip-runtime-amd
+#rocm-hip-sdk
 # this is for steam deck stuff
+# nvidia stuff :/
+#nvidia
+#nvidia-utils
+#opencl-nvidia
 clinfo
 cpupower
 
@@ -137,6 +141,8 @@ util-linux
 zathura
 zathura-pdf-mupdf
 zathura-ps
+brightnessctl
+dunst
 
 # [ Package Dependencies ]
 #ckbcomp

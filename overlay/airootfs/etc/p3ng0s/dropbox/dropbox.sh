@@ -35,6 +35,7 @@ touch /etc/stunnel/stunnel.conf /etc/openvpn/client/client.conf
 echo -e "\e[36m[*]\e[0m Mounting files"
 mount --bind $DROPBOX_FOLDER/stunnel.conf /etc/stunnel/stunnel.conf
 mount --bind $DROPBOX_FOLDER/client.ovpn /etc/openvpn/client/client.conf
+[ -f $DROPBOX_FOLDER/sshd_config ] && mount --bind $DROPBOX_FOLDER/sshd_config /etc/ssh/sshd_config
 
 sleep 2
 echo -e "\e[36m[*]\e[0m Starting services"
@@ -64,10 +65,13 @@ echo "GATEWAY=$GATEWAY"
 echo -e "\e[36m[*]\e[0m Entering splash screen..."
 sleep 5
 /usr/bin/kbd_mode -s -C /dev/tty1
+echo 1 > /proc/sys/kernel/printk
+clear > /dev/tty1
 while true; do
     if [ -f $DROPBOX_FOLDER/splash.png ]; then
-        fbi -noverbose -u $DROPBOX_FOLDER/splash.png
+        fbi -T 1 -noverbose -u $DROPBOX_FOLDER/splash.png 2> /dev/null
     else
-        fbi -noverbose -u /etc/p3ng0s/wallpaper/dropbox.png
+        fbi -T 1 -noverbose -u /etc/p3ng0s/wallpaper/dropbox.png 2> /dev/null
     fi
+    sleep 1
 done

@@ -1,0 +1,6 @@
+SUBSYSTEM=="block", KERNEL=="sdb", GROUP="kvm", MODE="0660"
+SUBSYSTEM=="block", ATTRS{idVendor}=="090c", ATTRS{idProduct}=="2320", GROUP="kvm", MODE="0660", TAG+="qemu_drive"
+SUBSYSTEM=="block", ATTRS{idVendor}=="0781", ATTRS{idProduct}=="5591", GROUP="kvm", MODE="0660", TAG+="qemu_drive"
+
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1997", ATTRS{idProduct}=="2535", GROUP="kvm", MODE="0660", TAG+="qemu_usb"
+SUBSYSTEM=="usb_device", ATTRS{idVendor}=="1997", ATTRS{idProduct}=="2535", GROUP="kvm", MODE="0660", TAG+="qemu_usb"

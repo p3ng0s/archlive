@@ -10,9 +10,6 @@
 # Description:
 #  A p3ng0s script to handle external displays plugged in to the laptop.
 #
-exec > /tmp/display_debug.log 2>&1
-
-echo here > /tmp/display2
 
 function get_resolution() {
     xrandr | awk -v d="$1" '

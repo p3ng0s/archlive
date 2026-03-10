@@ -181,11 +181,47 @@ function build() {
 	echo -e "All done -> \e[36m:)\e[0m"
 }
 
+function driver_support() {
+	drivers=$(dialog --title "Driver support" \
+		--checklist "...." 20 70 15 \
+		"intel" "Intel" on\
+		"amd" "AMD" on \
+		"nvidia" "Nvidia" off\
+		2>&1 >/dev/tty)
+	EXIT_STATUS=$?
+
+	if [ $EXIT_STATUS -ne 0 ]; then
+		echo "Exiting..."
+		break
+	fi
+	if echo "$drivers" | grep -q "nvidia"; then
+		sed -i "s|^#\(.*nvidia.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*nvidia-utils.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*opencl-nvidia.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	fi
+	if echo "$drivers" | grep -q "amd"; then
+		sed -i "s|^#\(.*rocm-opencl-runtime.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*hip-runtime-amd.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*rocm-hip-sdk.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	fi
+	if echo "$drivers" | grep -q "intel"; then
+		sed -i "s|^#\(.*intel-compute-runtime.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	fi
+}
+function setpasswords() {
+	password=$(dialog --stdout --title "Set Root Password" \
+		--passwordbox "Enter root and p4p1-live password:" 8 40)
+	hashed=$(openssl passwd -6 "$password")
+
+	sed -i "s|^root:[^:]*:|root:${hashed}:|" $WORK_FOLDER/airootfs/etc/shadow
+	sed -i "s|^p4p1-live:[^:]*:|p4p1-live:${hashed}:|" $WORK_FOLDER/airootfs/etc/shadow
+}
+
 while getopts "bdfpcu:" o; do
 	case "${o}" in
 		c)
-			echo -e "Removing the $PACKAGER_FOLDER folder -> \e[36m:)\e[0m"
-			rm -rf $PACKAGER_FOLDER
+			#echo -e "Removing the $PACKAGER_FOLDER folder -> \e[36m:)\e[0m"
+			#rm -rf $PACKAGER_FOLDER
 			echo -e "Removing the $BACKUP_FOLDER folder -> \e[36m:)\e[0m"
 			rm -rf $BACKUP_FOLDER
 			echo -e "Delete $ISO_BUILD_DIR -> \e[36m:)\e[0m"
@@ -296,6 +332,8 @@ if [ ! $choice = "None" ]; then
 	cp -r $choice $HOME_ARCHLIVE/.wallpaper.png
 fi
 
+driver_support
+setpasswords
 
 if [ ! -d $PACKAGER_FOLDER ]; then
 	#if [ "$EUID" -eq 0 ]; then
