@@ -114,11 +114,14 @@ function flash_iso() {
 	sleep 1
 	echo -e "\e[1;31mInstalling OS!\e[m"
 	pv "$isofile" | dd of="$selected_partition" bs=4M conv=fsync oflag=direct iflag=fullblock
-	sgdisk -e $selected_partition
+	echo "sgdisk -e $selected_partition"
+	sgdisk -e "$selected_partition"
+	echo "partprobe '$selected_partition'"
 	partprobe "$selected_partition"
 	sleep 1
 	echo -e "\e[1;31mCreating partition!\e[m"
-	parted --script "$selected_partition" mkpart primary ext4 20GB 100%
+	echo "parted --script '$selected_partition' mkpart primary ext4 50GB 100%"
+	parted --script "$selected_partition" mkpart primary ext4 50GB 100%
 	fdisk -l
 	echo "waiting 5 seconds for drive to be okay to mess around with"
 	sleep 5
@@ -130,6 +133,7 @@ function flash_iso() {
 		partition_to_crypt=$(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep -vE "vfat|iso9660" | awk '{print $1}')
 		echo $partition_to_crypt
 		echo "If not please do the following manually:"
+		echo "wipefs -a /dev/sdaX"
 		echo "mkfs.exfat -L LOOT /dev/sdaX"
 		echo "cryptsetup luksFormat <replace with correct partition>"
 		echo "cryptsetup open <replace with correct partition> p3ng0s_unlocked"
@@ -164,6 +168,7 @@ function package_builder () {
 	fi
 	cd $BUILD_TMP_DIR
 	echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
+	notify-send -u critical "Critical" "p3ng0s Packages are built please re-enter root password!"
 }
 
 function build() {
@@ -178,6 +183,7 @@ function build() {
 	else
 		sudo mkarchiso -v -w $ISO_BUILD_DIR $WORK_FOLDER
 	fi
+	notify-send -u critical "Critical" "p3ng0s build has been completed"
 	echo -e "All done -> \e[36m:)\e[0m"
 }
 
@@ -208,6 +214,7 @@ function driver_support() {
 		sed -i "s|^#\(.*intel-compute-runtime.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	fi
 }
+
 function setpasswords() {
 	password=$(dialog --stdout --title "Set Root Password" \
 		--passwordbox "Enter root and p4p1-live password:" 8 40)
@@ -215,6 +222,24 @@ function setpasswords() {
 
 	sed -i "s|^root:[^:]*:|root:${hashed}:|" $WORK_FOLDER/airootfs/etc/shadow
 	sed -i "s|^p4p1-live:[^:]*:|p4p1-live:${hashed}:|" $WORK_FOLDER/airootfs/etc/shadow
+}
+
+function network_loot_support() {
+	while true; do
+		CURL_CMD=$(dialog --stdout --title "Network Loot" \
+			--inputbox "Paste full curl command for network loot (leave empty to disable):" \
+			10 80)
+		if [ -z "$CURL_CMD" ]; then
+			break
+		fi
+		 if echo "$CURL_CMD" | grep -q "\-o"; then
+			dialog --msgbox "Do not include -o in your curl command, it is added automatically" 6 50
+			continue
+		fi
+		sed -i "s|NETWORK_LOOT_CMD=.*|NETWORK_LOOT_CMD=\"$CURL_CMD\"|" \
+			$WORK_FOLDER/airootfs/etc/p3ng0s/looter.sh
+		break
+	done
 }
 
 while getopts "bdfpcu:" o; do
@@ -334,6 +359,7 @@ fi
 
 driver_support
 setpasswords
+network_loot_support
 
 if [ ! -d $PACKAGER_FOLDER ]; then
 	#if [ "$EUID" -eq 0 ]; then

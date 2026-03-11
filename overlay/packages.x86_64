@@ -40,8 +40,7 @@ fbida
 #hip-runtime-amd
 #rocm-hip-sdk
 # this is for steam deck stuff
-# nvidia stuff :/
-#nvidia
+#nvidia-open
 #nvidia-utils
 #opencl-nvidia
 clinfo

@@ -11,6 +11,7 @@
 #  A script to automatically mount a drived labeled LOOT inside of /home/*/loot
 
 sleep 2
+NETWORK_LOOT_CMD=""
 
 function blink_confirm() {
 	for i in {1..15}; do
@@ -22,6 +23,23 @@ function blink_confirm() {
 }
 
 if [ "$1" == "-m" ]; then
+	if [ ! -z "$NETWORK_LOOT_CMD" ]; then
+		eval "$NETWORK_LOOT_CMD -o /tmp/loot.tar.xz"
+		mkdir -p "/tmp/loot/"
+		tar -xJf "/tmp/loot.tar.xz" -C "/tmp/loot/"
+		rm -rf /tmp/loot.tar.xz
+		for USER_HOME in /home/*; do
+			[ -d "$USER_HOME" ] || continue
+			LOOT_DIR=$USER_HOME/loot
+			mkdir -p "$LOOT_DIR"
+			USER_NAME=$(basename "$USER_HOME")
+			chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
+			# Bind mount the extracted folder
+			mount --bind "/tmp/loot/" "$LOOT_DIR"
+		done
+		blink_confirm &
+	fi
+
 	LOOT_PARTITION=$(blkid -L "LOOT")
 	if [ -n "$LOOT_PARTITION" ]; then
 		for USER_HOME in /home/*; do

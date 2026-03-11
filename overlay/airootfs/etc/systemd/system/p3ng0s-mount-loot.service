@@ -6,7 +6,7 @@ After=systemd-udevd.service local-fs.target
 #Conflicts=getty@tty1.service
 Before=getty@tty1.service display-manager.service
 # If getty@tty1 starts, it MUST wait for us to finish first
-RequiredBy=getty@tty1.service
+#RequiredBy=getty@tty1.service
 
 [Service]
 Type=oneshot
