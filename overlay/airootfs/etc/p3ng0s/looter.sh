@@ -26,7 +26,7 @@ if [ "$1" == "-m" ]; then
 	if [ ! -z "$NETWORK_LOOT_CMD" ]; then
 		eval "$NETWORK_LOOT_CMD -o /tmp/loot.tar.xz"
 		mkdir -p "/tmp/loot/"
-		tar -xJf "/tmp/loot.tar.xz" -C "/tmp/loot/"
+		tar -xf "/tmp/loot.tar.xz" -C "/tmp/loot/"
 		rm -rf /tmp/loot.tar.xz
 		for USER_HOME in /home/*; do
 			[ -d "$USER_HOME" ] || continue

@@ -35,7 +35,7 @@ for CERT in $CERTS_FOLDER/*.cer; do
     if file "$CERT" | grep -q "PEM"; then
         cp -r $CERT /etc/ca-certificates/trust-source/anchors/$CERT_NAME.crt
         echo -e "\e[32m[-]\e[0m Installed $CERT_NAME as PEM"
-    if file "$CERT" | grep -q "Certificate"; then
+    elif file "$CERT" | grep -q "Certificate"; then
         cp -r $CERT /etc/ca-certificates/trust-source/anchors/$CERT_NAME.crt
         echo -e "\e[32m[-]\e[0m Installed $CERT_NAME as Certificate"
     elif file "$CERT" | grep -q "DER"; then
