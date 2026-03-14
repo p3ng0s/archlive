@@ -33,6 +33,7 @@ PACKAGER_REPO=https://github.com/p3ng0s/packager
 PACKAGER_FOLDER=$PWD/packager
 
 DOCKER=false
+OPERATOR_STRING=""
 
 # Display usage information
 function usage () {
@@ -190,9 +191,9 @@ function build() {
 function driver_support() {
 	drivers=$(dialog --title "Driver support" \
 		--checklist "...." 20 70 15 \
-		"intel" "Intel" on\
-		"amd" "AMD" on \
-		"nvidia" "Nvidia" off\
+		"intel" "Intel ~2GB" on\
+		"amd" "AMD ~8GB" on \
+		"nvidia" "Nvidia + OpenCL ~4GB" off\
 		2>&1 >/dev/tty)
 	EXIT_STATUS=$?
 
@@ -215,13 +216,42 @@ function driver_support() {
 	fi
 }
 
-function setpasswords() {
+function setup_accounts() {
 	password=$(dialog --stdout --title "Set Root Password" \
 		--passwordbox "Enter root and p4p1-live password:" 8 40)
 	hashed=$(openssl passwd -6 "$password")
+	local UID_COUNTER=1001
 
 	sed -i "s|^root:[^:]*:|root:${hashed}:|" $WORK_FOLDER/airootfs/etc/shadow
 	sed -i "s|^p4p1-live:[^:]*:|p4p1-live:${hashed}:|" $WORK_FOLDER/airootfs/etc/shadow
+	IFS=':' read -ra OPERATORS <<< "$OPERATOR_STRING"
+	for OPERATOR in "${OPERATORS[@]}"; do
+		# Split by , to get name and tarball
+		IFS=',' read -r NAME TARBALL <<< "$OPERATOR"
+		if [ -z "$NAME" ] || [ -z "$TARBALL" ]; then
+			echo "Invalid operator format: $OPERATOR"
+			continue
+		fi
+		if [ ! -f "$TARBALL" ]; then
+			echo "Tarball not found: $TARBALL"
+			continue
+		fi
+		echo -e "Creating operator: $OPERATOR -> \e[36m:)\e[0m"
+		mkdir -p $WORK_FOLDER/airootfs/home/$NAME
+		tar -xf "$TARBALL" -C $WORK_FOLDER/airootfs/home/$NAME
+		echo "d /home/$NAME 0755 $NAME $NAME -" >> $WORK_FOLDER/airootfs/etc/tmpfiles.d/operators.conf
+		echo "$NAME:x:$UID_COUNTER:$UID_COUNTER::/home/$NAME:/bin/bash" >> $WORK_FOLDER/airootfs/etc/passwd
+		echo "$NAME:!:19000:0:99999:7:::" >> $WORK_FOLDER/airootfs/etc/shadow
+		echo "$NAME:x:$UID_COUNTER:" >> $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^wheel:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^adm:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^uucp:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^lp:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^kvm:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^wireshark:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^installer:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		UID_COUNTER=$((UID_COUNTER + 1))
+	done
 }
 
 function network_loot_support() {
@@ -232,7 +262,7 @@ function network_loot_support() {
 		if [ -z "$CURL_CMD" ]; then
 			break
 		fi
-		 if echo "$CURL_CMD" | grep -q "\-o"; then
+		 if echo "$CURL_CMD" | grep -qE "(^| )(-o|--output)( |$)"; then
 			dialog --msgbox "Do not include -o in your curl command, it is added automatically" 6 50
 			continue
 		fi
@@ -242,7 +272,7 @@ function network_loot_support() {
 	done
 }
 
-while getopts "bdfpcu:" o; do
+while getopts "bdfpcu:o:" o; do
 	case "${o}" in
 		c)
 			#echo -e "Removing the $PACKAGER_FOLDER folder -> \e[36m:)\e[0m"
@@ -278,6 +308,9 @@ while getopts "bdfpcu:" o; do
 			;;
 		d)
 			DOCKER=true
+			;;
+		o)
+			OPERATOR_STRING=$OPTARG
 			;;
 		*)
 			usage
@@ -322,6 +355,8 @@ echo -e "Setup the filesystem -> \e[36m:)\e[0m"
 # remove autologin this will be setup by the autologin package of p3ng0s
 [ -f $ROOT_ARCHLIVE/etc/systemd/system/getty\@tty1.service.d/autologin.conf ] && rm -rf $ROOT_ARCHLIVE/etc/systemd/system/getty\@tty1.service.d/autologin.conf || echo -e "Autologin not present-> \e[31m:(\e[0m"
 echo -e "Removed old autologin if present -> \e[36m:)\e[0m"
+[ -f $ROOT_ARCHLIVE/etc/systemd/system/multi-user.target.wants/sshd.service ] && rm -rf $ROOT_ARCHLIVE/etc/systemd/system/multi-user.target.wants/sshd.service || echo -e "Sshd.service not present-> \e[31m:(\e[0m"
+echo -e "Removed old sshd.service if present -> \e[36m:)\e[0m"
 # setup for startx with the live version of the windows manager
 [ ! -f $HOME_ARCHLIVE/.xinitrc ] && echo -e "xrdb -merge ~/.Xresources\nexec dwm-live" > $HOME_ARCHLIVE/.xinitrc || echo -e ".xinitrc present -> \e[31m:(\e[0m"
 echo -e "Set the .xinitrc if missing -> \e[36m:)\e[0m"
@@ -358,7 +393,7 @@ if [ ! $choice = "None" ]; then
 fi
 
 driver_support
-setpasswords
+setup_accounts
 network_loot_support
 
 if [ ! -d $PACKAGER_FOLDER ]; then

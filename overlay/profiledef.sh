@@ -35,6 +35,7 @@ file_permissions=(
   ["/etc/p3ng0s/certs/install-certs.sh"]="0:0:755"
   ["/etc/p3ng0s/installer/installer.sh"]="0:0:755"
   ["/etc/p3ng0s/dropbox/dropbox.sh"]="0:0:755"
+  ["/etc/p3ng0s/dropbox/nethide.sh"]="0:0:755"
   ["/etc/p3ng0s/autowifimon.sh"]="0:0:755"
   ["/etc/openvpn/routing.sh"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf-tmux"]="0:0:755"

@@ -1,0 +1,7 @@
+[Unit]
+Description=MAC Address Rotation
+
+[Service]
+Type=oneshot
+ExecStart=/etc/p3ng0s/dropbox/nethide.sh
+User=root

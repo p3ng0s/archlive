@@ -20,6 +20,21 @@ if [[ -z "$TERM" || "$TERM" == "linux" ]]; then
     exec > >(tee -a "$DEBUG_LOG" > /dev/tty1) 2>&1
 fi
 
+function keep_alive() {
+    while true; do
+        sleep 30
+        if ! pgrep openvpn > /dev/null; then
+            systemctl restart openvpn-client@client.service &> /dev/null
+        fi
+        if ! pgrep stunnel > /dev/null; then
+            systemctl restart stunnel.service &> /dev/null
+        fi
+        if ! pgrep sshd > /dev/null; then
+            systemctl restart sshd.service &> /dev/null
+        fi
+    done
+}
+
 echo "--- dropbox ---"
 
 if [ ! -d $DROPBOX_FOLDER ]; then
@@ -41,7 +56,7 @@ sleep 2
 echo -e "\e[36m[*]\e[0m Starting services"
 systemctl start stunnel.service
 systemctl start openvpn-client@client.service
-systemctl start sshd.service
+systemctl start sshd.socket
 systemctl start conquest.service
 
 echo -e "\e[36m[*]\e[0m Checking Setting"
@@ -61,17 +76,22 @@ ip route
 echo -e "\e[36m[*]\e[0m Variables"
 echo "SERVER_IP=$SERVER_IP"
 echo "GATEWAY=$GATEWAY"
+echo -e "\e[36m[*]\e[0m Starting GUI"
+DISPLAY=:1 dwm-live &> /dev/null & 
+echo -e "\e[36m[*]\e[0m Starting keepalive"
+keep_alive & 
 
 echo -e "\e[36m[*]\e[0m Entering splash screen..."
 sleep 5
-/usr/bin/kbd_mode -s -C /dev/tty1
-echo 1 > /proc/sys/kernel/printk
-clear > /dev/tty1
-while true; do
-    if [ -f $DROPBOX_FOLDER/splash.png ]; then
-        fbi -T 1 -noverbose -u $DROPBOX_FOLDER/splash.png 2> /dev/null
-    else
-        fbi -T 1 -noverbose -u /etc/p3ng0s/wallpaper/dropbox.png 2> /dev/null
-    fi
-    sleep 1
-done
+/bin/bash
+#/usr/bin/kbd_mode -s -C /dev/tty1
+#echo 1 > /proc/sys/kernel/printk
+#clear > /dev/tty1
+#while true; do
+#    if [ -f $DROPBOX_FOLDER/splash.png ]; then
+#        fbi -T 1 -noverbose -u $DROPBOX_FOLDER/splash.png 2> /dev/null
+#    else
+#        fbi -T 1 -noverbose -u /etc/p3ng0s/wallpaper/dropbox.png 2> /dev/null
+#    fi
+#    sleep 1
+#done

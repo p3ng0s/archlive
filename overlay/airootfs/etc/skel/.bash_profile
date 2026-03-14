@@ -58,7 +58,7 @@ $(cat ~/.p3ng0s.json | jq .)
 }
 
 MAIN_WM=dwm
-[[ "$(cat /etc/hostname)" = "p3ng0s-live" ]] && MAIN_WM=dwm-live
+[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && MAIN_WM=dwm-live
 
 [ ! -f ~/.p3ng0s.json ] && first_install
 if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then

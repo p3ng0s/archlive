@@ -61,6 +61,7 @@ tor
 wireshark-qt
 #openvpn # this is commented since it's inside of upstream uncomment when not in upstream
 stunnel
+macchanger
 
 # [ Libraries ]
 libnotify
@@ -142,6 +143,7 @@ zathura-pdf-mupdf
 zathura-ps
 brightnessctl
 dunst
+tigervnc
 
 # [ Package Dependencies ]
 #ckbcomp

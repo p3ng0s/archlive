@@ -1,0 +1,12 @@
+[Unit]
+Description=MAC Address Rotation Timer
+
+[Timer]
+OnUnitActiveSec=2h
+RandomizedDelaySec=1h
+AccuracySec=1min
+Unit=p3ng0s-dropbox-nethide.service
+
+[Install]
+WantedBy=p3ng0s-dropbox.target
+

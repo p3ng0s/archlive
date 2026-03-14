@@ -6,7 +6,7 @@ Requires=p3ng0s-mount-loot.service
 
 [Path]
 # Use a wildcard or a specific directory
-PathExistsGlob=/home/p4p1-live/loot/hashcat/*.hash
+PathExistsGlob=/home/p4p1-live/loot/hashcat/hash.*
 #PathExistsGlob=/home/p4p1/loot/hashcat/
 # This is the target or service we want to trigger
 Unit=p3ng0s-cracker-isolate-trigger.service

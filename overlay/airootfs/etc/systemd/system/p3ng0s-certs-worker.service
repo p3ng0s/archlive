@@ -10,7 +10,7 @@ StandardInput=tty
 StandardOutput=tty
 TTYPath=/dev/tty1
 Environment=TERM=linux
-ExecStart=/etc/p3ng0s/certs/cert-install.sh
+ExecStart=/etc/p3ng0s/certs/install-certs.sh
 RemainAfterExit=no
 User=root
 Group=root
