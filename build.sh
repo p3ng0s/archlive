@@ -19,7 +19,6 @@ UPSTREAM_FOLDER=$PWD/upstream/
 ISO_BUILD_DIR=$PWD/build/
 
 BACKUP_FILE=$PWD/backup.tar.xz
-BACKUP_FOLDER=$PWD/backup/
 
 WORK_FOLDER=$PWD/work
 ROOT_ARCHLIVE=$WORK_FOLDER/airootfs
@@ -38,6 +37,7 @@ OPERATOR_STRING=""
 # Display usage information
 function usage () {
 	echo -e "\e[1;31mUsage:\e[m" 1>&2
+	echo "$0 -o -> Multiple operator accounts." 1>&2
 	echo "$0 -b -> Build only." 1>&2
 	echo "$0 -p -> Pakcages only." 1>&2
 	echo "$0 -c -> Delete all temp folder and build folder." 1>&2
@@ -46,10 +46,11 @@ function usage () {
 	echo "$0 -f -> Flash a USB stick with the selected iso." 1>&2
 	echo -e "\e[1;31mExamples:\e[m" 1>&2
 	echo "$0" 1>&2
+	echo "$0 -o jakob:/home/backup.tar.xz,leo:/home/backup.tar.xz" 1>&2
+	echo "$0 -u http://leosmith.wtf/" 1>&2
 	echo "$0 -p" 1>&2
 	echo "$0 -b" 1>&2
 	echo "$0 -c" 1>&2
-	echo "$0 -u http://leosmith.wtf/" 1>&2
 	echo "$0 -f" 1>&2
 	exit -1
 }
@@ -224,10 +225,11 @@ function setup_accounts() {
 
 	sed -i "s|^root:[^:]*:|root:${hashed}:|" $WORK_FOLDER/airootfs/etc/shadow
 	sed -i "s|^p4p1-live:[^:]*:|p4p1-live:${hashed}:|" $WORK_FOLDER/airootfs/etc/shadow
-	IFS=':' read -ra OPERATORS <<< "$OPERATOR_STRING"
+	IFS=',' read -ra OPERATORS <<< "$OPERATOR_STRING"
 	for OPERATOR in "${OPERATORS[@]}"; do
 		# Split by , to get name and tarball
-		IFS=',' read -r NAME TARBALL <<< "$OPERATOR"
+		SHELL=/bin/bash
+		IFS=':' read -r NAME TARBALL <<< "$OPERATOR"
 		if [ -z "$NAME" ] || [ -z "$TARBALL" ]; then
 			echo "Invalid operator format: $OPERATOR"
 			continue
@@ -238,18 +240,20 @@ function setup_accounts() {
 		fi
 		echo -e "Creating operator: $OPERATOR -> \e[36m:)\e[0m"
 		mkdir -p $WORK_FOLDER/airootfs/home/$NAME
+		mkdir -p $WORK_FOLDER/airootfs/etc/tmpfiles.d/
 		tar -xf "$TARBALL" -C $WORK_FOLDER/airootfs/home/$NAME
 		echo "d /home/$NAME 0755 $NAME $NAME -" >> $WORK_FOLDER/airootfs/etc/tmpfiles.d/operators.conf
-		echo "$NAME:x:$UID_COUNTER:$UID_COUNTER::/home/$NAME:/bin/bash" >> $WORK_FOLDER/airootfs/etc/passwd
+		[ -f $WORK_FOLDER/airootfs/home/$NAME/.zshrc ] && SHELL=/bin/zsh
+		echo "$NAME:x:$UID_COUNTER:$UID_COUNTER::/home/$NAME:$SHELL" >> $WORK_FOLDER/airootfs/etc/passwd
 		echo "$NAME:!:19000:0:99999:7:::" >> $WORK_FOLDER/airootfs/etc/shadow
-		echo "$NAME:x:$UID_COUNTER:" >> $WORK_FOLDER/airootfs/etc/group
+		echo "$NAME:x:$UID_COUNTER:$NAME" >> $WORK_FOLDER/airootfs/etc/group
 		sed -i "s/^wheel:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
-		sed -i "s/^adm:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
-		sed -i "s/^uucp:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
-		sed -i "s/^lp:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
-		sed -i "s/^kvm:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
-		sed -i "s/^wireshark:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
-		sed -i "s/^installer:x:10:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^adm:x:4:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^uucp:x:14:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^lp:x:991:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^kvm:x:994:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^wireshark:x:150:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
+		sed -i "s/^installer:x:2000:.*/&,$NAME/" $WORK_FOLDER/airootfs/etc/group
 		UID_COUNTER=$((UID_COUNTER + 1))
 	done
 }
@@ -365,19 +369,10 @@ if [ ! -z $LINK_TO_BACKUP ]; then
 	# Download backup
 	echo -e "Fetching backup from $LINK_TO_BACKUP -> \e[36m:)\e[0m"
 	curl $LINK_TO_BACKUP --output $BACKUP_FILE
-	tar -xf $BACKUP_FILE -C $BACKUP_FOLDER
+	mkdir -p $ROOT_ARCHLIVE/home/p4p1-live/
+	tar -xf $BACKUP_FILE -C $ROOT_ARCHLIVE/home/p4p1-live/
 
-	## move config
-	[ -d "$BACKUP_FOLDER/.vim/" ] && cp -r $BACKUP_FOLDER/.vim/ $HOME_ARCHLIVE
-	[ -d "$BACKUP_FOLDER/.tmux/" ] && cp -r $BACKUP_FOLDER/.tmux/ $HOME_ARCHLIVE
-	[ -f "$BACKUP_FOLDER/.gdbinit" ] && cp -r $BACKUP_FOLDER/.gdbinit $HOME_ARCHLIVE
-	[ -f "$BACKUP_FOLDER/.Xresources" ] && cp -r $BACKUP_FOLDER/.Xresources $HOME_ARCHLIVE
-	[ -f "$BACKUP_FOLDER/.tmux.conf" ] && cp -r $BACKUP_FOLDER/.tmux.conf $HOME_ARCHLIVE
-	[ -f "$BACKUP_FOLDER/.vimrc" ] && cp -r $BACKUP_FOLDER/.vimrc $HOME_ARCHLIVE
-	[ -f "$BACKUP_FOLDER/.bashrc" ] && cp -r $BACKUP_FOLDER/.bashrc $HOME_ARCHLIVE
-	[ -f "$BACKUP_FOLDER/.tigrc" ] && cp -r $BACKUP_FOLDER/.tigrc $HOME_ARCHLIVE
-	[ -f "$BACKUP_FOLDER/.wallpaper.png" ] && cp -r $BACKUP_FOLDER/.wallpaper.png $HOME_ARCHLIVE
-	echo -e "Moved terminal config to archlive -> \e[36m:)\e[0m"
+	echo -e "Change the config of the default user p4p1-live -> \e[36m:)\e[0m"
 fi
 
 
