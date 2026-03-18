@@ -5,5 +5,5 @@ Description=SSH Activation Socket (Restricted to Interface)
 ListenStream=22
 # This will force sshd to listen only on the vpn usefull for the dropbox
 BindToDevice=tun0
-Accept=no
+Accept=yes
 FreeBind=yes

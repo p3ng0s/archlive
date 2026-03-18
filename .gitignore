@@ -5,6 +5,7 @@ build_dir/
 build/
 packager/
 backup.tar.xz
+backup_operator.tar.xz
 backup/
 #overlay/airootfs/etc/skel/.tmux/
 overlay/airootfs/etc/skel/.tmux/plugins/

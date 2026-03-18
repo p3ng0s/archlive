@@ -29,9 +29,15 @@ function keep_alive() {
         if ! pgrep stunnel > /dev/null; then
             systemctl restart stunnel.service &> /dev/null
         fi
-        if ! pgrep sshd > /dev/null; then
-            systemctl restart sshd.service &> /dev/null
-        fi
+    done
+}
+
+function debug_shell() {
+    echo -e "\e[36m[*]\e[0m Debug shell - type commands, 'exit' to continue"
+    while true; do
+        read -p "debug> " CMD < /dev/tty1
+        [ "$CMD" = "exit" ] && break
+        eval "$CMD"
     done
 }
 
@@ -83,15 +89,15 @@ keep_alive &
 
 echo -e "\e[36m[*]\e[0m Entering splash screen..."
 sleep 5
-/bin/bash
-#/usr/bin/kbd_mode -s -C /dev/tty1
-#echo 1 > /proc/sys/kernel/printk
-#clear > /dev/tty1
-#while true; do
-#    if [ -f $DROPBOX_FOLDER/splash.png ]; then
-#        fbi -T 1 -noverbose -u $DROPBOX_FOLDER/splash.png 2> /dev/null
-#    else
-#        fbi -T 1 -noverbose -u /etc/p3ng0s/wallpaper/dropbox.png 2> /dev/null
-#    fi
-#    sleep 1
-#done
+[ -f $DROPBOX_FOLDER/debug ] && debug_shell
+/usr/bin/kbd_mode -s -C /dev/tty1
+echo 1 > /proc/sys/kernel/printk
+clear > /dev/tty1
+while true; do
+    if [ -f $DROPBOX_FOLDER/splash.png ]; then
+        fbi -T 1 -noverbose -u $DROPBOX_FOLDER/splash.png 2> /dev/null
+    else
+        fbi -T 1 -noverbose -u /etc/p3ng0s/wallpaper/dropbox.png 2> /dev/null
+    fi
+    sleep 1
+done

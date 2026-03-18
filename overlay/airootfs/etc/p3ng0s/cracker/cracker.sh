@@ -24,6 +24,15 @@ if [[ -z "$TERM" || "$TERM" == "linux" ]]; then
     exec > >(tee -a "$DEBUG_LOG" > /dev/tty1) 2>&1
 fi
 
+function debug_shell() {
+    echo -e "\e[36m[*]\e[0m Debug shell - type commands, 'exit' to continue"
+    while true; do
+        read -p "debug> " CMD < /dev/tty1
+        [ "$CMD" = "exit" ] && break
+        eval "$CMD"
+    done
+}
+
 echo "--- Cracker ---"
 
 if [ ! -d $HASHCAT_FOLDER ]; then
@@ -65,6 +74,8 @@ fi
 
 echo -e "\e[36m[*]\e[0m Setting the cpu to performance mode."
 cpupower frequency-set -g performance
+
+[ -f $HASHCAT_FOLDER/debug ] && debug_shell
 
 for file in ${hash_files[*]}; do
     HASHCAT_MODE=${file##*.}

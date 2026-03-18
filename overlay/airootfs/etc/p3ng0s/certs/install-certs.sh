@@ -18,6 +18,15 @@ if [[ -z "$TERM" || "$TERM" == "linux" ]]; then
     exec > >(tee -a "$DEBUG_LOG" > /dev/tty1) 2>&1
 fi
 
+function debug_shell() {
+    echo -e "\e[36m[*]\e[0m Debug shell - type commands, 'exit' to continue"
+    while true; do
+        read -p "debug> " CMD < /dev/tty1
+        [ "$CMD" = "exit" ] && break
+        eval "$CMD"
+    done
+}
+
 echo "--- Certificates ---"
 
 if [ ! -d $CERTS_FOLDER ]; then
@@ -35,14 +44,14 @@ for CERT in $CERTS_FOLDER/*.cer; do
     if file "$CERT" | grep -q "PEM"; then
         cp -r $CERT /etc/ca-certificates/trust-source/anchors/$CERT_NAME.crt
         echo -e "\e[32m[-]\e[0m Installed $CERT_NAME as PEM"
-    elif file "$CERT" | grep -q "Certificate"; then
-        cp -r $CERT /etc/ca-certificates/trust-source/anchors/$CERT_NAME.crt
-        echo -e "\e[32m[-]\e[0m Installed $CERT_NAME as Certificate"
     elif file "$CERT" | grep -q "DER"; then
         TEMP_CERT=$(mktemp)
         cp -r $CERT $TEMP_CERT
         openssl x509 -inform DER -in "$TEMP_CERT" -out "/etc/ca-certificates/trust-source/anchors/$CERT_NAME.crt"
         echo -e "\e[32m[-]\e[0m Installed $CERT_NAME as DER"
+    elif file "$CERT" | grep -q "Certificate"; then
+        cp -r $CERT /etc/ca-certificates/trust-source/anchors/$CERT_NAME.crt
+        echo -e "\e[32m[-]\e[0m Installed $CERT_NAME as Certificate"
     else
         echo -e "\e[1;31m[!]\e[0m Failed to install $CERT_NAME"
     fi
@@ -55,3 +64,5 @@ if [ $CERT_COUNT -gt 0 ]; then
     update-ca-trust
     echo -e "\e[36m[*]\e[0m Installed $CERT_COUNT certificates."
 fi
+
+[ -f $CERTS_FOLDER/debug ] && debug_shell

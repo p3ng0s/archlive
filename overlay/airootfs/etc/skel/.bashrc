@@ -39,8 +39,8 @@
 # options:
 
 HISTCONTROL=ignoredups:ignorespace
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=10000
+HISTFILESIZE=20000
 
 set -o vi
 shopt -s histappend
@@ -86,7 +86,6 @@ alias powershell="pwsh"
 # shortcuts
 alias c='clear'
 alias r='cd $(cat ~/.last_dir)'
-alias less='bat'
 alias tojwt="base64 | sed s/\+/-/g | sed 's/\//_/g' | sed -E s/=+$//"
 alias j="journalctl -xe"
 alias yay="paru"
@@ -108,8 +107,6 @@ alias pacstore="pacman -Slq | fzf -m --preview 'cat <(pacman -Si {1}) <(pacman -
 alias yaystore="paru -Slq | fzf -m --preview 'cat <(paru -Si {1}) <(paru -Fl {1} | awk \"{print \$2}\")' | xargs -ro  paru -S"
 alias yayskip='paru -S --mflags --skipinteg'
 
-alias androidemu="$HOME/Android/Sdk/emulator/emulator @Pixel_4_API_S"
-
 # Directories and movement
 alias ...="cd ../.."
 alias .3="cd ../../.."
@@ -122,7 +119,7 @@ alias g++='g++ -Wall -Wextra -Werror'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+alias alert='notify-send -u critical "✓ Done" "$(history 1 | sed s/^[0-9]*\ //)"'
 
 # All of the Functions:
 
@@ -144,6 +141,12 @@ function md()
 {
 	/bin/mkdir $@
 	cd $@
+}
+function hashcatverify()
+{
+	HASHCAT_MODE=${1##*.}
+
+	hashcat -m $HASHCAT_MODE -a 0 $1 /opt/pentest/SecLists/Passwords/Leaked-Databases/rockyou.txt
 }
 function pwshenc()
 {
@@ -194,6 +197,22 @@ ex ()
 	fi
 }
 
+# Merge Checklist data into .bash_history
+function merge_checklist() {
+	local md_result
+	local checklist_path=$HOME/Documents/notes/Checklists/Tactic\ Techniques\ Procedures/
+
+	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && checklist_path=$HOME/loot/notes/Checklists/Tactic\ Techniques\ Procedures/
+	[[ -d "$checklist_path" ]] || { echo "merge_checklist: path not found: $checklist_path"; return 1; }
+	md_result=$(find "$checklist_path" -name "*.md" \
+	| xargs -I {} awk 'tolower($0) ~ /^```bash/{found=1; next} /^```/{found=0} found' '{}' \
+	| sort -u)
+
+	local tmp="$(mktemp)"
+	grep -vxFf <(echo "$md_result") ~/.bash_history > "$tmp"
+	{ echo "$md_result"; cat "$tmp"; } > ~/.bash_history
+	rm "$tmp"
+}
 # Prompt with git configuration
 function prompt()
 {
@@ -204,6 +223,9 @@ function prompt()
 	# Adding hostname or git: branch
 	POS=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
 	ISOK=$(git status -s --ignore-submodules=dirty 2> /dev/null)
+	history -a
+	history -c
+	history -r
 	if [[ $POS ]]; then
 		PROMPT="$PROMPT\[\e[34m\]${PWD##*/}\[\e[m\]"
 		if [[ $ISOK ]]; then
@@ -233,23 +255,18 @@ export PS4=$PS4
 export TERM="st-256color"
 export SHELL=/bin/bash
 export EDITOR=/usr/bin/vim
-export BROWSER=/usr/bin/firefox
+export BROWSER=/usr/bin/qutebrowser
 export TERMINAL=/usr/local/bin/st
 export LANG=en_US.UTF-8
 export SSLKEYLOGFILE=~/.ssl-key.log
-export TSHARK_FILTER="(not udp and not tls and not dns) and not (tcp.srcport eq 443 or tcp.dstport eq 443) and not (ip.src eq 95.179.212.68 or ip.dst eq 95.179.212.68) and not (tcp.srcport eq 80 or tcp.dstport eq 80)"
+export QT_QPA_PLATFORMTHEME=qt5ct
 
-# SDK and bin packages
-export PATH=$PATH:$HOME/go/bin/
-export ANDROID_SDK_ROOT=$HOME/Android/Sdk/
-export CHROME_EXECUTABLE=/usr/bin/chromium
-
+# checklist
+{ sleep 1 && merge_checklist; } &
+disown
 # Banner script
 sh banner.sh
 
-PATH="$HOME/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PATH="$PATH:$HOME/Documents/TECH/flutter/flutter/bin"; export PATH;
-PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"$HOME/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"; export PERL_MM_OPT;
+# SDK and bin packages
+export CHROME_EXECUTABLE=/usr/bin/chromium
+
