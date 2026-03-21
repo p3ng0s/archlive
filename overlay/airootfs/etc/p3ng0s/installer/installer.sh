@@ -17,17 +17,17 @@ PIPE="/tmp/install_log.pipe"
 [[ -p $PIPE ]] || mkfifo $PIPE
 
 # Start tmux, hide the status bar for that "Bashtop" fullscreen look
-tmux new-session -d -s $SESSION -n 'Installer'
+tmux -f /dev/null new-session -d -s $SESSION -n 'Installer'
 tmux set-option -t $SESSION status off
 
 # Split: Left (80%) for UI, Right (20%) for Logs
 tmux split-window -h -p 25
 
 # Right Pane (Pane 1): Just read the pipe forever
-tmux send-keys -t $SESSION:0.1 "clear && cat $PIPE" C-m
+tmux send-keys -t $SESSION:0.1 "clear && tail -f $PIPE" C-m
 
 # Left Pane (Pane 0): Run the actual installer logic
-tmux send-keys -t $SESSION:0.0 "bash logic.sh" C-m
+tmux send-keys -t $SESSION:0.0 "bash /etc/p3ng0s/installer/logic.sh" C-m
 
 tmux select-pane -t $SESSION:0.0
 

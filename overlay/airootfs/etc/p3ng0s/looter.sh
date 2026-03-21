@@ -23,41 +23,10 @@ function blink_confirm() {
 }
 
 if [ "$1" == "-m" ]; then
-	if [ ! -z "$NETWORK_LOOT_CMD" ]; then
-		eval "$NETWORK_LOOT_CMD -o /tmp/loot.tar.xz"
-		mkdir -p "/tmp/loot/"
-		tar -xf "/tmp/loot.tar.xz" -C "/tmp/loot/"
-		rm -rf /tmp/loot.tar.xz
-		for USER_HOME in /home/*; do
-			[ -d "$USER_HOME" ] || continue
-			LOOT_DIR=$USER_HOME/loot
-			mkdir -p "$LOOT_DIR"
-			USER_NAME=$(basename "$USER_HOME")
-			chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
-			# Bind mount the extracted folder
-			mount --bind "/tmp/loot/" "$LOOT_DIR"
-		done
-		blink_confirm &
-	fi
-
 	LOOT_PARTITION=$(blkid -L "LOOT")
-	if [ -n "$LOOT_PARTITION" ]; then
-		for USER_HOME in /home/*; do
-			[ -d "$USER_HOME" ] || continue
-			LOOT_DIR=$USER_HOME/loot
-			mkdir -p $LOOT_DIR
-			USER_NAME=$(basename "$USER_HOME")
-			chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
-			USER_ID=$(id -u "$USER_NAME")
-			GROUP_ID=$(id -g "$USER_NAME")
-			LOOP_DEV=$(losetup -fP --show $LOOT_PARTITION)
-			mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" "$LOOP_DEV" "$LOOT_DIR"
-		done
-		blink_confirm &
-	fi
-
 	VAULT_PARTITION=$(blkid -L "VAULT")
-	if [ -n "$VAULT_PARTITION" ]; then
+
+	if [ -n "$LOOT_PARTITION" ] || [ -n "$VAULT_PARTITION" ]; then
 		if cryptsetup isLuks "$VAULT_PARTITION"; then
 			# 1. Check if we are running at boot (no real user session yet)
 			if [[ -z "$TERM" || "$TERM" == "linux" ]]; then
@@ -72,23 +41,45 @@ if [ "$1" == "-m" ]; then
 			fi
 			LOOP_DEV=$(losetup -fP --show $VAULT_PARTITION)
 			echo $PASS | cryptsetup open "$LOOP_DEV" luks_loot -
-			if [ -b "/dev/mapper/luks_loot" ]; then
-				echo -e "\e[36m[*]\e[0m Correct password mounting loot!"
-				for USER_HOME in /home/*; do
-					[ -d "$USER_HOME" ] || continue
-					LOOT_DIR=$USER_HOME/loot
-					mkdir -p $LOOT_DIR
-					USER_NAME=$(basename "$USER_HOME")
-					chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
-					USER_ID=$(id -u "$USER_NAME")
-					GROUP_ID=$(id -g "$USER_NAME")
-					mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" /dev/mapper/luks_loot "$LOOT_DIR"
-				done
-				blink_confirm &
-			else
+			if [ ! -b "/dev/mapper/luks_loot" ]; then
 				echo -e "\e[1;31m[!]\e[0m Incorrect password loot won't be mounted"
+				exit 1
+			else
+				echo -e "\e[36m[*]\e[0m Correct password mounting loot!"
 			fi
+		else
+			LOOP_DEV=$(losetup -fP --show $LOOT_PARTITION)
 		fi
+		for USER_HOME in /home/*; do
+			[ -d "$USER_HOME" ] || continue
+			LOOT_DIR=$USER_HOME/loot
+			mkdir -p $LOOT_DIR
+			USER_NAME=$(basename "$USER_HOME")
+			chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
+			USER_ID=$(id -u "$USER_NAME")
+			GROUP_ID=$(id -g "$USER_NAME")
+			if [ ! -b "/dev/mapper/luks_loot" ]; then
+				mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" "$LOOP_DEV" "$LOOT_DIR"
+			else
+				mount -o "rw,nosuid,nodev,relatime,user,umask=000,uid=$USER_ID,gid=$GROUP_ID" /dev/mapper/luks_loot "$LOOT_DIR"
+			fi
+		done
+		blink_confirm &
+	elif [ ! -z "$NETWORK_LOOT_CMD" ]; then
+		eval "$NETWORK_LOOT_CMD -o /tmp/loot.tar.xz"
+		mkdir -p "/tmp/loot/"
+		tar -xf "/tmp/loot.tar.xz" -C "/tmp/loot/"
+		rm -rf /tmp/loot.tar.xz
+		for USER_HOME in /home/*; do
+			[ -d "$USER_HOME" ] || continue
+			LOOT_DIR=$USER_HOME/loot
+			mkdir -p "$LOOT_DIR"
+			USER_NAME=$(basename "$USER_HOME")
+			chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
+			# Bind mount the extracted folder
+			mount --bind "/tmp/loot/" "$LOOT_DIR"
+		done
+		blink_confirm &
 	fi
 else
 		for USER_HOME in /home/*; do

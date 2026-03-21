@@ -203,7 +203,7 @@ function merge_checklist() {
 	local checklist_path=$HOME/Documents/notes/Checklists/Tactic\ Techniques\ Procedures/
 
 	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && checklist_path=$HOME/loot/notes/Checklists/Tactic\ Techniques\ Procedures/
-	[[ -d "$checklist_path" ]] || { echo "merge_checklist: path not found: $checklist_path"; return 1; }
+	[[ -d "$checklist_path" ]] || { return 1; }
 	md_result=$(find "$checklist_path" -name "*.md" \
 	| xargs -I {} awk 'tolower($0) ~ /^```bash/{found=1; next} /^```/{found=0} found' '{}' \
 	| sort -u)

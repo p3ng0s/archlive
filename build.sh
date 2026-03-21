@@ -116,14 +116,13 @@ function flash_iso() {
 	sleep 1
 	echo -e "\e[1;31mInstalling OS!\e[m"
 	pv "$isofile" | dd of="$selected_partition" bs=4M conv=fsync oflag=direct iflag=fullblock
-	echo "sgdisk -e $selected_partition"
 	sgdisk -e "$selected_partition"
-	echo "partprobe '$selected_partition'"
 	partprobe "$selected_partition"
 	sleep 1
-	echo -e "\e[1;31mCreating partition!\e[m"
-	echo "parted --script '$selected_partition' mkpart primary ext4 50GB 100%"
-	parted --script "$selected_partition" mkpart primary ext4 50GB 100%
+	ISO_SIZE=$(du -b "$isofile" | awk '{print $1}')
+	ISO_SIZE_GiB=$(( ISO_SIZE / 1024 / 1024 / 1024 + 2 ))  # +1 for rounding up
+	echo -e "\e[1;31mCreating partition after ${ISO_SIZE_GiB}GB!\e[m"
+	parted --script "$selected_partition" mkpart primary ext4 ${ISO_SIZE_GiB}GB 100%
 	fdisk -l
 	echo "waiting 5 seconds for drive to be okay to mess around with"
 	sleep 5

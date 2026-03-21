@@ -10,7 +10,7 @@
     progress_bar_frame_color = "#FF875F"
 
     ### Geometry — top-left, stacked downward ###
-    origin          = top-left
+    origin          = top-right
     offset          = 16x48
     width           = (240, 380)
     height          = 120
@@ -45,7 +45,7 @@
     font            = Hack Nerd Font Mono 10
     line_height     = 2
     markup          = full
-    format          = "<b>%s</b>\n%b"
+    format          = "%s%b"
     alignment       = left
     vertical_alignment = center
     word_wrap       = yes
@@ -107,12 +107,21 @@
 # Give purple accent to anything from your terminal
 [terminal]
     appname     = "st"
+    markup          = full
     urgency     = critical
     foreground  = "#fff"
     frame_color = "#bd93f9"
     background = "#bd93f9"
+[system]
+    appname     = "system"
+    markup          = full
+    urgency     = critical
+    foreground  = "#393939"
+    frame_color = "#FF875F"
+    background = "#FF875F"
 [win]
     appname     = "win"
+    markup          = full
     urgency     = critical
     foreground  = "#000"
     frame_color = "#5fb5ff"

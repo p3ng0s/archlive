@@ -1,0 +1,15 @@
+[Unit]
+Description=DWM service for Virtual Display
+After=network.target
+Requires=p3ng0s-dropbox-worker.service p3ng0s-dropbox-gui.service
+
+[Service]
+Type=simple
+User=p4p1-live
+Group=p4p1-live
+Environment=DISPLAY=:1
+ExecStart=/usr/local/bin/dwm-live
+Restart=on-failure
+
+[Install]
+WantedBy=p3ng0s-dropbox.target

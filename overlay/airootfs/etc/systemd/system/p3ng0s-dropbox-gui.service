@@ -6,6 +6,7 @@ Requires=p3ng0s-dropbox-worker.service
 [Service]
 Type=simple
 User=p4p1-live
+Group=p4p1-live
 ExecStart=/usr/bin/Xvnc :1 -geometry 1920x1080 -depth 24 -rfbport 5901 -SecurityTypes None -localhost
 Restart=on-failure
 

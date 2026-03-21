@@ -83,7 +83,7 @@ echo -e "\e[36m[*]\e[0m Variables"
 echo "SERVER_IP=$SERVER_IP"
 echo "GATEWAY=$GATEWAY"
 echo -e "\e[36m[*]\e[0m Starting GUI"
-DISPLAY=:1 dwm-live &> /dev/null & 
+systemctl status p3ng0s-dropbox-gui-dwm.service
 echo -e "\e[36m[*]\e[0m Starting keepalive"
 keep_alive & 
 
