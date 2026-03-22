@@ -33,6 +33,7 @@ opencl-icd-loader
 clinfo
 llhttp
 fbida
+ntfs-3g
 
 # [ Drivers & GPU ]
 #intel-compute-runtime

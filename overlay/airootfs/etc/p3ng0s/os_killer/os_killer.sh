@@ -176,6 +176,7 @@ function encryption_check() {
                     echo "[+] BitLocker unlocked with key from file!"
                     PART=/dev/mapper/unlock
                     echo "/dev/mapper/unlock"
+                    ntfsfix -d $PART
                     return 0
                 fi
             done < /home/p4p1-live/loot/bitlocker.txt
@@ -188,6 +189,7 @@ function encryption_check() {
         if [[ $? -eq 0 ]]; then
             PART=/dev/mapper/unlock
             echo "/dev/mapper/unlock"
+            ntfsfix -d $PART
             return 0
         else
             echo "[!] Failed to unlock BitLocker. Exiting."

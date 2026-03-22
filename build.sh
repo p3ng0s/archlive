@@ -32,11 +32,13 @@ PACKAGER_REPO=https://github.com/p3ng0s/packager
 PACKAGER_FOLDER=$PWD/packager
 
 DOCKER=false
+ENABLE_ALL=false
 OPERATOR_STRING=""
 
 # Display usage information
 function usage () {
 	echo -e "\e[1;31mUsage:\e[m" 1>&2
+	echo "$0 -a -> Support everything (This makes a big .iso don't use it)" 1>&2
 	echo "$0 -o -> Multiple operator accounts." 1>&2
 	echo "$0 -b -> Build only." 1>&2
 	echo "$0 -p -> Pakcages only." 1>&2
@@ -52,6 +54,7 @@ function usage () {
 	echo "$0 -b" 1>&2
 	echo "$0 -c" 1>&2
 	echo "$0 -f" 1>&2
+	echo "$0 -a" 1>&2
 	exit -1
 }
 
@@ -311,6 +314,9 @@ while getopts "bdfpcu:o:" o; do
 			;;
 		d)
 			DOCKER=true
+			;;
+		a)
+			ENABLE_ALL=true
 			;;
 		o)
 			OPERATOR_STRING=$OPTARG
