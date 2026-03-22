@@ -166,9 +166,9 @@ function package_builder () {
 	git checkout $branch
 	if [ "$DOCKER" = true ]; then
 		chown builder:builder . -R
-		[ "$ENABLE_ALL" = true] && sudo -u builder ./setup.sh -a || sudo -u builder ./setup.sh
+		[ "$ENABLE_ALL" = true ] && sudo -u builder ./setup.sh -a || sudo -u builder ./setup.sh
 	else
-		[ "$ENABLE_ALL" = true] && ./setup.sh -a || ./setup.sh -a
+		[ "$ENABLE_ALL" = true ] && ./setup.sh -a || ./setup.sh
 	fi
 	cd $BUILD_TMP_DIR
 	echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
@@ -415,11 +415,13 @@ if [ ! -d $PACKAGER_FOLDER ]; then
 	package_builder
 fi
 
-if [ "$ENABLE_ALL" = true]; then
+if [ "$ENABLE_ALL" = true ]; then
 	sed -i "s|^#\(.*docker.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	sed -i "s|^#\(.*docker-compose.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	sed -i "s|^#\(.*qemu-full.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	sed -i "s|^#\(.*edk2-ovmf.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	sed -i "s|^#\(.*metasploit.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	sed -i "s|^#\(.*android-tools.*\)|\1|" $WORK_FOLDER/packages.x86_64
 fi
 
 # Last step build iso

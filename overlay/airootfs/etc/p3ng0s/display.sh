@@ -65,14 +65,19 @@ if (( ${#FOUND_X_DISPLAYS[*]} == 2 )); then
 		xrandr --output $OTHER --auto --above $PRIMARY
 		feh --bg-fill $HOME/.wallpaper.png
 	fi
+
+else # no displays
+	PRIMARY=${FOUND_X_DISPLAYS[0]}
+	res=$(get_resolution $PRIMARY)
+
 	# steam deck resolution rotation
 	if [[ "$res" == "800x1280" ]]; then
 		xrandr --output $PRIMARY --rotate right
 		TOUCH_DEVICE=$(xinput list --name-only | grep -i "FTS3528\|touchscreen" | head -n1)
 		[ -n "$TOUCH_DEVICE" ] && xinput set-prop "$TOUCH_DEVICE" "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
 		feh --bg-fill $HOME/.wallpaper.png
+	else
+		xrandr --auto
+		feh --bg-fill $HOME/.wallpaper.png
 	fi
-else # no displays
-	xrandr --auto
-	feh --bg-fill $HOME/.wallpaper.png
 fi

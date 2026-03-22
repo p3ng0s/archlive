@@ -51,6 +51,7 @@ cpupower
 # [ Networking ]
 dhclient
 filezilla
+samba
 fping
 freerdp
 networkmanager
@@ -61,6 +62,7 @@ sshuttle
 tcpreplay
 tor
 wireshark-qt
+tcpdump
 #openvpn # this is commented since it's inside of upstream uncomment when not in upstream
 stunnel
 macchanger
@@ -88,6 +90,8 @@ ruby-bundler
 # [ Recon ]
 nikto
 whois
+nmap
+wpscan
 
 # [ Exploit ]
 impacket
@@ -96,6 +100,9 @@ bettercap
 hashcat
 chntpw
 hivex
+sqlmap
+hydra
+#metasploit
 
 # [ Exploit Dependencies ]
 java-environment-common
@@ -172,6 +179,7 @@ python
 ruby
 sqlitebrowser
 valgrind
+#android-tools
 
 # [ Compatibility ]
 wine
