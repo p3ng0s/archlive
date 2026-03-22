@@ -193,3 +193,9 @@ xclip
 xorg-apps
 xorg-server
 xorg-xinit
+
+# [ Virtualization ]
+#docker
+#docker-compose
+#qemu-full
+#edk2-ovmf

@@ -166,9 +166,9 @@ function package_builder () {
 	git checkout $branch
 	if [ "$DOCKER" = true ]; then
 		chown builder:builder . -R
-		sudo -u builder ./setup.sh
+		[ "$ENABLE_ALL" = true] && sudo -u builder ./setup.sh -a || sudo -u builder ./setup.sh
 	else
-		./setup.sh
+		[ "$ENABLE_ALL" = true] && ./setup.sh -a || ./setup.sh -a
 	fi
 	cd $BUILD_TMP_DIR
 	echo -e "Installed p3ng0s repositories -> \e[36m:)\e[0m"
@@ -192,6 +192,16 @@ function build() {
 }
 
 function driver_support() {
+	if [ "$ENABLE_ALL" = true ]; then
+		sed -i "s|^#\(.*nvidia.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*nvidia-utils.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*opencl-nvidia.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*rocm-opencl-runtime.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*hip-runtime-amd.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*rocm-hip-sdk.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*intel-compute-runtime.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		return
+	fi
 	drivers=$(dialog --title "Driver support" \
 		--checklist "...." 20 70 15 \
 		"intel" "Intel ~2GB" on\
@@ -202,7 +212,7 @@ function driver_support() {
 
 	if [ $EXIT_STATUS -ne 0 ]; then
 		echo "Exiting..."
-		break
+		return
 	fi
 	if echo "$drivers" | grep -q "nvidia"; then
 		sed -i "s|^#\(.*nvidia.*\)|\1|" $WORK_FOLDER/packages.x86_64
@@ -278,7 +288,7 @@ function network_loot_support() {
 	done
 }
 
-while getopts "bdfpcu:o:" o; do
+while getopts "abdfpcu:o:" o; do
 	case "${o}" in
 		c)
 			#echo -e "Removing the $PACKAGER_FOLDER folder -> \e[36m:)\e[0m"
@@ -380,7 +390,6 @@ if [ ! -z $LINK_TO_BACKUP ]; then
 	echo -e "Change the config of the default user p4p1-live -> \e[36m:)\e[0m"
 fi
 
-
 # Pick a wallpaper
 options=( "None" "" )
 for item in "$OVERLAY_ROOTFS/etc/p3ng0s/wallpaper/"*; do
@@ -404,6 +413,13 @@ if [ ! -d $PACKAGER_FOLDER ]; then
 	echo -e "Pachakes don't exist I will build them :)-> \e[36m:)\e[0m"
 	# Build all packages
 	package_builder
+fi
+
+if [ "$ENABLE_ALL" = true]; then
+	sed -i "s|^#\(.*docker.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	sed -i "s|^#\(.*docker-compose.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	sed -i "s|^#\(.*qemu-full.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	sed -i "s|^#\(.*edk2-ovmf.*\)|\1|" $WORK_FOLDER/packages.x86_64
 fi
 
 # Last step build iso
