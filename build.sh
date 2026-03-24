@@ -34,6 +34,7 @@ PACKAGER_FOLDER=$PWD/packager
 DOCKER=false
 ENABLE_ALL=false
 OPERATOR_STRING=""
+GIT_APPOCALYPSE_OVERWRITE=
 
 # Display usage information
 function usage () {
@@ -164,6 +165,9 @@ function package_builder () {
 	BUILD_TMP_DIR=$(pwd)
 	cd $PACKAGER_FOLDER
 	git checkout $branch
+	if [ ! -z $GIT_APPOCALYPSE_OVERWRITE ]; then
+		cp -r $GIT_APPOCALYPSE_OVERWRITE ./packager/git-appocalypse/tools.json
+	fi
 	if [ "$DOCKER" = true ]; then
 		chown builder:builder . -R
 		[ "$ENABLE_ALL" = true ] && sudo -u builder ./setup.sh -a || sudo -u builder ./setup.sh
@@ -288,7 +292,7 @@ function network_loot_support() {
 	done
 }
 
-while getopts "abdfpcu:o:" o; do
+while getopts "gabdfpcu:o:" o; do
 	case "${o}" in
 		c)
 			#echo -e "Removing the $PACKAGER_FOLDER folder -> \e[36m:)\e[0m"
@@ -321,6 +325,9 @@ while getopts "abdfpcu:o:" o; do
 			;;
 		u)
 			LINK_TO_BACKUP=$OPTARG
+			;;
+		g)
+			GIT_APPOCALYPSE_OVERWRITE="$OPTARG"
 			;;
 		d)
 			DOCKER=true
