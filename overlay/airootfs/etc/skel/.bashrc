@@ -200,10 +200,10 @@ ex ()
 # Merge Checklist data into .bash_history
 function merge_checklist() {
 	local md_result
-	local checklist_path=$HOME/Documents/notes/Checklists/Tactic\ Techniques\ Procedures/
+	local checklist_path=$HOME/Documents/notes/Checklists/
 
 	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && checklist_path=$HOME/loot/notes/Checklists/Tactic\ Techniques\ Procedures/
-	[[ -d "$checklist_path" ]] || { return 1; }
+	[[ -d "$checklist_path" ]] || { echo "merge_checklist: path not found: $checklist_path"; return 1; }
 	md_result=$(find "$checklist_path" -name "*.md" \
 	| xargs -I {} awk 'tolower($0) ~ /^```bash/{found=1; next} /^```/{found=0} found' '{}' \
 	| sort -u)
@@ -270,3 +270,12 @@ sh banner.sh
 # SDK and bin packages
 export CHROME_EXECUTABLE=/usr/bin/chromium
 
+export PATH=$PATH:$HOME/go/bin/
+PATH="$HOME/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PATH="$PATH:$HOME/Documents/TECH/flutter/flutter/bin"; export PATH;
+PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin"; export PATH;
+PATH="$PATH:$HOME/.local/bin"; export PATH;
+PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"$HOME/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"; export PERL_MM_OPT;

