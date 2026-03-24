@@ -57,6 +57,7 @@ echo -e "\e[36m[*]\e[0m Mounting files"
 mount --bind $DROPBOX_FOLDER/stunnel.conf /etc/stunnel/stunnel.conf
 mount --bind $DROPBOX_FOLDER/client.ovpn /etc/openvpn/client/client.conf
 [ -f $DROPBOX_FOLDER/sshd_config ] && mount --bind $DROPBOX_FOLDER/sshd_config /etc/ssh/sshd_config
+[ -f $DROPBOX_FOLDER/conquest.toml ] && mount --bind $DROPBOX_FOLDER/conquest.toml /etc/conquest/default.toml
 
 sleep 2
 echo -e "\e[36m[*]\e[0m Starting services"
