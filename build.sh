@@ -166,7 +166,7 @@ function package_builder () {
 	cd $PACKAGER_FOLDER
 	git checkout $branch
 	if [ ! -z $GIT_APPOCALYPSE_OVERWRITE ]; then
-		cp -r $GIT_APPOCALYPSE_OVERWRITE ./packager/git-appocalypse/tools.json
+		cp -r $GIT_APPOCALYPSE_OVERWRITE ./git-appocalypse/tools.json
 	fi
 	if [ "$DOCKER" = true ]; then
 		chown builder:builder . -R
@@ -420,6 +420,15 @@ if [ ! -d $PACKAGER_FOLDER ]; then
 	echo -e "Pachakes don't exist I will build them :)-> \e[36m:)\e[0m"
 	# Build all packages
 	package_builder
+elif [ ! -z $GIT_APPOCALYPSE_OVERWRITE ]; then # package already built but found overwrite so rebuilding git-appocalypse
+	PKG_TMP_DIR=$(pwd)
+	cp -r $GIT_APPOCALYPSE_OVERWRITE ./packager/git-appocalypse/tools.json
+	cd packager/git-appocalypse/
+	rm -rf src/ pkg/
+	makepkg
+	repo-add -n ../repo/p3ng0s.db.tar.gz $(find . -name "*.tar.zst")
+	mv *.tar.zst ../repo
+	cd $PKG_TMP_DIR
 fi
 
 if [ "$ENABLE_ALL" = true ]; then

