@@ -27,7 +27,7 @@ if [ "$1" == "-m" ]; then
 	VAULT_PARTITION=$(blkid -L "VAULT")
 
 	if [ -n "$LOOT_PARTITION" ] || [ -n "$VAULT_PARTITION" ]; then
-		if cryptsetup isLuks "$VAULT_PARTITION"; then
+		if cryptsetup isLuks "$VAULT_PARTITION" 2> /dev/null; then
 			# 1. Check if we are running at boot (no real user session yet)
 			if [[ -z "$TERM" || "$TERM" == "linux" ]]; then
 				# Direct hijack of the console to ensure it BLOCKS
@@ -88,6 +88,6 @@ else
 			umount $LOOT_DIR
 			rm -rf $LOOT_DIR
 		done
-		cryptsetup close luks_loot
+		cryptsetup close luks_loot 2> /dev/null
 fi
 sleep 2

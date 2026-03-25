@@ -4,8 +4,7 @@ After=p3ng0s-mount-loot.service
 Requires=p3ng0s-mount-loot.service
 
 [Path]
-PathExistsGlob=/home/p4p1-live/loot/certs/*.cer
-PathChanged=/home/p4p1-live/loot/certs
+PathExistsGlob=/home/p4p1-live/loot/certs
 Unit=p3ng0s-certs-worker.service
 
 [Install]
