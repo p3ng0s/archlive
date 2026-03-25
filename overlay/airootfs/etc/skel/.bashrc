@@ -154,7 +154,7 @@ function pwshenc()
 }
 function xfreerdp()
 {
-	xfreerdp /dynamic-resolution /drive:win,/opt/windows/ ${@}
+	/usr/bin/xfreerdp3 /dynamic-resolution /drive:win,/opt/windows/ ${@}
 }
 function keesave()
 {
@@ -197,12 +197,28 @@ ex ()
 	fi
 }
 
+# tmux variable management
+function set-target() {
+	if [ -n "$TMUX" ]; then
+		case $1 in
+			'-i')	tmux set-env IP "$2"; export IP="$2";;
+			'-d')	tmux set-env DNS "$2"; export DNS="$2";;
+			'-u')	tmux set-env USERNAME "$2"; export USERNAME="$2";;
+			'-p')	tmux set-env PASSWORD "$2"; export PASSWORD="$2";;
+			'-H')	tmux set-env HASH "$2"; export HASH="$2";;
+			'-t')	tmux set-env KRB5CCNAME "$2"; export KRB5CCNAME="$2";;
+			'-s')	tmux set-env SCOPE "$2"; export SCOPE="$2";;
+			'-U')	tmux set-env URL "$2"; export URL="$2";;
+			*)	echo -e "\033[0;31m[!]\033[0m Unknown: $1. Accepted: -i IP -d DOMAIN -u USERNAME -p PASSWORD -H HASH -t KRB5CCNAME -s SCOPE -U URL"
+		esac
+	fi
+}
 # Merge Checklist data into .bash_history
 function merge_checklist() {
 	local md_result
 	local checklist_path=$HOME/Documents/notes/Checklists/
 
-	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && checklist_path=$HOME/loot/notes/Checklists/Tactic\ Techniques\ Procedures/
+	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && checklist_path=$HOME/loot/notes/Checklists/
 	[[ -d "$checklist_path" ]] || { echo "merge_checklist: path not found: $checklist_path"; return 1; }
 	md_result=$(find "$checklist_path" -name "*.md" \
 	| xargs -I {} awk 'tolower($0) ~ /^```bash/{found=1; next} /^```/{found=0} found' '{}' \
@@ -213,9 +229,32 @@ function merge_checklist() {
 	{ echo "$md_result"; cat "$tmp"; } > ~/.bash_history
 	rm "$tmp"
 }
+function sync_vars() {
+	val=$(tmux show-env IP 2>/dev/null)
+	[[ "$val" == IP=* ]] && export IP="${val#IP=}"
+	val=$(tmux show-env DNS 2>/dev/null)
+	[[ "$val" == DNS=* ]] && export DNS="${val#DNS=}"
+	val=$(tmux show-env USERNAME 2>/dev/null)
+	[[ "$val" == USERNAME=* ]] && export USERNAME="${val#USERNAME=}"
+	val=$(tmux show-env PASSWORD 2>/dev/null)
+	[[ "$val" == PASSWORD=* ]] && export PASSWORD="${val#PASS=}"
+	val=$(tmux show-env HASH 2>/dev/null)
+	[[ "$val" == HASH=* ]] && export HASH="${val#HASH=}"
+	val=$(tmux show-env KRB5CCNAME 2>/dev/null)
+	[[ "$val" == KRB5CCNAME=* ]] && export KRB5CCNAME="${val#KRB5CCNAME=}"
+	val=$(tmux show-env SCOPE 2>/dev/null)
+	[[ "$val" == SCOPE=* ]] && export SCOPE="${val#SCOPE=}"
+	val=$(tmux show-env URL 2>/dev/null)
+	[[ "$val" == URL=* ]] && export URL="${val#URL=}"
+}
 # Prompt with git configuration
 function prompt()
 {
+	# Sync pentest variables
+	if [ ! -z "$TMUX" ]; then
+		{ sync_vars &> /dev/null ; } &
+		disown
+	fi
 	# Adding user name
 	PROMPT="[\[\e[;31m\]$(whoami)\[\e[m\]"
 	# Adding '@' sepparator
