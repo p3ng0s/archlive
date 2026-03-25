@@ -121,6 +121,22 @@ alias g++='g++ -Wall -Wextra -Werror'
 #   sleep 10; alert
 alias alert='notify-send -u critical "✓ Done" "$(history 1 | sed s/^[0-9]*\ //)"'
 
+function pre_command() {
+	[ -z "$TMUX" ] && return
+	CMD=$(echo "$BASH_COMMAND" | awk '{print $1}')
+	if [ "$CMD" = "ranger" ]; then
+		tmux rename-window "ranger"
+	elif [ "$CMD" = "ssh" ]; then
+		tmux rename-window "$BASH_COMMAND"
+	elif [ "$CMD" = "sudo" ]; then
+		tmux rename-window "$(echo $BASH_COMMAND | cut -d' ' -f2-)"
+	else
+		tmux rename-window "${PWD##*/}"
+	fi
+}
+
+trap 'pre_command' DEBUG
+
 # All of the Functions:
 
 # check if you are connected to tor
@@ -308,13 +324,3 @@ sh banner.sh
 
 # SDK and bin packages
 export CHROME_EXECUTABLE=/usr/bin/chromium
-
-export PATH=$PATH:$HOME/go/bin/
-PATH="$HOME/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PATH="$PATH:$HOME/Documents/TECH/flutter/flutter/bin"; export PATH;
-PATH="$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin"; export PATH;
-PATH="$PATH:$HOME/.local/bin"; export PATH;
-PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"$HOME/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"; export PERL_MM_OPT;
