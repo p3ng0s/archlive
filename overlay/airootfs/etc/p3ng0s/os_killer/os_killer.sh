@@ -243,6 +243,15 @@ function hybernation_check() {
         [ $SEL = 1 ] && mount -t ntfs-3g -o ro "$PART" /mnt
         [ $SEL = 2 ] && $(ntfsfix -d "$PART" ; mount -o remove_hiberfile "$PART" /mnt)
         [ $SEL = 3 ] && mount -t ntfs-3g -o remove_hiberfile=no "$PART" /mnt
+    elif echo "$MOUNT_TEST" | grep -qi "unclean"; then
+        SEL=$(dialog --title "Unclean File System Detected!" \
+            --menu "\nWindows is unclean on $PART.\nWhat do you want to do?" 15 60 3 \
+            1 "Mount Read-Only (safe, limited attacks)" \
+            2 "Fix then mount (recommended)" \
+            2>&1 >/dev/tty)
+
+        [ $SEL = 1 ] && mount -t ntfs-3g -o ro "$PART" /mnt
+        [ $SEL = 2 ] && $(ntfsfix -d "$PART" ; mount "$PART" /mnt)
     else
         mount $PART /mnt
     fi
