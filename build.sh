@@ -292,13 +292,11 @@ function network_loot_support() {
 	done
 }
 
-while getopts "gabdfpcu:o:" o; do
+while getopts "g:abdfpcu:o:" o; do
 	case "${o}" in
 		c)
 			#echo -e "Removing the $PACKAGER_FOLDER folder -> \e[36m:)\e[0m"
 			#rm -rf $PACKAGER_FOLDER
-			echo -e "Removing the $BACKUP_FOLDER folder -> \e[36m:)\e[0m"
-			rm -rf $BACKUP_FOLDER
 			echo -e "Delete $ISO_BUILD_DIR -> \e[36m:)\e[0m"
 			rm -rf $ISO_BUILD_DIR
 			#echo -e "Delete $PWD/out/ -> \e[36m:)\e[0m"
@@ -412,6 +410,7 @@ driver_support
 setup_accounts
 network_loot_support
 
+echo $GIT_APPOCALYPSE_OVERWRITE
 if [ ! -d $PACKAGER_FOLDER ]; then
 	#if [ "$EUID" -eq 0 ]; then
 	#	echo -e "\e[1;31mPlease do not run as root\e[m"
