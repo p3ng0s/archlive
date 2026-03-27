@@ -8,7 +8,10 @@ RUN pacman --noconfirm -S fakeroot debugedit sudo dialog rsync patch diffutils \
                         xautomation cowsay fortune-mod lolcat figlet doge xclip \
                         zathura man java-runtime-common libxss  libxtst libxfixes \
                         libxdamage libxcomposite imake python python-gitpython gtk-doc \
-                        gobject-introspection
+                        gobject-introspection glib2-devel nim nimble base-devel glfw-x11 glu jq git
+
+# Fix gtk2 not installed in docker so conquest cannot build -_-
+
 RUN useradd -m builder && \
     echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
