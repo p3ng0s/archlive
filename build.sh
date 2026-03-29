@@ -127,7 +127,7 @@ function flash_iso() {
 	ISO_SIZE_GiB=$(( ISO_SIZE / 1024 / 1024 / 1024 + 2 ))  # +1 for rounding up
 	echo -e "\e[1;31mCreating partition after ${ISO_SIZE_GiB}GB!\e[m"
 	parted --script "$selected_partition" mkpart primary ext4 ${ISO_SIZE_GiB}GB 100%
-	fdisk -l
+	fdisk -l $selected_partition
 	echo "waiting 5 seconds for drive to be okay to mess around with"
 	sleep 5
 	echo -e "\e[1;31mDo you want to encrypt the drive?\e[m"

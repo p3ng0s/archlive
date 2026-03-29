@@ -17,6 +17,9 @@ SERVER_IP=$(grep -oP 'SERVER_IP="\K[^"]+' $DROPBOX_FOLDER/config)
 VPN_INTERFACE=$(ip route get $SERVER_IP | awk '{print $5}' | head -n1)
 if [ -f "$DROPBOX_FOLDER/config" ]; then
     INTERFACE=$(/usr/bin/grep -oP 'INTERFACE="\K[^"]+' $DROPBOX_FOLDER/config)
+    if [ -z "$INTERFACE" ]; then
+        INTERFACE=$(ip route show default | awk '/default/ {print $5}' | head -n1)
+    fi
 else
     INTERFACE=$(ip route show default | awk '/default/ {print $5}' | head -n1)
 fi
