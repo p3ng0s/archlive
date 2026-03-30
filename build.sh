@@ -124,7 +124,7 @@ function flash_iso() {
 	partprobe "$selected_partition"
 	sleep 1
 	ISO_SIZE=$(du -b "$isofile" | awk '{print $1}')
-	ISO_SIZE_GiB=$(( ISO_SIZE / 1024 / 1024 / 1024 + 3 ))  # +1 for rounding up
+	ISO_SIZE_GiB=$(( ISO_SIZE / 1024 / 1024 / 1024 + 5 ))  # +5 for rounding up
 	echo -e "\e[1;31mCreating partition after ${ISO_SIZE_GiB}GB!\e[m"
 	parted --script "$selected_partition" mkpart primary ext4 ${ISO_SIZE_GiB}GB 100%
 	fdisk -l $selected_partition
