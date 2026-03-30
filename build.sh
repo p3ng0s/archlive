@@ -198,6 +198,7 @@ function build() {
 function driver_support() {
 	if [ "$ENABLE_ALL" = true ]; then
 		sed -i "s|^#\(.*nvidia.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*cuda.*\)|\1|" $WORK_FOLDER/packages.x86_64
 		sed -i "s|^#\(.*nvidia-utils.*\)|\1|" $WORK_FOLDER/packages.x86_64
 		sed -i "s|^#\(.*opencl-nvidia.*\)|\1|" $WORK_FOLDER/packages.x86_64
 		sed -i "s|^#\(.*rocm-opencl-runtime.*\)|\1|" $WORK_FOLDER/packages.x86_64
@@ -222,6 +223,7 @@ function driver_support() {
 		sed -i "s|^#\(.*nvidia.*\)|\1|" $WORK_FOLDER/packages.x86_64
 		sed -i "s|^#\(.*nvidia-utils.*\)|\1|" $WORK_FOLDER/packages.x86_64
 		sed -i "s|^#\(.*opencl-nvidia.*\)|\1|" $WORK_FOLDER/packages.x86_64
+		sed -i "s|^#\(.*cuda.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	fi
 	if echo "$drivers" | grep -q "amd"; then
 		sed -i "s|^#\(.*rocm-opencl-runtime.*\)|\1|" $WORK_FOLDER/packages.x86_64

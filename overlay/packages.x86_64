@@ -45,6 +45,7 @@ ntfs-3g
 #nvidia-open
 #nvidia-utils
 #opencl-nvidia
+#cuda
 clinfo
 cpupower
 
