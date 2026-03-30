@@ -11,7 +11,7 @@ border_width = 0
 border_sides = TBLR
 border_content_tint_weight = 0
 background_content_tint_weight = 0
-background_color = #ff875f 50
+background_color = #393939 50
 border_color = #000000 0
 gradient_id = 0
 background_color_hover = #000000 0
@@ -212,10 +212,10 @@ button_max_icon_size = 0
 #-------------------------------------
 # Button 1
 button = new
-button_icon = /etc/p3ng0s/tint2/tux.png
+button_icon = /etc/p3ng0s/icons/p3ng0s.png
 button_text = 
 button_tooltip = Apps & Settings
-button_lclick_command = svkbd-p3ng0s -fn 'Hack Nerd Font Mono:size=22' -r 20 -g \n
+button_lclick_command = skippy-xd
 button_rclick_command = 
 button_mclick_command = 
 button_uwheel_command = 
