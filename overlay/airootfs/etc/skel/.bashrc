@@ -101,6 +101,7 @@ alias keys='screenkey --scr 1 --opacity 0.2 -f "Hack Nerd Font:size=13"'
 # network information
 alias wifi-scan="nmcli dev wifi"
 alias wifi-check="ping -c 3 8.8.8.8"
+alias vpn-check="systemctl status openvpn-client@dmenu-ovpn.service"
 
 # pacman
 alias pacstore="pacman -Slq | fzf -m --preview 'cat <(pacman -Si {1}) <(pacman -Fl {1} | awk \"{print \$2}\")' | xargs -ro sudo pacman -S"
@@ -124,6 +125,10 @@ alias alert='notify-send -u critical "✓ Done" "$(history 1 | sed s/^[0-9]*\ //
 function pre_command() {
 	[ -z "$TMUX" ] && return
 	CMD=$(echo "$BASH_COMMAND" | awk '{print $1}')
+	# Commands to ignore / not rename for
+	case "$CMD" in
+		fzf|awk|xargs|cat|echo|[|tput|__*|pacman) return ;;
+	esac
 	if [ "$CMD" = "ranger" ]; then
 		tmux rename-window "ranger"
 	elif [ "$CMD" = "ssh" ]; then
@@ -235,7 +240,7 @@ function merge_checklist() {
 	local checklist_path=$HOME/Documents/notes/Checklists/
 
 	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && checklist_path=$HOME/loot/notes/Checklists/
-	[[ -d "$checklist_path" ]] || { echo "merge_checklist: path not found: $checklist_path"; return 1; }
+	[[ -d "$checklist_path" ]] || {  return 1; }
 	md_result=$(find "$checklist_path" -name "*.md" \
 	| xargs -I {} awk 'tolower($0) ~ /^```bash/{found=1; next} /^```/{found=0} found' '{}' \
 	| sort -u)
