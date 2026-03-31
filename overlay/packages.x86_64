@@ -151,6 +151,7 @@ util-linux
 zathura
 zathura-pdf-mupdf
 zathura-ps
+enscript
 brightnessctl
 dunst
 tigervnc
