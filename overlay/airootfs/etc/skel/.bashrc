@@ -133,6 +133,8 @@ function pre_command() {
 		tmux rename-window "ranger"
 	elif [ "$CMD" = "ssh" ]; then
 		tmux rename-window "$BASH_COMMAND"
+	elif [ "$CMD" = "vim" ]; then
+		tmux rename-window "$BASH_COMMAND"
 	elif [ "$CMD" = "sudo" ]; then
 		tmux rename-window "$(echo $BASH_COMMAND | cut -d' ' -f2-)"
 	else
@@ -240,7 +242,7 @@ function merge_checklist() {
 	local checklist_path=$HOME/Documents/notes/Checklists/
 
 	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && checklist_path=$HOME/loot/notes/Checklists/
-	[[ -d "$checklist_path" ]] || {  return 1; }
+	[[ -d "$checklist_path" ]] || { echo "merge_checklist: path not found: $checklist_path"; return 1; }
 	md_result=$(find "$checklist_path" -name "*.md" \
 	| xargs -I {} awk 'tolower($0) ~ /^```bash/{found=1; next} /^```/{found=0} found' '{}' \
 	| sort -u)
@@ -286,16 +288,21 @@ function prompt()
 	history -a
 	history -c
 	history -r
-	if [[ $POS ]]; then
-		PROMPT="$PROMPT\[\e[34m\]${PWD##*/}\[\e[m\]"
-		if [[ $ISOK ]]; then
-			PROMPT="$PROMPT \[\e[35m\]untracked/\[\e[m\]]"
-		else
-			PROMPT="$PROMPT \[\e[35m\]$POS/\[\e[m\]]"
-		fi
-	else
-		PROMPT="$PROMPT\[\e[34m\]$(cat /etc/hostname)\[\e[m\]"
+	if [ -d /home/p4p1-live/ ]; then
+		PROMPT="$PROMPT\[\e[34m\]\D{%Y-%m-%d}-\A\[\e[m\]"
 		PROMPT="$PROMPT \[\e[35m\]${PWD##*/}/\[\e[m\]]"
+	else
+		if [[ $POS ]]; then
+			PROMPT="$PROMPT\[\e[34m\]${PWD##*/}\[\e[m\]"
+			if [[ $ISOK ]]; then
+				PROMPT="$PROMPT \[\e[35m\]untracked/\[\e[m\]]"
+			else
+				PROMPT="$PROMPT \[\e[35m\]$POS/\[\e[m\]]"
+			fi
+		else
+			PROMPT="$PROMPT\[\e[34m\]$(cat /etc/hostname)\[\e[m\]"
+			PROMPT="$PROMPT \[\e[35m\]${PWD##*/}/\[\e[m\]]"
+		fi
 	fi
 	export PS1="$PROMPT\$ "
 }
