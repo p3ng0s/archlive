@@ -39,6 +39,7 @@ if [[ "$TRIGGERED_BY_UDEV" == "1" ]]; then
 fi
 
 mapfile -t FOUND_X_DISPLAYS < <(xrandr | awk '/ connected / {print $1}')
+kill $(pgrep conky)
 
 echo ${FOUND_X_DISPLAYS[*]}
 
@@ -81,3 +82,4 @@ else # no displays
 		feh --bg-fill $HOME/.wallpaper.png
 	fi
 fi
+/usr/bin/conky -c /etc/p3ng0s/conkyconf
