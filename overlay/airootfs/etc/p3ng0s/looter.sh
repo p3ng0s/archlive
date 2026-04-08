@@ -66,20 +66,22 @@ if [ "$1" == "-m" ]; then
 		done
 		blink_confirm &
 	elif [ ! -z "$NETWORK_LOOT_CMD" ]; then
+		# ADD HERE Self provisioning instead of mouning /tmp/loot
 		eval "$NETWORK_LOOT_CMD -o /tmp/loot.tar.xz"
 		mkdir -p "/tmp/loot/"
 		tar -xf "/tmp/loot.tar.xz" -C "/tmp/loot/"
 		rm -rf /tmp/loot.tar.xz
-		for USER_HOME in /home/*; do
-			[ -d "$USER_HOME" ] || continue
-			LOOT_DIR=$USER_HOME/loot
-			mkdir -p "$LOOT_DIR"
-			USER_NAME=$(basename "$USER_HOME")
-			chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
-			# Bind mount the extracted folder
-			mount --bind "/tmp/loot/" "$LOOT_DIR"
-		done
+		#for USER_HOME in /home/*; do
+		#	[ -d "$USER_HOME" ] || continue
+		#	LOOT_DIR=$USER_HOME/loot
+		#	mkdir -p "$LOOT_DIR"
+		#	USER_NAME=$(basename "$USER_HOME")
+		#	chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
+		#	# Bind mount the extracted folder
+		#	mount --bind "/tmp/loot/" "$LOOT_DIR"
+		#done
 		blink_confirm &
+		reboot now
 	fi
 else
 		for USER_HOME in /home/*; do
