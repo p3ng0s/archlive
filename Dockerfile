@@ -9,7 +9,7 @@ RUN pacman --noconfirm -S fakeroot debugedit sudo dialog rsync patch diffutils \
                         zathura man java-runtime-common libxss  libxtst libxfixes \
                         libxdamage libxcomposite imake python python-gitpython gtk-doc \
                         gobject-introspection glib2-devel nim nimble base-devel glfw-x11 glu jq git \
-                        exfatprogs cryptsetup device-mapper parted dosfstools util-linux
+                        exfatprogs cryptsetup device-mapper parted dosfstools util-linux sbsigntools
 
 # Fix gtk2 not installed in docker so conquest cannot build -_-
 RUN useradd -m builder && \

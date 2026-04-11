@@ -1,0 +1,11 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = linux
+
+[Action]
+Description = p3ng0s shim signing...
+# remove from airootfs!
+When = PostTransaction
+Exec = /bin/sh -c "/etc/p3ng0s/shim/shimmyyay.sh"

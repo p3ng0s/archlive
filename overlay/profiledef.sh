@@ -9,7 +9,7 @@ iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
 bootmodes=('bios.syslinux'
-           'uefi.systemd-boot')
+           'uefi.grub')
 pacman_conf="pacman.conf"
 airootfs_image_type="squashfs"
 #airootfs_image_tool_options=('-comp' 'xz' '-Xbcj' 'x86' '-b' '1M' '-Xdict-size' '1M')
@@ -36,6 +36,7 @@ file_permissions=(
   ["/etc/p3ng0s/installer/installer.sh"]="0:0:755"
   ["/etc/p3ng0s/dropbox/dropbox.sh"]="0:0:755"
   ["/etc/p3ng0s/dropbox/nethide.sh"]="0:0:755"
+  ["/etc/p3ng0s/shim/shimmyyay.sh"]="0:0:755"
   ["/etc/p3ng0s/autowifimon.sh"]="0:0:755"
   ["/etc/openvpn/routing.sh"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf-tmux"]="0:0:755"

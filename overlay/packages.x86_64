@@ -14,6 +14,11 @@ conquest-git
 nxc-p3ng0s
 qflipper-p3ng0s
 
+# [Secure Boot ]
+sbsigntools
+mokutil
+shim
+
 # [ Base ]
 #reiserfsprogs
 bash

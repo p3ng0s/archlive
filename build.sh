@@ -155,6 +155,18 @@ function flash_iso() {
 		wipefs -a $loot_partition
 		mkfs.exfat -L LOOT $loot_partition
 	fi
+	echo -e "Injecting the shim for secure boot -> \e[36m:)\e[0m"
+	efi_partition=$(lsblk -npo NAME,FSTYPE "$selected_partition" --sort SIZE | grep "vfat" | awk '{print $1}')
+	echo -e "Mounting EFI -> \e[36m:)\e[0m"
+	mkdir -p /mnt/p3ng0s_efi
+	mount $efi_partition /mnt/p3ng0s_efi
+	echo -e "Renaming BOOTx64.efi to grubx64.efi -> \e[36m:)\e[0m"
+	mv /mnt/p3ng0s_efi/EFI/BOOT/BOOTx64.EFI /mnt/p3ng0s_efi/EFI/BOOT/grubx64.efi
+	sbsign --key "$ROOT_ARCHLIVE/etc/p3ng0s/shim/MOK.key" --cert "$ROOT_ARCHLIVE/etc/p3ng0s/shim/MOK.crt" /mnt/p3ng0s_efi/EFI/BOOT/grubx64.efi --output /mnt/p3ng0s_efi/EFI/BOOT/grubx64.efi
+	openssl x509 -in "$ROOT_ARCHLIVE/etc/p3ng0s/shim/MOK.crt" -outform DER -out /mnt/p3ng0s_efi/EFI/BOOT/p3ng0s-mok.der
+	cp -r "$ROOT_ARCHLIVE/etc/p3ng0s/shim/shimx64.efi" /mnt/p3ng0s_efi/EFI/BOOT/BOOTx64.EFI
+	cp -r "$ROOT_ARCHLIVE/etc/p3ng0s/shim/mmx64.efi" /mnt/p3ng0s_efi/EFI/BOOT/mmx64.efi
+	umount /mnt/p3ng0s_efi
 	echo -e "All done -> \e[36m:)\e[0m"
 }
 
@@ -190,6 +202,19 @@ function build() {
 		mkarchiso -v -w $ISO_BUILD_DIR $WORK_FOLDER
 	else
 		sudo mkarchiso -v -w $ISO_BUILD_DIR $WORK_FOLDER
+		# TODO: find the latest .iso file so that we can set the shim right? maybe
+		# do a prompt where we seclect the iso we want to add the shim to
+		# xorriso breaks the partition table I think, AI says it breaks something
+		# else :/
+		#sudo xorriso -osirrox on -indev out/*.iso -extract /EFI/BOOT/BOOTx64.EFI /tmp/grubx64.efi
+		#[ -f /tmp/grubx64_signed.efi ] && sudo rm -rf /tmp/grubx64_signed.efi
+		#sudo sbsign --key "$ROOT_ARCHLIVE/etc/p3ng0s/shim/MOK.key" --cert "$ROOT_ARCHLIVE/etc/p3ng0s/shim/MOK.crt" /tmp/grubx64.efi --output /tmp/grubx64_signed.efi
+		#sudo xorriso -indev out/*.iso -outdev out/p3ng0s-shim.iso -boot_image any keep -compliance no_emul_toc \
+		#	-map /tmp/grubx64_signed.efi /EFI/BOOT/grubx64.EFI \
+		#	-map $ROOT_ARCHLIVE/etc/p3ng0s/shim/MOK.crt /EFI/BOOT/p3ng0s-mok.crt \
+		#	-map /usr/share/shim/shimx64.efi /EFI/BOOT/BOOTx64.EFI \
+		#	-map /usr/share/shim/mmx64.efi /EFI/BOOT/mmx64.efi \
+		#	-no_rc -commit_eject all
 	fi
 	notify-send -u critical "Critical" "p3ng0s build has been completed"
 	echo -e "All done -> \e[36m:)\e[0m"
@@ -351,6 +376,17 @@ shift $((OPTIND-1))
 #	exit -1
 #fi
 
+if [ ! -f "$OVERLAY_ROOTFS/etc/p3ng0s/shim/shimx64.efi" ]; then
+	echo -e "Missing: $OVERLAY_ROOTFS/etc/p3ng0s/shim/shimx64.efi -> \e[1;31m:(\e[0m"
+	echo -e "Please drop the shim file in that specific folder, this is required for secure boot."
+	exit -1
+fi
+if [ ! -f "$OVERLAY_ROOTFS/etc/p3ng0s/shim/mmx64.efi" ]; then
+	echo -e "Missing: $OVERLAY_ROOTFS/etc/p3ng0s/shim/mmx64.efi -> \e[1;31m:(\e[0m"
+	echo -e "Please drop the shim file in that specific folder, this is required for secure boot."
+	exit -1
+fi
+
 # Get base arch linux system and create the work folder
 cp -r $UPSTREAM_SYS_FOLDER $UPSTREAM_FOLDER
 cp -r $UPSTREAM_FOLDER/ $WORK_FOLDER/
@@ -374,10 +410,18 @@ echo -e "Created the pacman.conf -> \e[36m:)\e[0m"
 cat $UPSTREAM_FOLDER/packages.x86_64 $OVERLAY_FOLDER/packages.x86_64 > $WORK_FOLDER/packages.x86_64
 echo -e "Setup the packages -> \e[36m:)\e[0m"
 
+# Take default grub stuff:
+#cp /usr/share/shim/shimx64.efi overlay/efiboot/EFI/BOOT/BOOTX64.EFI
+#cp /usr/share/shim/mmx64.efi overlay/efiboot/EFI/BOOT/mmx64.efi
+#cp /usr/share/shim/fbx64.efi overlay/efiboot/EFI/BOOT/fbx64.efi
+
 # Merge the file systems
 rsync -a $OVERLAY_ROOTFS/ $ROOT_ARCHLIVE/
 echo -e "Setup the filesystem -> \e[36m:)\e[0m"
 
+# creating mok keys for shim
+openssl req -newkey rsa:4096 -nodes -keyout "$ROOT_ARCHLIVE/etc/p3ng0s/shim/MOK.key" -new -x509 -sha256 -days 3650 -subj "/CN=p3ng0s MOK/" -out "$ROOT_ARCHLIVE/etc/p3ng0s/shim/MOK.crt"
+echo -e "Generated MOK keys -> \e[36m:)\e[0m"
 # remove autologin this will be setup by the autologin package of p3ng0s
 [ -f $ROOT_ARCHLIVE/etc/systemd/system/getty\@tty1.service.d/autologin.conf ] && rm -rf $ROOT_ARCHLIVE/etc/systemd/system/getty\@tty1.service.d/autologin.conf || echo -e "Autologin not present-> \e[31m:(\e[0m"
 echo -e "Removed old autologin if present -> \e[36m:)\e[0m"
