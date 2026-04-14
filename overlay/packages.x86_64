@@ -15,6 +15,8 @@ nxc-p3ng0s
 qflipper-p3ng0s
 
 # [Secure Boot ]
+efitools
+efibootmgr
 sbsigntools
 mokutil
 shim

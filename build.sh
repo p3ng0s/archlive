@@ -15,7 +15,7 @@
 PART=
 
 UPSTREAM_SYS_FOLDER=/usr/share/archiso/configs/releng/
-UPSTREAM_FOLDER=$PWD/upstream/
+UPSTREAM_FOLDER=$PWD/upstream
 ISO_BUILD_DIR=$PWD/build/
 
 BACKUP_FILE=$PWD/backup.tar.xz
@@ -405,6 +405,15 @@ patch $WORK_FOLDER/pacman.conf < $WORK_FOLDER/pacman.conf.patch
 # setting the PWD for pacman p3ng0s dependencies
 sed -i 's|<CHANGE_PWD>|'"$PWD"'|g' $WORK_FOLDER/pacman.conf
 echo -e "Created the pacman.conf -> \e[36m:)\e[0m"
+
+diff -u $UPSTREAM_FOLDER/grub/grub.cfg $OVERLAY_FOLDER/grub/grub.cfg > $WORK_FOLDER/grub/grub.cfg.patch
+cat $WORK_FOLDER/grub/grub.cfg.patch
+is_this_okay
+patch $WORK_FOLDER/grub/grub.cfg < $WORK_FOLDER/grub/grub.cfg.patch
+echo -e "Created the grub.cfg -> \e[36m:)\e[0m"
+
+cp -r $OVERLAY_FOLDER/grub/themes $WORK_FOLDER/grub/themes
+echo -e "Installed grub theme -> \e[36m:)\e[0m"
 
 # Combining packages
 cat $UPSTREAM_FOLDER/packages.x86_64 $OVERLAY_FOLDER/packages.x86_64 > $WORK_FOLDER/packages.x86_64

@@ -92,13 +92,16 @@ echo -e "\e[36m[*]\e[0m Entering splash screen..."
 sleep 5
 [ -f $DROPBOX_FOLDER/debug ] && debug_shell
 /usr/bin/kbd_mode -s -C /dev/tty1
-echo 1 > /proc/sys/kernel/printk
+echo 0 > /proc/sys/kernel/printk
 clear > /dev/tty1
 while true; do
     if [ -f $DROPBOX_FOLDER/splash.png ]; then
-        fbi -T 1 -noverbose -u $DROPBOX_FOLDER/splash.png 2> /dev/null
+        CURRENT=$DROPBOX_FOLDER/splash.png
     else
-        fbi -T 1 -noverbose -u /etc/p3ng0s/wallpaper/dropbox.png 2> /dev/null
+        CURRENT=/etc/p3ng0s/wallpaper/dropbox.png
     fi
-    sleep 1
+    if [ -z "$(pgrep fbi)" ]; then
+        fbi -T 1 -noverbose -u $CURRENT 2> /dev/null &
+    fi
+    sleep 5
 done

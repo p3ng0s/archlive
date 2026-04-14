@@ -12,6 +12,7 @@
 
 sleep 2
 NETWORK_LOOT_CMD=""
+DEBUG=
 
 function blink_confirm() {
 	for i in {1..15}; do
@@ -20,6 +21,19 @@ function blink_confirm() {
 		echo 0 | tee /sys/class/leds/input*::capslock/brightness > /dev/null
 		sleep 0.1
 	done
+}
+
+function self_provisioning_screen() {
+	/usr/bin/kbd_mode -s -C /dev/tty1
+	echo 0 > /proc/sys/kernel/printk
+	clear > /dev/tty1
+	while true; do
+		if [ -z "$(pgrep fbi)" ]; then
+			fbi -T 1 -noverbose -u /etc/p3ng0s/wallpaper/p3ng0s_selfprovisioning.png &
+		fi
+		sleep 5
+	done
+
 }
 
 if [ "$1" == "-m" ]; then
@@ -67,21 +81,48 @@ if [ "$1" == "-m" ]; then
 		blink_confirm &
 	elif [ ! -z "$NETWORK_LOOT_CMD" ]; then
 		# ADD HERE Self provisioning instead of mouning /tmp/loot
-		eval "$NETWORK_LOOT_CMD -o /tmp/loot.tar.xz"
-		mkdir -p "/tmp/loot/"
-		tar -xf "/tmp/loot.tar.xz" -C "/tmp/loot/"
-		rm -rf /tmp/loot.tar.xz
-		#for USER_HOME in /home/*; do
-		#	[ -d "$USER_HOME" ] || continue
-		#	LOOT_DIR=$USER_HOME/loot
-		#	mkdir -p "$LOOT_DIR"
-		#	USER_NAME=$(basename "$USER_HOME")
-		#	chown "$USER_NAME:$USER_NAME" "$LOOT_DIR"
-		#	# Bind mount the extracted folder
-		#	mount --bind "/tmp/loot/" "$LOOT_DIR"
-		#done
-		blink_confirm &
-		reboot now
+		[ -z "$DEBUG" ] && self_provisioning_screen &
+		BOOT_DEV=$(lsblk -lnpo NAME,MOUNTPOINT | awk '$2=="/run/archiso/bootmnt" {print $1}' | sed 's/[0-9]*$//')
+		UNFORMATED=$(lsblk $BOOT_DEV -lnpo NAME,FSTYPE,LABEL | awk '$2=="" && $3=="" {print $1}')
+		[ "$DEBUG" ] && echo "BOOT_DEV=$BOOT_DEV"
+		[ "$DEBUG" ] && echo "UNFORMATED=$UNFORMATED"
+		sleep 5
+		if [ -z "$UNFORMATED" ]; then # Boot cycle 1 -> create partition
+			ISO_SIZE=$(lsblk -lnpo NAME,SIZE,FSTYPE | awk '$3=="iso9660" && $1!~/^\/dev\/[a-z]+$/ {print $2}' | head -n1 | tr -d 'G')
+			LOOT_START=$(awk "BEGIN {printf \"%d\", ($ISO_SIZE + 5 + 0.999)}")G
+			[ "$DEBUG" ] && echo -e "\e[36m[*]\e[0m Partitioning USB..."
+			parted $BOOT_DEV ---pretend-input-tty mkpart primary $LOOT_START 100% <<<"I"
+			sleep 15
+			reboot now
+		else # Boot cycle 2 -> format and install loot
+			LOOT_PART=$(lsblk $BOOT_DEV -lnpo NAME,FSTYPE,LABEL | awk '$2=="" && $3=="" {print $1}' | head -n1)
+			[ "$DEBUG" ] && echo -e "\e[36m[*]\e[0m Creating LOOT ..."
+			dd if=/dev/zero of=/tmp/loot.img bs=1M count=10
+			mkfs.exfat -L LOOT /tmp/loot.img
+			dd if=/tmp/loot.img of=$LOOT_PART bs=1M
+			LOOP_LOOT=$(losetup -fP --show $LOOT_PART)
+			mount $LOOP_LOOT /mnt/
+
+			[ "$DEBUG" ] && echo -e "\e[36m[*]\e[0m Waiting for network..."
+			until ping -c1 -W2 8.8.8.8 &>/dev/null; do
+				echo 1 | tee /sys/class/leds/input*::capslock/brightness > /dev/null
+				sleep 1
+				echo 0 | tee /sys/class/leds/input*::capslock/brightness > /dev/null
+				sleep 1
+			done
+			[ "$DEBUG" ] && echo -e "\e[32m[+]\e[0m Network ready"
+			eval "$NETWORK_LOOT_CMD -o /tmp/loot.tar.xz"
+			mkdir -p "/tmp/loot/"
+			tar -xf "/tmp/loot.tar.xz" -C "/tmp/loot/"
+			rm -rf /tmp/loot.tar.xz
+
+			[ "$DEBUG" ] && echo -e "\e[36m[*]\e[0m Syncing Files ..."
+			rsync -a /tmp/loot/ /mnt/
+			umount /mnt/
+			sleep 15
+			reboot now
+		fi
+		#reboot now
 	fi
 else
 		for USER_HOME in /home/*; do
