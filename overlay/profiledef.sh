@@ -2,9 +2,9 @@
 # shellcheck disable=SC2034
 
 iso_name="p3ng0s"
-iso_label="PINGU_$(date +%Y%m)"
+iso_label="P3NG0S"
 iso_publisher="p4p1 <https://leosmith.wtf>"
-iso_application="p3ng0s USB / CD"
+iso_application="p3ng0s.iso"
 iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 install_dir="arch"
 buildmodes=('iso')
@@ -25,7 +25,6 @@ file_permissions=(
   ["/usr/local/bin/choose-mirror"]="0:0:755"
   ["/usr/local/bin/Installation_guide"]="0:0:755"
   ["/usr/local/bin/livecd-sound"]="0:0:755"
-  ["/etc/skel/git_apocalypse.sh"]="0:0:755"
   ["/etc/p3ng0s/bar.sh"]="0:0:755"
   ["/etc/p3ng0s/display.sh"]="0:0:755"
   ["/etc/p3ng0s/ripdrag"]="0:0:755"
@@ -37,6 +36,9 @@ file_permissions=(
   ["/etc/p3ng0s/dropbox/dropbox.sh"]="0:0:755"
   ["/etc/p3ng0s/dropbox/nethide.sh"]="0:0:755"
   ["/etc/p3ng0s/shim/shimmyyay.sh"]="0:0:755"
+  ["/etc/p3ng0s/sys_admin/p3ng0s-dropbox-cleanup.sh"]="0:0:755"
+  ["/etc/p3ng0s/sys_admin/p3ng0s-autoupdate.sh"]="0:0:755"
+  ["/etc/p3ng0s/sys_admin/p3ng0s-panic.sh"]="0:0:755"
   ["/etc/p3ng0s/autowifimon.sh"]="0:0:755"
   ["/etc/openvpn/routing.sh"]="0:0:755"
   ["/etc/skel/.fzf/bin/fzf-tmux"]="0:0:755"

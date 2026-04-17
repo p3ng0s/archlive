@@ -1,0 +1,9 @@
+[Unit]
+Description=Monthly update timer
+
+[Timer]
+OnCalendar=Tue *-*-1..7 10:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

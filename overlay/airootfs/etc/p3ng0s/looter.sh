@@ -80,7 +80,6 @@ if [ "$1" == "-m" ]; then
 		done
 		blink_confirm &
 	elif [ ! -z "$NETWORK_LOOT_CMD" ]; then
-		# ADD HERE Self provisioning instead of mouning /tmp/loot
 		[ -z "$DEBUG" ] && self_provisioning_screen &
 		BOOT_DEV=$(lsblk -lnpo NAME,MOUNTPOINT | awk '$2=="/run/archiso/bootmnt" {print $1}' | sed 's/[0-9]*$//')
 		UNFORMATED=$(lsblk $BOOT_DEV -lnpo NAME,FSTYPE,LABEL | awk '$2=="" && $3=="" {print $1}')
@@ -92,7 +91,10 @@ if [ "$1" == "-m" ]; then
 			LOOT_START=$(awk "BEGIN {printf \"%d\", ($ISO_SIZE + 5 + 0.999)}")G
 			[ "$DEBUG" ] && echo -e "\e[36m[*]\e[0m Partitioning USB..."
 			parted $BOOT_DEV ---pretend-input-tty mkpart primary $LOOT_START 100% <<<"I"
+			#parted $BOOT_DEV ---pretend-input-tty mkpart primary exfat $LOOT_START 100% <<<"I"
 			sleep 15
+			USB_ENTRY=$(efibootmgr | grep -i "usb\|removable" | grep -vi "network" | head -n 1 | awk '{gsub(/Boot|\*/,"",$1); printf "%04s\n", $1}')
+			[ -n "$USB_ENTRY" ] && efibootmgr --bootnext $USB_ENTRY
 			reboot now
 		else # Boot cycle 2 -> format and install loot
 			LOOT_PART=$(lsblk $BOOT_DEV -lnpo NAME,FSTYPE,LABEL | awk '$2=="" && $3=="" {print $1}' | head -n1)
@@ -120,6 +122,8 @@ if [ "$1" == "-m" ]; then
 			rsync -a /tmp/loot/ /mnt/
 			umount /mnt/
 			sleep 15
+			USB_ENTRY=$(efibootmgr | grep -i "usb\|removable" | grep -vi "network" | head -n 1 | awk '{gsub(/Boot|\*/,"",$1); printf "%04s\n", $1}')
+			[ -n "$USB_ENTRY" ] && efibootmgr --bootnext $USB_ENTRY
 			reboot now
 		fi
 		#reboot now

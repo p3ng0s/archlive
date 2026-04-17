@@ -1,0 +1,6 @@
+[Unit]
+Description=Monthly system update
+
+[Service]
+Type=oneshot
+ExecStart=/etc/p3n0gs/sys_admin/p3ng0s-autoupdate.sh

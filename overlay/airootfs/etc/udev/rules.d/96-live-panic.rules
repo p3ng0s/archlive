@@ -1,0 +1,1 @@
+ACTION=="remove", SUBSYSTEM=="block", ENV{ID_FS_LABEL}=="P3NG0S", RUN+="/etc/p3ng0s/sys_admin/p3n0gs-panic.sh"

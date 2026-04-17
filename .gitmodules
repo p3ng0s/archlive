@@ -1,0 +1,3 @@
+[submodule "overlay/grub/themes/p3ng0s"]
+	path = overlay/grub/themes/p3ng0s
+	url = https://github.com/p3ng0s/grub_theme.git
