@@ -98,7 +98,11 @@ while true; do
     if [ -f $DROPBOX_FOLDER/splash.png ]; then
         CURRENT=$DROPBOX_FOLDER/splash.png
     else
-        CURRENT=/etc/p3ng0s/wallpaper/dropbox.png
+        if [ $((RANDOM % 10)) -eq 0 ]; then
+            CURRENT=/etc/p3ng0s/wallpaper/zz_dropbox_meme.png
+        else
+            CURRENT=/etc/p3ng0s/wallpaper/p3ng0s_dropbox.png
+        fi
     fi
     if [ -z "$(pgrep fbi)" ]; then
         fbi -T 1 -noverbose -u $CURRENT 2> /dev/null &

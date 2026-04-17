@@ -415,6 +415,7 @@ echo -e "Created the grub.cfg -> \e[36m:)\e[0m"
 cp -r $OVERLAY_FOLDER/grub/themes $WORK_FOLDER/grub/themes
 rm -rf $WORK_FOLDER/grub/themes/p3ng0s/README.md
 rm -rf $WORK_FOLDER/grub/themes/p3ng0s/LICENSE
+rm -rf $WORK_FOLDER/grub/themes/p3ng0s/.git/
 echo -e "Installed grub theme -> \e[36m:)\e[0m"
 
 # Combining packages
