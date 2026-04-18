@@ -91,17 +91,14 @@ if [ "$1" == "-m" ]; then
 			LOOT_START=$(awk "BEGIN {printf \"%d\", ($ISO_SIZE + 5 + 0.999)}")G
 			[ "$DEBUG" ] && echo -e "\e[36m[*]\e[0m Partitioning USB..."
 			parted $BOOT_DEV ---pretend-input-tty mkpart primary $LOOT_START 100% <<<"I"
-			#parted $BOOT_DEV ---pretend-input-tty mkpart primary exfat $LOOT_START 100% <<<"I"
 			sleep 15
-			USB_ENTRY=$(efibootmgr | grep -i "usb\|removable" | grep -vi "network" | head -n 1 | awk '{gsub(/Boot|\*/,"",$1); printf "%04s\n", $1}')
-			[ -n "$USB_ENTRY" ] && efibootmgr --bootnext $USB_ENTRY
-			reboot now
 		else # Boot cycle 2 -> format and install loot
 			LOOT_PART=$(lsblk $BOOT_DEV -lnpo NAME,FSTYPE,LABEL | awk '$2=="" && $3=="" {print $1}' | head -n1)
+			LOOT_SIZE_BYTES=$(blockdev --getsize64 $LOOT_PART)
 			[ "$DEBUG" ] && echo -e "\e[36m[*]\e[0m Creating LOOT ..."
-			dd if=/dev/zero of=/tmp/loot.img bs=1M count=10
+			truncate -s $LOOT_SIZE_BYTES /tmp/loot.img # we are giving the real size of the partition
 			mkfs.exfat -L LOOT /tmp/loot.img
-			dd if=/tmp/loot.img of=$LOOT_PART bs=1M
+			dd if=/tmp/loot.img of=$LOOT_PART bs=1M count=10 # only flash the header not the whole file...
 			LOOP_LOOT=$(losetup -fP --show $LOOT_PART)
 			mount $LOOP_LOOT /mnt/
 
@@ -122,11 +119,10 @@ if [ "$1" == "-m" ]; then
 			rsync -a /tmp/loot/ /mnt/
 			umount /mnt/
 			sleep 15
-			USB_ENTRY=$(efibootmgr | grep -i "usb\|removable" | grep -vi "network" | head -n 1 | awk '{gsub(/Boot|\*/,"",$1); printf "%04s\n", $1}')
-			[ -n "$USB_ENTRY" ] && efibootmgr --bootnext $USB_ENTRY
-			reboot now
 		fi
-		#reboot now
+		USB_ENTRY=$(efibootmgr | grep -i "usb\|removable" | grep -vi "network" | head -n 1 | awk '{gsub(/Boot|\*/,"",$1); printf "%04s\n", $1}')
+		[ -n "$USB_ENTRY" ] && efibootmgr --bootnext $USB_ENTRY
+		reboot now
 	fi
 else
 		for USER_HOME in /home/*; do
