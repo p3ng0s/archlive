@@ -140,7 +140,7 @@ i3lock-fancy
 imagemagick
 kde-cli-tools
 kdeconnect
-keepass
+keepassxc
 nautilus
 newsboat
 noto-fonts
@@ -202,6 +202,8 @@ gpick
 transmission-gtk
 vlc
 kodi
+#gimp
+#flatpak
 
 # [ XORG Things ]
 xss-lock

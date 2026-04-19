@@ -494,6 +494,8 @@ if [ "$ENABLE_ALL" = true ]; then
 	sed -i "s|^#\(.*qemu-full.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	sed -i "s|^#\(.*edk2-ovmf.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	sed -i "s|^#\(.*metasploit.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	sed -i "s|^#\(.*gimp.*\)|\1|" $WORK_FOLDER/packages.x86_64
+	sed -i "s|^#\(.*flatpak.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	sed -i "s|^#\(.*android-tools.*\)|\1|" $WORK_FOLDER/packages.x86_64
 fi
 
