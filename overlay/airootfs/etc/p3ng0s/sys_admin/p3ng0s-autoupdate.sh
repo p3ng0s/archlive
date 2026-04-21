@@ -107,6 +107,10 @@ pacman -Syy --noconfirm
 echo "[*] Running pacman -Syu..."
 pacman -Syu --noconfirm
 
+echo "[*] Running flatpak update..."
+flatpak update --noninteractive
+run_as_user flatpak update --noninteractive
+
 echo "[+] Package update complete."
 
 # ─── CHECK WHAT CHANGED ───────────────────────────────────────────────────────

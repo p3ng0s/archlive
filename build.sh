@@ -453,6 +453,14 @@ if [ ! -z $LINK_TO_BACKUP ]; then
 	echo -e "Change the config of the default user p4p1-live -> \e[36m:)\e[0m"
 fi
 
+TZ=$(find /usr/share/zoneinfo -type f | sed 's|/usr/share/zoneinfo/||' | fzf --prompt="Timezone: " --height=80% --layout=reverse --border=rounded --margin=20%,30% --padding=1 --header="Select your timezone")
+[ ! -z "$TZ" ] && ln -sf /usr/share/zoneinfo/$TZ $ROOT_ARCHLIVE/etc/localtime || TZ="Europe/Vienna"
+echo -e "Set timezone to $TZ -> \e[36m:)\e[0m"
+
+LAYOUT=$(localectl list-keymaps | fzf --prompt="Layout: " --height=80% --layout=reverse --border=rounded --margin=20%,30% --padding=1 --header="Select your keyboard layout")
+[ ! -z "$LAYOUT" ] && echo "KEYMAP=$LAYOUT" > $ROOT_ARCHLIVE/etc/vconsole.conf || LAYOUT="us"
+echo -e "Set the keyboard layout to $LAYOUT -> \e[36m:)\e[0m"
+
 # Pick a wallpaper
 options=( "None" "" )
 for item in "$OVERLAY_ROOTFS/etc/p3ng0s/wallpaper/"*; do
@@ -497,6 +505,8 @@ if [ "$ENABLE_ALL" = true ]; then
 	sed -i "s|^#\(.*gimp.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	sed -i "s|^#\(.*flatpak.*\)|\1|" $WORK_FOLDER/packages.x86_64
 	sed -i "s|^#\(.*android-tools.*\)|\1|" $WORK_FOLDER/packages.x86_64
+else
+	rm -rf $WORK_FOLDER/airootf/etc/pacman.d/hooks/zzzz97-flatpak-install.hook
 fi
 
 # Last step build iso

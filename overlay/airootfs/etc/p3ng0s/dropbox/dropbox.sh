@@ -48,6 +48,9 @@ if [ ! -d $DROPBOX_FOLDER ]; then
 fi
 SERVER_IP=$(grep -oP 'SERVER_IP="\K[^"]+' $DROPBOX_FOLDER/config)
 GATEWAY=$(/usr/bin/ip route show default | awk '/default/ {print $3}' | head -n1)
+if [ -z "$GATEWAY" ]; then
+    GATEWAY=$(ip route get 8.8.8.8 | grep -oP 'via \K\S+')
+fi
 
 echo -e "\e[36m[*]\e[0m Checking for configs..."
 mkdir -p /etc/stunnel /etc/openvpn/client
@@ -86,7 +89,7 @@ echo "GATEWAY=$GATEWAY"
 echo -e "\e[36m[*]\e[0m Starting GUI"
 systemctl status p3ng0s-dropbox-gui-dwm.service
 echo -e "\e[36m[*]\e[0m Starting keepalive"
-keep_alive & 
+keep_alive &
 
 echo -e "\e[36m[*]\e[0m Entering splash screen..."
 sleep 5

@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Type = Package
+Target = flatpak
+
+[Action]
+Description = Installing system flatpaks...
+When = PostTransaction
+Exec = /usr/bin/flatpak install --system --noninteractive flathub com.getpostman.Postman
+
