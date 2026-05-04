@@ -111,6 +111,7 @@ hivex
 sqlmap
 hydra
 #metasploit
+proxmark3
 
 # [ Exploit Dependencies ]
 java-environment-common
