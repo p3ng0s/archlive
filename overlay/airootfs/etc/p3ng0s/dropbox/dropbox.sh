@@ -46,6 +46,7 @@ echo "--- dropbox ---"
 if [ ! -d $DROPBOX_FOLDER ]; then
     echo -e "\e[1;31m[!]\e[0m Cannot find the dropbox folder exiting"
 fi
+source $DROPBOX_FOLDER/config
 SERVER_IP=$(grep -oP 'SERVER_IP="\K[^"]+' $DROPBOX_FOLDER/config)
 GATEWAY=$(/usr/bin/ip route show default | awk '/default/ {print $3}' | head -n1)
 if [ -z "$GATEWAY" ]; then
@@ -53,7 +54,7 @@ if [ -z "$GATEWAY" ]; then
 fi
 
 echo -e "\e[36m[*]\e[0m Checking for configs..."
-mkdir -p /etc/stunnel /etc/openvpn/client
+mkdir -p /etc/stunnel /etc/openvpn/client $DROPBOX_FOLDER/conquest_data/log/ $DROPBOX_FOLDER/conquest_data/loot/
 touch /etc/stunnel/stunnel.conf /etc/openvpn/client/client.conf
 
 echo -e "\e[36m[*]\e[0m Mounting files"
