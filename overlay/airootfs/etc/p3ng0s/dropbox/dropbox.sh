@@ -29,6 +29,7 @@ function keep_alive() {
         if ! pgrep stunnel > /dev/null; then
             systemctl restart stunnel.service &> /dev/null
         fi
+        # TODO: check for routes and fix up the routing table.
     done
 }
 
