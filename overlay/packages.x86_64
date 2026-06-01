@@ -59,6 +59,7 @@ cpupower
 # [ Networking ]
 dhclient
 filezilla
+inetutils
 samba
 fping
 freerdp
