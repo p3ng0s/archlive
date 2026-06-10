@@ -120,7 +120,7 @@ alias g++='g++ -Wall -Wextra -Werror'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
-alias alert='notify-send -u critical "✓ Done" "$(history 1 | sed s/^[0-9]*\ //)"'
+alias alert='notify-send -i /etc/p3ng0s/icons/p3ng0s.png -u critical -a "system" "$(history 1 | sed s/^[0-9]*\ //)"'
 
 function pre_command() {
 	[ -z "$TMUX" ] && return
@@ -219,6 +219,12 @@ ex ()
 		echo "'$1' is not a valid file"
 	fi
 }
+function sk4r4b() {
+	local tool_path=/home/p4p1/Documents/github/sk4r4b
+
+	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && tool_path=$HOME/loot/sk4r4b
+	PYTHONPATH=$tool_path/tools/compiler python -m sk4r4b $@
+}
 
 # tmux variable management
 function set-target() {
@@ -242,7 +248,7 @@ function merge_checklist() {
 	local checklist_path=$HOME/Documents/notes/Checklists/
 
 	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && checklist_path=$HOME/loot/notes/Checklists/
-	[[ -d "$checklist_path" ]] || { echo "merge_checklist: path not found: $checklist_path"; return 1; }
+	[[ -d "$checklist_path" ]] || { return 1; }
 	md_result=$(find "$checklist_path" -name "*.md" \
 	| xargs -I {} awk 'tolower($0) ~ /^```bash/{found=1; next} /^```/{found=0} found' '{}' \
 	| sort -u)
