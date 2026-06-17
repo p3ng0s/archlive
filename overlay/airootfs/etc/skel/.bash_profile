@@ -59,6 +59,8 @@ $(cat ~/.p3ng0s.json | jq .)
 
 MAIN_WM=dwm
 [[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && MAIN_WM=dwm-live
+SKARAB_PATH=$HOME/Documents/github/sk4r4b
+[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && SKARAB_PATH=$HOME/loot/sk4r4b
 
 [ ! -f ~/.p3ng0s.json ] && first_install
 if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
@@ -68,7 +70,7 @@ if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
 		2 "dwm-light(A lightweight WM for shitty laptops)" \
 		3 "kodi (Media player)" \
 		4 "tty only like a G" \
-		5 "cmatrix" \
+		5 "sk4r4b my G" \
 		6 "nuke installed OS" \
 		7 "shutdown now :/" \
 		2>&1 1>&3)
@@ -78,7 +80,7 @@ if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
 	[ $WM = 2 ] && echo -e "xrdb -merge ~/.Xresources\nexec dwm-light" > $HOME/.xinitrc
 	[ $WM = 3 ] && echo "exec kodi" > $HOME/.xinitrc
 	[ $WM = 4 ] && SKIP=1
-	[ $WM = 5 ] && cmatrix
+	[ $WM = 5 ] && $( cd $SKARAB_PATH ; PYTHONPATH=$SKARAB_PATH/tools/compiler python -m sk4r4b $@)
 	[ $WM = 6 ] && bash /etc/p3ng0s/os_killer/os_killer.sh
 	[ $WM = 7 ] && shutdown now
 

@@ -141,6 +141,13 @@ let g:livepreview_previewer = 'zathura'
 
 let g:ale_sign_error = '✘'
 let g:ale_sign_warning = '⚠'
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\}
+let g:ale_fixers = {
+\   'javascript': ['eslint'],
+\}
+let g:ale_javascript_eslint_use_global = 0
 highlight ALEErrorSign ctermbg=NONE ctermfg=red
 highlight ALEWarningSign ctermbg=NONE ctermfg=yellow
 
@@ -289,8 +296,8 @@ endif
 autocmd bufnewfile *.c exe "g/current-file-name.*/s//" .expand("%")
 
 " CPP file commands :
-autocmd FileType cpp set expandtab
-autocmd FileType cpp set shiftwidth=4
+autocmd FileType cpp set noexpandtab
+autocmd FileType cpp set shiftwidth=0
 autocmd FileType cpp set tabstop=4
 if expand('%') =~ "tests"
 	autocmd BufNewFile tests_*.cpp so ~/.vim/template/test_c.header
@@ -310,6 +317,12 @@ autocmd bufnewfile Makefile exe "g/current-file-name.*/s//" .expand("%")
 autocmd FileType asm set noexpandtab
 autocmd FileType asm set tabstop=8
 autocmd FileType asm set shiftwidth=0
+
+autocmd FileType sk4r4bl4ng set noexpandtab
+autocmd FileType sk4r4bl4ng set tabstop=8
+autocmd FileType sk4r4bl4ng set shiftwidth=0
+autocmd BufNewFile *.skr so ~/.vim/template/dot_skr.header
+autocmd bufnewfile *.skr exe "g/current-file-name.*/s//" .expand("%")
 
 " Header file:
 autocmd BufNewFile *.h so ~/.vim/template/dot_h.header
