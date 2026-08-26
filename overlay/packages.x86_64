@@ -81,6 +81,7 @@ libnotify
 libpwquality
 libx11
 python-paramiko
+python-dateutil
 python-textual
 python-build
 python-dnspython
