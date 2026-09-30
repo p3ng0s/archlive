@@ -102,6 +102,7 @@ ruby-bundler
 nikto
 whois
 nmap
+traceroute
 wpscan
 
 # [ Exploit ]
