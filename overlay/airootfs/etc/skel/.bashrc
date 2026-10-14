@@ -122,27 +122,27 @@ alias g++='g++ -Wall -Wextra -Werror'
 #   sleep 10; alert
 alias alert='notify-send -i /etc/p3ng0s/icons/p3ng0s.png -u critical -a "system" "$(history 1 | sed s/^[0-9]*\ //)"'
 
-function pre_command() {
-	[ -z "$TMUX" ] && return
-	CMD=$(echo "$BASH_COMMAND" | awk '{print $1}')
-	# Commands to ignore / not rename for
-	case "$CMD" in
-		fzf|awk|xargs|cat|echo|[|tput|__*|pacman) return ;;
-	esac
-	if [ "$CMD" = "ranger" ]; then
-		tmux rename-window "ranger"
-	elif [ "$CMD" = "ssh" ]; then
-		tmux rename-window "$BASH_COMMAND"
-	elif [ "$CMD" = "vim" ]; then
-		tmux rename-window "$BASH_COMMAND"
-	elif [ "$CMD" = "sudo" ]; then
-		tmux rename-window "$(echo $BASH_COMMAND | cut -d' ' -f2-)"
-	else
-		tmux rename-window "${PWD##*/}"
-	fi
-}
+#function pre_command() {
+#	[ -z "$TMUX" ] && return
+#	CMD=$(echo "$BASH_COMMAND" | awk '{print $1}')
+#	# Commands to ignore / not rename for
+#	case "$CMD" in
+#		fzf|awk|xargs|cat|echo|[|tput|__*|pacman) return ;;
+#	esac
+#	if [ "$CMD" = "ranger" ]; then
+#		tmux rename-window "ranger"
+#	elif [ "$CMD" = "ssh" ]; then
+#		tmux rename-window "$BASH_COMMAND"
+#	elif [ "$CMD" = "vim" ]; then
+#		tmux rename-window "$BASH_COMMAND"
+#	elif [ "$CMD" = "sudo" ]; then
+#		tmux rename-window "$(echo $BASH_COMMAND | cut -d' ' -f2-)"
+#	else
+#		tmux rename-window "${PWD##*/}"
+#	fi
+#}
 
-trap 'pre_command' DEBUG
+#trap 'pre_command' DEBUG
 
 # All of the Functions:
 
@@ -170,6 +170,10 @@ function hashcatverify()
 	HASHCAT_MODE=${1##*.}
 
 	hashcat -m $HASHCAT_MODE -a 0 $1 /opt/pentest/SecLists/Passwords/Leaked-Databases/rockyou.txt
+}
+function poc()
+{
+	curl --silent "https://poc-in-github.motikan2010.net/api/v1/?cve_id=${1}" | jq -r .pocs[0].html_url
 }
 function pwshenc()
 {
@@ -220,7 +224,7 @@ ex ()
 	fi
 }
 function sk4r4b() {
-	local tool_path=/home/p4p1/Documents/github/sk4r4b
+	local tool_path=$HOME/Documents/github/sk4r4b
 
 	[[ "$(cat /etc/hostname)" = "p3ng0s-live" || -d /home/p4p1-live/ ]] && tool_path=$HOME/loot/sk4r4b
 	PYTHONPATH=$tool_path/tools/compiler python -m sk4r4b $@
@@ -342,3 +346,4 @@ sh banner.sh
 
 # SDK and bin packages
 export CHROME_EXECUTABLE=/usr/bin/chromium
+
